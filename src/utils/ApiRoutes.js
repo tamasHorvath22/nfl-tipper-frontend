@@ -10,5 +10,9 @@ export const ApiRoutes = {
   CHECK_BEFORE_REGISTER: {
     path: '/user-check',
     name: 'USER_CHECK'
+  },
+  GET_USER: {
+    path: '/get-user',
+    name: 'GET_USER'
   }
 }

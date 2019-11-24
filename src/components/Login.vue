@@ -9,6 +9,7 @@
             name="username"
             id="username"
             v-validate="'required'"
+            @keyup.enter="onLogin"
             v-model="username"/>
         </div>
       </md-field>
@@ -21,10 +22,12 @@
             id="password"
             v-validate="'required'"
             type="password"
+            @keyup.enter="onLogin"
             v-model="password"/>
         </div>
       </md-field>
       <div class="validate-error">{{ errors.first('password') }}</div>
+      <div v-if="showWrongCred">Wrong username or password</div>
       <div>
         <md-button
           class="md-raised md-primary login-button"
@@ -47,25 +50,33 @@
 import { ApiRoutes } from '../utils/ApiRoutes'
 import { Routes } from '../utils/Routes'
 import * as axios from 'axios'
+import responseMessages from '../constants/api-response-messages'
+import UserService from '../services/UserService'
 
 export default {
   name: 'Login',
   data () {
     return {
       username: null,
-      password: null
+      password: null,
+      showWrongCred: false
     }
   },
   methods: {
     onLogin () {
+      this.showWrongCred = false
       this.$validator.validateAll().then(valid => {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
           axios.post(loginPath, { username: this.username, password: this.password })
             .then(loginResp => {
               if (loginResp.data.token) {
+                // const us = new UserService()
+                UserService.getUser({ username: this.username })
                 localStorage.setItem('token', loginResp.data.token)
                 this.$router.push(Routes.PROFILE.path)
+              } else if (loginResp.data === responseMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
+                this.showWrongCred = true
               }
             })
         }
