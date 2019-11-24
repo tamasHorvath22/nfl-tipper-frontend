@@ -12,6 +12,10 @@ export const router = new Router({
   // },
   routes: [
     {
+      path: '/',
+      redirect: Routes.LOGIN.path
+    },
+    {
       path: Routes.LOGIN.path,
       name: Routes.LOGIN.name,
       component: () => import('./components/Login.vue')

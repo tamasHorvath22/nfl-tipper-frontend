@@ -6,6 +6,10 @@ export const Routes = {
   REGISTER: {
     path: '/register',
     name: 'REGISTER'
+  },
+  CHECK_BEFORE_REGISTER: {
+    path: '/user-check',
+    name: 'USER_CHECK'
   }
 
   // getPackageSelectorUrlForGroupCode (groupCode) {
