@@ -10,6 +10,10 @@ export const Routes = {
   CHECK_BEFORE_REGISTER: {
     path: '/user-check',
     name: 'USER_CHECK'
+  },
+  PROFILE: {
+    path: '/profile',
+    name: 'PROFILE'
   }
 
   // getPackageSelectorUrlForGroupCode (groupCode) {

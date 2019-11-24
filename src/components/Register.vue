@@ -84,8 +84,8 @@
 </template>
 
 <script>
-import HttpService from '../services/HttpService'
 import { Routes } from '../utils/Routes'
+import { ApiRoutes } from '../utils/ApiRoutes'
 import validationMixin from '../mixins/validationMixin'
 import * as axios from 'axios'
 import responseMessages from '../constants/api-response-messages'
@@ -110,18 +110,18 @@ export default {
       this.hideAllMessages()
       this.$validator.validateAll().then(valid => {
         if (valid) {
-          const checkUrl = process.env.VUE_APP_BASE_URL + Routes.CHECK_BEFORE_REGISTER.path
+          const checkUrl = process.env.VUE_APP_BASE_URL + ApiRoutes.CHECK_BEFORE_REGISTER.path
           axios.post(checkUrl, { username: this.username, email: this.email })
             .then(response => {
-              if (!response.data.occupied) {
+              if (response.data.occupied.length === 0) {
                 if (this.passwordsAreEqual()) {
-                  const user = {
-                    username: this.username,
-                    email: this.email,
-                    avatarUrl: this.avatarUrl,
-                    password: this.password
-                  }
-                  HttpService.post(process.env.VUE_APP_BASE_URL + Routes.REGISTER.path, user)
+                  const regPath = process.env.VUE_APP_BASE_URL + ApiRoutes.REGISTER.path
+                  axios.post(regPath, this.createUserToRegister())
+                    .then(registerResp => {
+                      if (registerResp.data === responseMessages.USER.SUCCESSFUL_REGISTRATION) {
+                        this.$router.push(Routes.LOGIN.path)
+                      }
+                    })
                 } else {
                   this.showNotEqualPasses = true
                 }
@@ -131,6 +131,14 @@ export default {
             })
         }
       })
+    },
+    createUserToRegister () {
+      return {
+        username: this.username,
+        email: this.email,
+        avatarUrl: this.avatarUrl,
+        password: this.password
+      }
     },
     showTakenMessages (responseList) {
       responseList.forEach(elem => {
@@ -145,7 +153,7 @@ export default {
     hideAllMessages () {
       this.showNotEqualPasses = false
       this.showUsernameTaken = false
-      this.showEmailTaken = true
+      this.showEmailTaken = false
     },
     passwordsAreEqual () {
       return this.password === this.confirm_password

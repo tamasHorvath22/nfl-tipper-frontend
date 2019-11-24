@@ -24,6 +24,11 @@ export const router = new Router({
       path: Routes.REGISTER.path,
       name: Routes.REGISTER.name,
       component: () => import('./components/Register.vue')
+    },
+    {
+      path: Routes.PROFILE.path,
+      name: Routes.PROFILE.name,
+      component: () => import('./components/Profile.vue')
     }
   ]
 })

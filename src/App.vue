@@ -1,14 +1,26 @@
 <template>
   <div id="app">
+    <div v-if="showMenu">Menu</div>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+import { Routes } from './utils/Routes'
 
 export default {
   name: 'app',
-  components: {}
+  components: {},
+  data () {
+    return {
+      showMenu: false
+    }
+  },
+  watch: {
+    $route (to, from) {
+      this.showMenu = !(to.fullPath === Routes.LOGIN.path || to.fullPath === Routes.REGISTER.path)
+    }
+  }
 }
 </script>
 

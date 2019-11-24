@@ -8,19 +8,23 @@
           <md-input
             name="username"
             id="username"
+            v-validate="'required'"
             v-model="username"/>
         </div>
       </md-field>
+      <div class="validate-error">{{ errors.first('username') }}</div>
       <md-field>
         <label class="label">Password</label>
         <div class="login-input">
           <md-input
             name="password"
             id="password"
+            v-validate="'required'"
             type="password"
             v-model="password"/>
         </div>
       </md-field>
+      <div class="validate-error">{{ errors.first('password') }}</div>
       <div>
         <md-button
           class="md-raised md-primary login-button"
@@ -40,14 +44,12 @@
 </template>
 
 <script>
-import HttpService from '../services/HttpService'
+import { ApiRoutes } from '../utils/ApiRoutes'
 import { Routes } from '../utils/Routes'
+import * as axios from 'axios'
 
 export default {
   name: 'Login',
-  props: {
-    msg: String
-  },
   data () {
     return {
       username: null,
@@ -56,9 +58,18 @@ export default {
   },
   methods: {
     onLogin () {
-      console.log('nyomom a gombot!')
-      console.log(HttpService.post('http://localhost:3000/login', { username: 'admin', password: 'jelszava' }))
-      console.log('loginelnék!')
+      this.$validator.validateAll().then(valid => {
+        if (valid) {
+          const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
+          axios.post(loginPath, { username: this.username, password: this.password })
+            .then(loginResp => {
+              if (loginResp.data.token) {
+                localStorage.setItem('token', loginResp.data.token)
+                this.$router.push(Routes.PROFILE.path)
+              }
+            })
+        }
+      })
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)
