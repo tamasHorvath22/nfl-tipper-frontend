@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="page"><img class="bg-image" src="../assets/images/nfl-helmet.jpg"></div>
-    <div class="login-form-container">
+    <div class="register-form-container input-box">
       <md-field>
         <label class="label">Username</label>
         <div class="login-input">
@@ -79,7 +79,7 @@
       </div>
       <div>
         <md-button
-          class="md-raised md-primary login-button"
+          class="md-raised md-primary submit-button"
           @click="onRegister">
           Register
         </md-button>
@@ -180,13 +180,10 @@ export default {
   width: 100%;
   height: 100%;
 }
-.login-form-container {
-  padding: 15px;
+.register-form-container {
   position: absolute;
   left: 700px;
   top: 50px;
-  background-color: grey;
-  border-radius: 10px;
 }
 .login-header {
   font-size: 24pt;
@@ -202,9 +199,6 @@ export default {
 }
 .label {
   padding-left: 10px;
-}
-.login-button {
-  background-color: rgb(77, 142, 216);
 }
 .validate-error {
   color: red;

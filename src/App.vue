@@ -62,7 +62,7 @@ export default {
         },
         {
           title: 'Logout',
-          icon: 'fa fa-door-open'
+          class: 'logout-button'
         }
       ]
     }
@@ -88,5 +88,14 @@ export default {
 }
 .v-sidebar-menu {
   width: 200px;
+  background-color: rgba(65, 57, 57, 0.8);
 }
+.logout-button {
+  margin-top: 50px;
+}
+
+/* .v-sidebar-menu .vsm--item {background-color: green;}
+.v-sidebar-menu .vsm--link {background-color: green;}
+.v-sidebar-menu .vsm--mobile-bg {background-color: green;  color: red;} */
+
 </style>

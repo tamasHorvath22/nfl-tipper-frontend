@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="page"><img class="bg-image" src="../assets/images/ball.jpg"></div>
-    <div class="login-form-container">
+    <div class="login-form-container input-box">
       <md-field>
         <label class="label">Username</label>
         <div class="login-input">
@@ -32,7 +32,7 @@
       <div v-if="showWrongCred">Wrong username or password</div>
       <div>
         <md-button
-          class="md-raised md-primary login-button"
+          class="md-raised md-primary submit-button"
           @click="onLogin">
           Login
         </md-button>
@@ -112,12 +112,11 @@ export default {
   height: 100%;
 }
 .login-form-container {
-  padding: 15px;
   position: absolute;
-  left: 800px;
-  top: 200px;
-  background-color: grey;
-  border-radius: 10px;
+  /* left: 30px;
+  bottom: 30px; */
+  top: 50px;
+  right: 50px;
 }
 .login-header {
   font-size: 24pt;
@@ -129,9 +128,6 @@ export default {
 }
 .go-register-button {
   font-size: 8pt;
-}
-.login-button {
-  background-color: rgb(77, 142, 216);
 }
 .label {
   padding-left: 10px;
