@@ -13,6 +13,9 @@ export const router = new Router({
   routes: [
     {
       path: '/',
+      beforeEnter: (to, from, next) => {
+        localStorage.getItem('nflTipperUser') ? next(Routes.PROFILE.path) : next(Routes.LOGIN.path)
+      },
       redirect: Routes.LOGIN.path
     },
     {
@@ -32,3 +35,7 @@ export const router = new Router({
     }
   ]
 })
+
+// router.beforeEach((to, from, next) => {
+//   localStorage.getItem('nflTipperUser') ? next(to) : next(Routes.LOGIN.path)
+// })

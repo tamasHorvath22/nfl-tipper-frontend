@@ -8,6 +8,7 @@
           <md-input
             name="username"
             id="username"
+            class="input-field"
             v-validate="'required|min:6'"
             v-model="username"/>
         </div>
@@ -24,6 +25,7 @@
           <md-input
             name="email"
             id="email"
+            class="input-field"
             v-validate="{ required: true, validEmail: true }"
             v-model="email"/>
         </div>
@@ -40,6 +42,7 @@
           <md-input
             name="avatarUrl"
             id="avatarUrl"
+            class="input-field"
             v-model="avatarUrl"/>
         </div>
       </md-field>
@@ -50,6 +53,7 @@
             name="password"
             id="password"
             type="password"
+            class="input-field"
             v-validate="'required|min:8'"
             v-model="password"/>
         </div>
@@ -61,6 +65,7 @@
           <md-input
             name="confirm_password"
             id="confirm_password"
+            class="input-field"
             v-validate="'required|min:8'"
             type="password"
             v-model="confirm_password"/>

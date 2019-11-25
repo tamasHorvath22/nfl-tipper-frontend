@@ -6,6 +6,7 @@
         <label class="label">Username</label>
         <div class="login-input">
           <md-input
+            class="input-field"
             name="username"
             id="username"
             v-validate="'required'"
@@ -20,6 +21,7 @@
           <md-input
             name="password"
             id="password"
+            class="input-field"
             v-validate="'required'"
             type="password"
             @keyup.enter="onLogin"
