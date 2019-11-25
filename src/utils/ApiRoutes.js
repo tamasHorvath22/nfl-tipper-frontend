@@ -12,7 +12,7 @@ export const ApiRoutes = {
     name: 'USER_CHECK'
   },
   GET_USER: {
-    path: '/get-user',
+    path: '/api/get-user',
     name: 'GET_USER'
   }
 }

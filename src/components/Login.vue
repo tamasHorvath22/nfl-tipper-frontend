@@ -51,7 +51,6 @@ import { ApiRoutes } from '../utils/ApiRoutes'
 import { Routes } from '../utils/Routes'
 import * as axios from 'axios'
 import responseMessages from '../constants/api-response-messages'
-import UserService from '../services/UserService'
 
 export default {
   name: 'Login',
@@ -71,8 +70,7 @@ export default {
           axios.post(loginPath, { username: this.username, password: this.password })
             .then(loginResp => {
               if (loginResp.data.token) {
-                // const us = new UserService()
-                UserService.getUser({ username: this.username })
+                this.saveUserToLocalStorage(loginResp.data.token)
                 localStorage.setItem('token', loginResp.data.token)
                 this.$router.push(Routes.PROFILE.path)
               } else if (loginResp.data === responseMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
@@ -81,6 +79,14 @@ export default {
             })
         }
       })
+    },
+    async saveUserToLocalStorage (token) {
+      const headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer ' + token
+      }
+      const user = await axios.post(process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path, {}, { headers: headers })
+      localStorage.setItem('nflTipperUser', JSON.stringify(user))
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)
