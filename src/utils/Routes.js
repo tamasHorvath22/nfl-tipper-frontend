@@ -1,4 +1,8 @@
 export const Routes = {
+  ROOT: {
+    path: '/',
+    name: 'ROOT'
+  },
   LOGIN: {
     path: '/login',
     name: 'LOGIN'

@@ -18,6 +18,7 @@
 import { Routes } from './utils/Routes'
 import { SidebarMenu } from 'vue-sidebar-menu'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+import localStorageKeys from './constants/localStorageKeys'
 
 export default {
   name: 'app',
@@ -27,8 +28,8 @@ export default {
   methods: {
     onItemClick (event, item) {
       if (item.title === 'Logout') {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
+        localStorage.removeItem(localStorageKeys.NFL_TIPPER_TOKEN)
+        localStorage.removeItem(localStorageKeys.NFL_TIPPER_USER)
         this.$router.push(Routes.LOGIN.path)
       }
     },

@@ -53,6 +53,7 @@ import { ApiRoutes } from '../utils/ApiRoutes'
 import { Routes } from '../utils/Routes'
 import * as axios from 'axios'
 import responseMessages from '../constants/api-response-messages'
+import localStorageKeys from '../constants/localStorageKeys'
 
 export default {
   name: 'Login',
@@ -73,7 +74,7 @@ export default {
             .then(loginResp => {
               if (loginResp.data.token) {
                 this.saveUserToLocalStorage(loginResp.data.token)
-                localStorage.setItem('token', loginResp.data.token)
+                localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)
                 this.$router.push(Routes.PROFILE.path)
               } else if (loginResp.data === responseMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
                 this.showWrongCred = true
@@ -88,7 +89,7 @@ export default {
         'authorization': 'Bearer ' + token
       }
       const user = await axios.post(process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path, {}, { headers: headers })
-      localStorage.setItem('nflTipperUser', JSON.stringify(user))
+      localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(user.data))
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)

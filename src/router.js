@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import { Routes } from './utils/Routes'
+import localStorageKeys from './constants/localStorageKeys'
 
 Vue.use(Router)
 
@@ -12,11 +13,8 @@ export const router = new Router({
   // },
   routes: [
     {
-      path: '/',
-      beforeEnter: (to, from, next) => {
-        localStorage.getItem('nflTipperUser') ? next(Routes.PROFILE.path) : next(Routes.LOGIN.path)
-      },
-      redirect: Routes.LOGIN.path
+      path: Routes.ROOT.path,
+      name: Routes.ROOT.name
     },
     {
       path: Routes.LOGIN.path,
@@ -36,6 +34,14 @@ export const router = new Router({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   localStorage.getItem('nflTipperUser') ? next(to) : next(Routes.LOGIN.path)
-// })
+router.beforeEach((to, from, next) => {
+  if (to.path === Routes.LOGIN.path || to.path === Routes.REGISTER.path) {
+    next()
+    return
+  }
+  if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
+    next()
+  } else {
+    next(Routes.LOGIN.path)
+  }
+})
