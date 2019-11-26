@@ -1,3 +1,5 @@
+@import './variables';
+
 .input-field {
   margin-left: 5px;
 }
@@ -8,4 +10,7 @@
 }
 .submit-button {
   background-color: rgb(130, 181, 211);
+}
+.error-message {
+  color: rgb(187, 61, 61);
 }

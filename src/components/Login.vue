@@ -14,7 +14,7 @@
             v-model="username"/>
         </div>
       </md-field>
-      <div class="validate-error">{{ errors.first('username') }}</div>
+      <div class="error-message">{{ errors.first('username') }}</div>
       <md-field>
         <label class="label">Password</label>
         <div class="login-input">
@@ -28,8 +28,8 @@
             v-model="password"/>
         </div>
       </md-field>
-      <div class="validate-error">{{ errors.first('password') }}</div>
-      <div v-if="showWrongCred">Wrong username or password</div>
+      <div class="error-message">{{ errors.first('password') }}</div>
+      <div v-if="showWrongCred" class="error-message">Wrong username or password!</div>
       <div>
         <md-button
           class="md-raised md-primary submit-button"
@@ -104,7 +104,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '../styles/_variables.scss';
+
 .page {
   position: absolute;
   left: 0;
@@ -115,7 +117,6 @@ export default {
 }
 .bg-image {
   width: 100%;
-  height: 100%;
 }
 .login-form-container {
   position: absolute;

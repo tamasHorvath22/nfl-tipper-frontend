@@ -25,7 +25,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '../styles/_variables.scss';
+
 .profile-header {
   font-size: 30pt;
 }

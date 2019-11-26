@@ -14,11 +14,11 @@
         </div>
       </md-field>
       <div
-        class="validate-error"
+        class="error-message"
         v-if="showUsernameTaken">
           This username is taken
       </div>
-      <div class="validate-error">{{ errors.first('username') }}</div>
+      <div class="error-message">{{ errors.first('username') }}</div>
       <md-field>
         <label class="label">Email</label>
         <div class="login-input">
@@ -31,11 +31,11 @@
         </div>
       </md-field>
       <div
-        class="validate-error"
+        class="error-message"
         v-if="showEmailTaken">
           This email is taken
       </div>
-      <div class="validate-error">{{ errors.first('email') }}</div>
+      <div class="error-message">{{ errors.first('email') }}</div>
       <md-field>
         <label class="label">Avatar URL</label>
         <div class="login-input">
@@ -58,7 +58,7 @@
             v-model="password"/>
         </div>
       </md-field>
-      <div class="validate-error">{{ errors.first('password') }}</div>
+      <div class="error-message">{{ errors.first('password') }}</div>
       <md-field>
         <label class="label">Password again</label>
         <div class="login-input">
@@ -71,9 +71,9 @@
             v-model="confirm_password"/>
         </div>
       </md-field>
-      <div class="validate-error">{{ errors.first('confirm_password') }}</div>
+      <div class="error-message">{{ errors.first('confirm_password') }}</div>
       <div
-        class="validate-error"
+        class="error-message"
         v-if="showNotEqualPasses">
           The passwords must match!
       </div>
@@ -167,7 +167,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import '../styles/_variables.scss';
+
 .page {
   position: absolute;
   left: 0;
@@ -178,7 +180,6 @@ export default {
 }
 .bg-image {
   width: 100%;
-  height: 100%;
 }
 .register-form-container {
   position: absolute;
@@ -199,8 +200,5 @@ export default {
 }
 .label {
   padding-left: 10px;
-}
-.validate-error {
-  color: red;
 }
 </style>

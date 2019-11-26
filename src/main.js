@@ -4,7 +4,7 @@ import { router } from './router'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import VeeValidate from 'vee-validate'
-import './styles/style.css'
+import './styles/style.scss'
 
 Vue.use(VeeValidate)
 Vue.use(VueMaterial)

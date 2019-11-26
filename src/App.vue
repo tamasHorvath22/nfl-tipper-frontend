@@ -53,7 +53,8 @@ export default {
         {
           href: '/profile',
           title: 'Profile',
-          icon: 'fa fa-user'
+          icon: 'fa fa-user',
+          class: 'menu-icon'
         },
         {
           href: '/leagues',
@@ -62,7 +63,8 @@ export default {
         },
         {
           title: 'Logout',
-          class: 'logout-button'
+          class: 'logout-button',
+          icon: 'fa fa-close'
         }
       ]
     }
@@ -75,7 +77,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+@import './styles/_variables.scss';
+
 #app {
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -88,14 +92,85 @@ export default {
 }
 .v-sidebar-menu {
   width: 200px;
-  background-color: rgba(65, 57, 57, 0.8);
+  background-color: $nfl-blue;
 }
 .logout-button {
   margin-top: 50px;
 }
 
-/* .v-sidebar-menu .vsm--item {background-color: green;}
-.v-sidebar-menu .vsm--link {background-color: green;}
-.v-sidebar-menu .vsm--mobile-bg {background-color: green;  color: red;} */
+/* oldalsó függőleges kék sáv */
+.v-sidebar-menu .vsm--link_level-1.vsm--link_exact-active,
+.v-sidebar-menu .vsm--link_level-1.vsm--link_active {
+  -webkit-box-shadow: 3px 0px 0px 0px $nfl-red inset;
+  box-shadow: 3px 0px 0px 0px $nfl-red inset
+}
 
+/* menu closed, icon hover background color */
+.v-sidebar-menu.vsm_collapsed .vsm--link_level-1.vsm--link_hover .vsm--icon,
+.v-sidebar-menu.vsm_collapsed .vsm--link_level-1:hover .vsm--icon {
+  color: yellow;
+  background-color: $nfl-red
+}
+
+/** menu closed, icon hover expand item background color */
+.v-sidebar-menu .vsm--mobile-bg {
+  background-color: $nfl-red
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_expanded .vsm--item_open .vsm--link_level-1 {
+  color: #fff;
+  background-color: #4285f4;
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_expanded .vsm--item_open .vsm--link_level-1 .vsm--icon {
+  color: #fff;
+  background-color: #4285f4;
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_rtl .vsm--link_level-1.vsm--link_active,
+.v-sidebar-menu.vsm_rtl .vsm--link_level-1.vsm--link_exact-active {
+  -webkit-box-shadow: -3px 0px 0px 0px #4285f4 inset;
+  box-shadow: -3px 0px 0px 0px #4285f4 inset
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_white-theme .vsm--link_level-1.vsm--link_exact-active,
+.v-sidebar-menu.vsm_white-theme .vsm--link_level-1.vsm--link_active {
+  -webkit-box-shadow: 3px 0px 0px 0px #4285f4 inset;
+  box-shadow: 3px 0px 0px 0px #4285f4 inset
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_white-theme.vsm_collapsed .vsm--link_level-1.vsm--link_hover .vsm--icon,
+.v-sidebar-menu.vsm_white-theme.vsm_collapsed .vsm--link_level-1:hover .vsm--icon {
+  color: #fff;
+  background-color: #4285f4
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_white-theme .vsm--mobile-bg {
+  background-color: #4285f4
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_white-theme.vsm_expanded .vsm--item_open .vsm--link_level-1 {
+  color: #fff;
+  background-color: #4285f4
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_white-theme.vsm_expanded .vsm--item_open .vsm--link_level-1 .vsm--icon {
+  color: #fff;
+  background-color: #4285f4
+}
+
+/** ???? */
+.v-sidebar-menu.vsm_white-theme.vsm_rtl .vsm--link_level-1.vsm--link_active,
+.v-sidebar-menu.vsm_white-theme.vsm_rtl .vsm--link_level-1.vsm--link_exact-active {
+  -webkit-box-shadow: -3px 0px 0px 0px #4285f4 inset;
+  box-shadow: -3px 0px 0px 0px #4285f4 inset
+}
 </style>
