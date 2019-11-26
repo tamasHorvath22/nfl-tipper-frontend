@@ -5,8 +5,7 @@
         <span
           slot="toggle-icon"
           class="toggle-icon">
-          <i class="fa"
-          :class="isMenuOpen ? 'fa-angle-double-left' : 'fa-angle-double-right'"></i>
+          <i :class="isMenuOpen ? 'fa fa-angle-double-left' : 'fa fa-angle-double-right'"></i>
         </span>
       </sidebar-menu>
     </div>
@@ -63,7 +62,6 @@ export default {
         },
         {
           title: 'Logout',
-          class: 'logout-button',
           icon: 'fa fa-close'
         }
       ]
@@ -94,9 +92,6 @@ export default {
   width: 200px;
   background-color: $nfl-blue;
 }
-.logout-button {
-  margin-top: 50px;
-}
 
 /* oldalsó függőleges kék sáv */
 .v-sidebar-menu .vsm--link_level-1.vsm--link_exact-active,
@@ -108,8 +103,8 @@ export default {
 /* menu closed, icon hover background color */
 .v-sidebar-menu.vsm_collapsed .vsm--link_level-1.vsm--link_hover .vsm--icon,
 .v-sidebar-menu.vsm_collapsed .vsm--link_level-1:hover .vsm--icon {
-  color: yellow;
-  background-color: $nfl-red
+  color: yellow !important;
+  background-color: $nfl-red !important
 }
 
 /** menu closed, icon hover expand item background color */
