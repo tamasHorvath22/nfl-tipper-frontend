@@ -37,16 +37,6 @@
       </div>
       <div class="error-message">{{ errors.first('email') }}</div>
       <md-field>
-        <label class="label">Avatar URL</label>
-        <div class="login-input">
-          <md-input
-            name="avatarUrl"
-            id="avatarUrl"
-            class="input-field"
-            v-model="avatarUrl"/>
-        </div>
-      </md-field>
-      <md-field>
         <label class="label">Password</label>
         <div class="login-input">
           <md-input
@@ -102,7 +92,6 @@ export default {
     return {
       username: null,
       email: null,
-      avatarUrl: null,
       password: null,
       confirm_password: null,
       showNotEqualPasses: false,
@@ -141,7 +130,6 @@ export default {
       return {
         username: this.username,
         email: this.email,
-        avatarUrl: this.avatarUrl,
         password: this.password
       }
     },
@@ -183,8 +171,8 @@ export default {
 }
 .register-form-container {
   position: absolute;
-  left: 700px;
   top: 50px;
+  right: 50px;
 }
 .login-header {
   font-size: 24pt;
