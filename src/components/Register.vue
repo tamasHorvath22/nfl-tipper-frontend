@@ -67,6 +67,11 @@
         v-if="showNotEqualPasses">
           The passwords must match!
       </div>
+      <div
+        class="error-message"
+        v-if="showRegistrationFail">
+          Registration failed
+      </div>
       <div>
         <md-button
           class="md-raised md-primary submit-button"
@@ -96,7 +101,8 @@ export default {
       confirm_password: null,
       showNotEqualPasses: false,
       showUsernameTaken: false,
-      showEmailTaken: false
+      showEmailTaken: false,
+      showRegistrationFail: false
     }
   },
   methods: {
@@ -104,27 +110,28 @@ export default {
       this.hideAllMessages()
       this.$validator.validateAll().then(valid => {
         if (valid) {
-          const checkUrl = process.env.VUE_APP_BASE_URL + ApiRoutes.CHECK_BEFORE_REGISTER.path
-          axios.post(checkUrl, { username: this.username, email: this.email })
-            .then(response => {
-              if (response.data.occupied.length === 0) {
-                if (this.passwordsAreEqual()) {
-                  const regPath = process.env.VUE_APP_BASE_URL + ApiRoutes.REGISTER.path
-                  axios.post(regPath, this.createUserToRegister())
-                    .then(registerResp => {
-                      if (registerResp.data === responseMessages.USER.SUCCESSFUL_REGISTRATION) {
-                        this.$router.push(Routes.LOGIN.path)
-                      }
-                    })
-                } else {
-                  this.showNotEqualPasses = true
-                }
-              } else {
-                this.showTakenMessages(response.data.occupied)
-              }
-            })
+          if (this.passwordsAreEqual()) {
+            const regPath = process.env.VUE_APP_BASE_URL + ApiRoutes.REGISTER.path
+            axios.post(regPath, this.createUserToRegister())
+              .then(registerResp => {
+                this.handleRegisterResponse(registerResp.data)
+              })
+          } else {
+            this.showNotEqualPasses = true
+          }
         }
       })
+    },
+    handleRegisterResponse (response) {
+      if (response === responseMessages.USER.SUCCESSFUL_REGISTRATION) {
+        this.$router.push(Routes.LOGIN.path)
+      } else if (response === responseMessages.USER.USERNAME_TAKEN) {
+        this.showUsernameTaken = true
+      } else if (response === responseMessages.USER.EMAIL_TAKEN) {
+        this.showEmailTaken = true
+      } else if (response === responseMessages.USER.UNSUCCESSFUL_REGISTRATION) {
+        this.showRegistrationFail = true
+      }
     },
     createUserToRegister () {
       return {
@@ -133,20 +140,11 @@ export default {
         password: this.password
       }
     },
-    showTakenMessages (responseList) {
-      responseList.forEach(elem => {
-        if (elem === responseMessages.USER.USERNAME_TAKEN) {
-          this.showUsernameTaken = true
-        }
-        if (elem === responseMessages.USER.EMAIL_TAKEN) {
-          this.showEmailTaken = true
-        }
-      })
-    },
     hideAllMessages () {
       this.showNotEqualPasses = false
       this.showUsernameTaken = false
       this.showEmailTaken = false
+      this.showRegistrationFail = false
     },
     passwordsAreEqual () {
       return this.password === this.confirm_password
