@@ -18,6 +18,10 @@ export const Routes = {
   PROFILE: {
     path: '/profile',
     name: 'PROFILE'
+  },
+  JOIN_LEAGUE: {
+    path: '/join-league/:token',
+    name: 'JOIN_LEAGUE'
   }
 
   // getPackageSelectorUrlForGroupCode (groupCode) {

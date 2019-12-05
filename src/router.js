@@ -6,7 +6,7 @@ import localStorageKeys from './constants/localStorageKeys'
 Vue.use(Router)
 
 export const router = new Router({
-  // mode: 'history',
+  mode: 'history',
   // base: 'localhost:8080/', // process.env.BASE_URL,
   // scrollBehavior (to) {
   //   return { x: 0, y: 0 }
@@ -30,18 +30,40 @@ export const router = new Router({
       path: Routes.PROFILE.path,
       name: Routes.PROFILE.name,
       component: () => import('./components/Profile.vue')
+    },
+    {
+      path: Routes.JOIN_LEAGUE.path,
+      name: Routes.JOIN_LEAGUE.name,
+      component: () => import('./components/JoinLeague.vue'),
+      beforeEnter: (to, from, next) => {
+        // this.$router.push(Routes.LOGIN.path)
+        console.log(from)
+        console.log(to)
+        if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
+          next()
+        } else {
+          localStorage.setItem('LEAUGE-JOIN-TOKEN', to.params.token)
+          next(Routes.LOGIN.path)
+
+          // this.$router.push(Routes.LOGIN.path)
+        }
+      }
+    },
+    {
+      path: '*',
+      redirect: Routes.ROOT.path
     }
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.path === Routes.LOGIN.path || to.path === Routes.REGISTER.path) {
-    next()
-    return
-  }
-  if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
-    next()
-  } else {
-    next(Routes.LOGIN.path)
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.path === Routes.LOGIN.path || to.path === Routes.REGISTER.path) {
+//     next()
+//     return
+//   }
+//   if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
+//     next()
+//   } else {
+//     next(Routes.LOGIN.path)
+//   }
+// })
