@@ -2,25 +2,51 @@
   <div class="profile-container">
     <div class="profile-header">Profile</div>
     <div class="user-data-container">
+      <!-- <div>Username: {{ user.username }}</div>
+      <div>Email: {{ user.email }}</div>
+      <div>Leagues</div> -->
+      <!-- <div v-for="league of user.">
+
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-// import { Routes } from '../utils/Routes'
-// import * as axios from 'axios'
-// import UserService from '../services/UserService'
+import localStorageKeys from '../constants/localStorageKeys'
+import getByProperties from '../constants/get-by-properties'
+import * as axios from 'axios'
+import { ApiRoutes } from '../utils/ApiRoutes'
 
 export default {
   name: 'Profile',
   data () {
     return {
-      user: null
+      user: null,
+      token: null,
+      leagues: null
     }
   },
-  methods: {},
+  methods: {
+    async getLeagues () {
+      const leaguesPath = process.env.VUE_APP_BASE_URL + ApiRoutes.GET_LEAGUES.path
+      this.leagues = await axios.post(
+        leaguesPath,
+        { leagues: this.user.leagues, property: getByProperties.ID },
+        { headers: this.getHeader() }
+      )
+    },
+    getHeader () {
+      return {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer ' + this.token
+      }
+    }
+  },
   mounted () {
-    this.user = JSON.parse(localStorage.getItem('nflTipperUser'))
+    this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
+    this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
+    this.getLeagues()
   }
 }
 </script>

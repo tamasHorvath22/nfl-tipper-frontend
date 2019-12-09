@@ -7,12 +7,12 @@ export const ApiRoutes = {
     path: '/register',
     name: 'REGISTER'
   },
-  CHECK_BEFORE_REGISTER: {
-    path: '/user-check',
-    name: 'USER_CHECK'
-  },
   GET_USER: {
     path: '/api/get-user',
     name: 'GET_USER'
+  },
+  GET_LEAGUES: {
+    path: '/api/get-leagues',
+    name: 'GET_LEAGUES'
   }
 }
