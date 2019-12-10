@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <Spinner v-if="showSpinner"/>
     <div v-if="showMenu">
       <sidebar-menu :menu="menu" @item-click="onItemClick" @toggle-collapse="onToggleCollapse">
         <span
@@ -16,13 +17,16 @@
 <script>
 import { Routes } from './utils/Routes'
 import { SidebarMenu } from 'vue-sidebar-menu'
+import Spinner from './components/Spinner'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import localStorageKeys from './constants/localStorageKeys'
+// import SpinnerService from './services/SpinnerService'
 
 export default {
   name: 'app',
   components: {
-    SidebarMenu
+    SidebarMenu,
+    Spinner
   },
   methods: {
     onItemClick (event, item) {
@@ -40,6 +44,7 @@ export default {
     return {
       showMenu: false,
       isMenuOpen: true,
+      showSpinner: false,
       menu: [
         {
           header: true,

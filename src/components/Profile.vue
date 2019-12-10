@@ -1,6 +1,6 @@
 <template>
   <div class="profile-container">
-    <div class="profile-header">Profile</div>
+    <!-- <div class="profile-header">Profile</div> -->
     <div class="user-data-container">
       <!-- <div>Username: {{ user.username }}</div>
       <div>Email: {{ user.email }}</div>
@@ -57,6 +57,7 @@ export default {
 .profile-header {
   font-size: 30pt;
 }
+
 .profile-container {}
 .user-data-container {}
 </style>
