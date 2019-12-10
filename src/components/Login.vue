@@ -54,6 +54,7 @@ import { Routes } from '../utils/Routes'
 import * as axios from 'axios'
 import responseMessages from '../constants/api-response-messages'
 import localStorageKeys from '../constants/localStorageKeys'
+import SpinnerService from '../services/SpinnerService'
 
 export default {
   name: 'Login',
@@ -70,6 +71,7 @@ export default {
       this.$validator.validateAll().then(valid => {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
+          SpinnerService.setSpinner(true)
           axios.post(loginPath, { username: this.username, password: this.password })
             .then(loginResp => {
               if (loginResp.data.token) {
@@ -79,6 +81,7 @@ export default {
               } else if (loginResp.data === responseMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
                 this.showWrongCred = true
               }
+              SpinnerService.setSpinner(false)
             })
         }
       })

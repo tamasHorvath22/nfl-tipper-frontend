@@ -20,7 +20,7 @@ import { SidebarMenu } from 'vue-sidebar-menu'
 import Spinner from './components/Spinner'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import localStorageKeys from './constants/localStorageKeys'
-// import SpinnerService from './services/SpinnerService'
+import SpinnerService from './services/SpinnerService'
 
 export default {
   name: 'app',
@@ -38,6 +38,9 @@ export default {
     },
     onToggleCollapse () {
       this.isMenuOpen = !this.isMenuOpen
+    },
+    setSpinner (isVisible) {
+      this.showSpinner = isVisible
     }
   },
   data () {
@@ -76,6 +79,9 @@ export default {
     $route (to, from) {
       this.showMenu = !(to.fullPath === Routes.LOGIN.path || to.fullPath === Routes.REGISTER.path)
     }
+  },
+  created () {
+    SpinnerService.subscribe(this.setSpinner)
   }
 }
 </script>

@@ -1,11 +1,11 @@
 class SpinnerService {
-    subscriptions = []
+    static subscriptions = []
 
-    subscribe (callback) {
+    static subscribe (callback) {
       this.subscriptions.push(callback)
     }
 
-    notify (context) {
+    static setSpinner (context) {
       this.subscriptions.forEach(function (callback) {
         callback(context)
       })
