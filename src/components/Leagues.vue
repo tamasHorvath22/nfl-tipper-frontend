@@ -1,14 +1,12 @@
 <template>
   <div>
-    <div class="spinner-backdrop">
-      <img src="../assets/images/nfl-logo-spinner.png" class="spinner" alt="">
-    </div>
+    leagues
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Spinner'
+  name: 'Leagues'
 }
 </script>
 

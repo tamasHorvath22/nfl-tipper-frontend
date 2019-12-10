@@ -17,6 +17,7 @@ import localStorageKeys from '../constants/localStorageKeys'
 import getByProperties from '../constants/get-by-properties'
 import * as axios from 'axios'
 import { ApiRoutes } from '../utils/ApiRoutes'
+import SpinnerService from '../services/SpinnerService'
 
 export default {
   name: 'Profile',
@@ -30,11 +31,13 @@ export default {
   methods: {
     async getLeagues () {
       const leaguesPath = process.env.VUE_APP_BASE_URL + ApiRoutes.GET_LEAGUES.path
+      SpinnerService.setSpinner(true)
       this.leagues = await axios.post(
         leaguesPath,
         { leagues: this.user.leagues, property: getByProperties.ID },
         { headers: this.getHeader() }
       )
+      SpinnerService.setSpinner(false)
     },
     getHeader () {
       return {
