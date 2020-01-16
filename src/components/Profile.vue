@@ -8,6 +8,63 @@
       <!-- <div v-for="league of user.">
 
       </div> -->
+      <form class="md-layout">
+      <md-card class="md-layout-item md-size-50 md-small-size-100">
+        <md-card-header>
+          <div class="md-title">User</div>
+        </md-card-header>
+
+        <md-card-content>
+          <div class="md-layout md-gutter">
+            <div class="md-layout-item md-small-size-100">
+              <md-field>
+                <label for="first-name">Username</label>
+                <md-input
+                  name="username"
+                  type="text"
+                  class="input-field"
+                  v-model="user.username"
+                  :disabled="isUserDataDisabled"/>
+                </md-field>
+            </div>
+          </div>
+          <div class="md-layout md-gutter">
+            <div class="md-layout-item md-small-size-100">
+              <md-field>
+                <label for="first-name">Email</label>
+                <md-input
+                  name="username"
+                  type="text"
+                  class="input-field"
+                  v-model="user.email"
+                  :disabled="isUserDataDisabled"/>
+              </md-field>
+            </div>
+          </div>
+          <div class="md-layout md-gutter">
+            <div class="md-layout-item md-small-size-100">
+              <md-field>
+                <label for="first-name">Avatar URL</label>
+                <md-input
+                  name="username"
+                  type="text"
+                  class="input-field"
+                  v-model="user.avatarUrl"
+                  :disabled="isUserDataDisabled"/>
+                </md-field>
+            </div>
+          </div>
+        </md-card-content>
+
+        <md-button
+          type="button"
+          class="md-primary"
+          @click="onEdit">
+            {{ isUserDataDisabled ? 'Edit' : 'Save' }}
+        </md-button>
+      </md-card>
+
+    </form>
     </div>
   </div>
 </template>
@@ -25,7 +82,8 @@ export default {
     return {
       user: null,
       token: null,
-      leagues: null
+      leagues: null,
+      isUserDataDisabled: true
     }
   },
   methods: {
@@ -44,6 +102,9 @@ export default {
         'Content-Type': 'application/json',
         'authorization': 'Bearer ' + this.token
       }
+    },
+    onEdit () {
+      this.isUserDataDisabled = !this.isUserDataDisabled
     }
   },
   mounted () {
@@ -61,6 +122,9 @@ export default {
   font-size: 30pt;
 }
 
-.profile-container {}
+.profile-container {
+  width: 600px;
+  margin: auto;
+}
 .user-data-container {}
 </style>
