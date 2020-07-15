@@ -14,7 +14,17 @@ export const router = new Router({
   routes: [
     {
       path: Routes.ROOT.path,
-      name: Routes.ROOT.name
+      name: Routes.ROOT.name,
+      component: () => import('./components/Profile.vue'),
+      beforeEnter: (to, from, next) => {
+        console.log(from)
+        console.log(to)
+        if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
+          next()
+        } else {
+          next(Routes.LOGIN.path)
+        }
+      }
     },
     {
       path: Routes.LOGIN.path,
@@ -26,10 +36,15 @@ export const router = new Router({
       name: Routes.REGISTER.name,
       component: () => import('./components/Register.vue')
     },
+    // {
+    //   path: Routes.PROFILE.path,
+    //   name: Routes.PROFILE.name,
+    //   component: () => import('./components/Profile.vue')
+    // },
     {
-      path: Routes.PROFILE.path,
-      name: Routes.PROFILE.name,
-      component: () => import('./components/Profile.vue')
+      path: Routes.LEAGUES.path,
+      name: Routes.LEAGUES.name,
+      component: () => import('./components/Leagues.vue')
     },
     {
       path: Routes.JOIN_LEAGUE.path,

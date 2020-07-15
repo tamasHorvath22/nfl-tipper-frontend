@@ -1,80 +1,113 @@
 <template>
-  <div class="profile-container">
-    <!-- <div class="profile-header">Profile</div> -->
-    <div class="user-data-container">
-      <!-- <div>Username: {{ user.username }}</div>
-      <div>Email: {{ user.email }}</div>
-      <div>Leagues</div> -->
-      <!-- <div v-for="league of user.">
+  <div class="md-layout">
+    <div class="md-layout-item md-size-30 md-small-size-90 card-margin">
+      <form v-if="user">
+        <md-card class="card-bg">
+          <md-card-header>
+            <div class="md-title">{{ user.username }} data</div>
+          </md-card-header>
 
-      </div> -->
-      <form class="md-layout">
-      <md-card class="md-layout-item md-size-50 md-small-size-100">
+          <md-card-content>
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-small-size-100">
+                <md-field>
+                  <label for="first-name">Username</label>
+                  <md-input
+                    name="username"
+                    type="text"
+                    class="input-field"
+                    v-model="user.username"
+                    disabled/>
+                  </md-field>
+              </div>
+            </div>
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-small-size-100">
+                <md-field>
+                  <label for="first-name">Email</label>
+                  <md-input
+                    name="username"
+                    type="text"
+                    class="input-field"
+                    v-model="user.email"
+                    :disabled="isUserDataDisabled"/>
+                </md-field>
+              </div>
+            </div>
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-small-size-100">
+                <md-field>
+                  <label for="first-name">Avatar URL</label>
+                  <md-input
+                    name="username"
+                    type="text"
+                    class="input-field"
+                    v-model="user.avatarUrl"
+                    :disabled="isUserDataDisabled"/>
+                  </md-field>
+              </div>
+            </div>
+          </md-card-content>
+
+          <md-button
+            type="button"
+            class="md-primary"
+            @click="onEdit">
+              {{ isUserDataDisabled ? 'Edit' : 'Save' }}
+          </md-button>
+        </md-card>
+      </form>
+    </div>
+
+    <div class="md-layout-item md-size-50 md-small-size-90 card-margin">
+      <md-card class="card-bg">
         <md-card-header>
-          <div class="md-title">User</div>
+          <div>My leagues</div>
         </md-card-header>
-
         <md-card-content>
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-small-size-100">
-              <md-field>
-                <label for="first-name">Username</label>
-                <md-input
-                  name="username"
-                  type="text"
-                  class="input-field"
-                  v-model="user.username"
-                  :disabled="isUserDataDisabled"/>
-                </md-field>
-            </div>
-          </div>
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-small-size-100">
-              <md-field>
-                <label for="first-name">Email</label>
-                <md-input
-                  name="username"
-                  type="text"
-                  class="input-field"
-                  v-model="user.email"
-                  :disabled="isUserDataDisabled"/>
-              </md-field>
-            </div>
-          </div>
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-small-size-100">
-              <md-field>
-                <label for="first-name">Avatar URL</label>
-                <md-input
-                  name="username"
-                  type="text"
-                  class="input-field"
-                  v-model="user.avatarUrl"
-                  :disabled="isUserDataDisabled"/>
-                </md-field>
-            </div>
+          <div v-for="league in leagues" :key="league._id">
+            <md-button
+              class="md-raised md-primary submit-button"
+              @click="onSelectLeague(league._id)">
+              {{ league.name }}
+            </md-button>
           </div>
         </md-card-content>
-
-        <md-button
-          type="button"
-          class="md-primary"
-          @click="onEdit">
-            {{ isUserDataDisabled ? 'Edit' : 'Save' }}
-        </md-button>
       </md-card>
-
-    </form>
     </div>
+
+    <!-- <div class="md-layout-item md-small-size-100 md-medium-size-50">
+      <md-button
+        class="md-raised md-primary submit-button"
+        @click="onCreateLeague">
+        Create league
+      </md-button>
+      <md-button
+        class="md-raised md-primary submit-button"
+        @click="onInvite">
+        Invite user
+      </md-button>
+      <md-button
+        class="md-raised md-primary submit-button"
+        @click="onDeleteInvitation">
+        Delete invitation
+      </md-button>
+      <md-button
+        class="md-raised md-primary submit-button"
+        @click="onAcceptInvitation">
+        Accept invitation
+      </md-button>
+    </div> -->
+
   </div>
 </template>
 
 <script>
 import localStorageKeys from '../constants/localStorageKeys'
-import getByProperties from '../constants/get-by-properties'
 import * as axios from 'axios'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import SpinnerService from '../services/SpinnerService'
+import { Routes } from '../utils/Routes'
 
 export default {
   name: 'Profile',
@@ -82,21 +115,13 @@ export default {
     return {
       user: null,
       token: null,
-      leagues: null,
-      isUserDataDisabled: true
+      isUserDataDisabled: true,
+      headers: null,
+      leagues: [],
+      TEMP_leagueId: '5f0de1d9ac1c5b253c69fe0f'
     }
   },
   methods: {
-    async getLeagues () {
-      const leaguesPath = process.env.VUE_APP_BASE_URL + ApiRoutes.GET_LEAGUES.path
-      SpinnerService.setSpinner(true)
-      this.leagues = await axios.post(
-        leaguesPath,
-        { leagues: this.user.leagues, property: getByProperties.ID },
-        { headers: this.getHeader() }
-      )
-      SpinnerService.setSpinner(false)
-    },
     getHeader () {
       return {
         'Content-Type': 'application/json',
@@ -104,13 +129,77 @@ export default {
       }
     },
     onEdit () {
-      this.isUserDataDisabled = !this.isUserDataDisabled
+      if (this.isUserDataDisabled) {
+        this.isUserDataDisabled = !this.isUserDataDisabled
+        return
+      }
+      this.$validator.validateAll().then(valid => {
+        const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_USER_DATA.path
+        if (valid) {
+          axios.post(changePath, this.user, { headers: this.getHeader() })
+            .then(registerResp => {
+              console.log(changePath)
+              this.isUserDataDisabled = true
+              // this.handleRegisterResponse(registerResp.data)
+            })
+        }
+      })
+    },
+    async onCreateLeague () {
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CREATE_LEAGUE.path}`
+      await axios.post(path, { name: new Date().getTime(), leagueAvatarUrl: null }, { headers: this.headers })
+        .then(resp => {
+          console.log(resp)
+        })
+    },
+    async onInvite () {
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.LEAGUE_INVITATION.path}`
+      await axios.post(path, { leagueId: this.TEMP_leagueId, invitedEmail: 'tompa22@gmail.com' }, { headers: this.headers })
+        .then(resp => {
+          console.log(resp)
+        })
+      // TODO, continue
+    },
+    async onDeleteInvitation () {
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.DELETE_LEAGUE_INVITATION.path}`
+      await axios.post(path, { leagueId: this.TEMP_leagueId, invitedEmail: 'tompa22@gmail.com' }, { headers: this.headers })
+        .then(resp => {
+          console.log(resp)
+        })
+      // TODO, continue
+    },
+    async onAcceptInvitation () {
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.ACCEPT_LEAGUE_INVITATION.path}`
+      await axios.post(path, { leagueId: this.TEMP_leagueId }, { headers: this.headers })
+        .then(resp => {
+          console.log(resp)
+        })
+      // TODO, continue
+    },
+    async getLeagues () {
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUES.path}`
+      await axios.post(path, { leagueIds: this.user.leagues }, { headers: this.headers })
+        .then(leagues => {
+          this.leagues = leagues.data
+          console.log(this.leagues)
+          SpinnerService.setSpinner(false)
+        })
+    },
+    onSelectLeague (leagueId) {
+      this.$router.push({ name: Routes.LEAGUES.name, params: { leagueId: leagueId } })
     }
   },
   mounted () {
+    SpinnerService.setSpinner(true)
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
+    console.log(this.user)
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
+    this.headers = {
+      'Content-Type': 'application/json',
+      'authorization': 'Bearer ' + this.token
+    }
     this.getLeagues()
+    // this.getLeagues()
   }
 }
 </script>
@@ -126,5 +215,16 @@ export default {
   width: 600px;
   margin: auto;
 }
-.user-data-container {}
+.user-data-container {
+  margin-top: 50px;
+}
+
+.card-margin {
+  margin-left: 5%;
+  margin-top: 30px;
+}
+
+.card-bg {
+  background-color: rgb(181, 186, 192);
+}
 </style>

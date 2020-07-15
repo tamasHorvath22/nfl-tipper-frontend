@@ -5,9 +5,19 @@
 </template>
 
 <script>
+// import { ApiRoutes } from '../utils/ApiRoutes'
+// import * as axios from 'axios'
+// import localStorageKeys from '../constants/localStorageKeys'
+
 export default {
-  name: 'Leagues'
+  name: 'Leagues',
+  data () {
+    return {}
+  },
+  methods: {},
+  mounted () {}
 }
+
 </script>
 
 <style scoped lang="scss">

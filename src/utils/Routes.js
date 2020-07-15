@@ -22,6 +22,10 @@ export const Routes = {
   JOIN_LEAGUE: {
     path: '/join-league/:token',
     name: 'JOIN_LEAGUE'
+  },
+  LEAGUES: {
+    path: '/leagues/:leagueId',
+    name: 'LEAGUES'
   }
 
   // getPackageSelectorUrlForGroupCode (groupCode) {

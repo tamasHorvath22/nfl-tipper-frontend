@@ -66,16 +66,16 @@ export default {
     }
   },
   methods: {
-    onLogin () {
+    async onLogin () {
       this.showWrongCred = false
       this.$validator.validateAll().then(valid => {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
           SpinnerService.setSpinner(true)
           axios.post(loginPath, { username: this.username, password: this.password })
-            .then(loginResp => {
+            .then(async (loginResp) => {
               if (loginResp.data.token) {
-                this.saveUserToLocalStorage(loginResp.data.token)
+                await this.saveUserToLocalStorage(loginResp.data.token)
                 localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)
                 this.$router.push(Routes.PROFILE.path)
               } else if (loginResp.data === responseMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
