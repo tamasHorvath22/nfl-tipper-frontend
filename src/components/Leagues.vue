@@ -1,21 +1,108 @@
 <template>
-  <div>
-    leagues
+  <div class="md-layout">
+    <div class="md-layout-item md-size-100 league-header">
+      {{ league.name }}
+    </div>
+    <div v-if="league" class="md-layout-item md-size-20">
+      <div>
+        <modal name="modal" width="400" height="200">
+          <div class="modal-container">
+            <div class="invite-modal-header">Type your friend's email</div>
+            <md-field class="email-field">
+              <md-input
+                name="email"
+                placeholder="here..."
+                v-validate="{ required: true, validEmail: true }"
+                v-model="invitedEmail"/>
+            </md-field>
+            <md-button class="md-primary md-raised create-league-button" @click="onInvite">Invite</md-button>
+            <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
+          </div>
+        </modal>
+
+        <md-button class="md-primary md-raised create-league-button" @click="showModal">Invite</md-button>
+        <div>
+          Standings
+          <div v-for="player in standings" :key="player.id">
+            <div>{{ player.name }} - {{ player.score }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-// import { ApiRoutes } from '../utils/ApiRoutes'
-// import * as axios from 'axios'
-// import localStorageKeys from '../constants/localStorageKeys'
+import { ApiRoutes } from '../utils/ApiRoutes'
+import * as axios from 'axios'
+import localStorageKeys from '../constants/localStorageKeys'
+import SpinnerService from '../services/SpinnerService'
+import validationMixin from '../mixins/validationMixin'
 
 export default {
   name: 'Leagues',
+  mixins: [validationMixin],
   data () {
-    return {}
+    return {
+      headers: null,
+      leagueId: null,
+      league: null,
+      standings: null,
+      invitedEmail: null,
+      isModalOpen: null,
+      showInvalidEmailError: false
+    }
   },
-  methods: {},
-  mounted () {}
+  methods: {
+    getLeague () {
+      this.leagueId = this.$route.params.leagueId
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUE.path}`
+      axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
+        .then(league => {
+          this.league = league.data
+          console.log(this.league)
+          this.standings = this.league.seasons.find(season => season.isCurrent).standings
+          this.standings.sort((a, b) => {
+            return a.score > b.score ? -1 : 1
+          })
+          SpinnerService.setSpinner(false)
+        })
+    },
+    onInvite () {
+      this.$validator.validateAll().then(valid => {
+        if (valid) {
+          this.hideModal()
+          this.showInvalidEmailError = false
+          SpinnerService.setSpinner(true)
+          const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.LEAGUE_INVITATION.path}`
+          axios.post(path, { leagueId: this.leagueId, invitedEmail: this.invitedEmail }, { headers: this.headers })
+            .then(resp => {
+              console.log(resp)
+              SpinnerService.setSpinner(false)
+            })
+        } else {
+          this.showInvalidEmailError = true
+        }
+      })
+
+      // TODO, continue
+    },
+    showModal () {
+      this.$modal.show('modal')
+    },
+    hideModal () {
+      this.$modal.hide('modal')
+    }
+  },
+  mounted () {
+    this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
+    this.headers = {
+      'Content-Type': 'application/json',
+      'authorization': 'Bearer ' + this.token
+    }
+    SpinnerService.setSpinner(true)
+    this.getLeague()
+  }
 }
 
 </script>
@@ -23,28 +110,22 @@ export default {
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
 
-.spinner-backdrop {
-  position: relative;
-  background-color: rgba(220,220,220, 0.3);
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
+.email-field {
+  width: 80%;
+  margin: auto;
 }
-.spinner {
-  position: absolute;
-  left: calc(50% - 150px);
-  top: calc(50% - 95px);
-  width: 300x;
-  height: 167px;
-  animation: rotateY 1.7s infinite;
-  animation-timing-function: linear;
+
+.invite-modal-header {
+  font-size: 20px;
 }
-@keyframes rotateY {
-  0% { transform: rotateY( 0deg); }
-  100% { transform: rotateY( 360deg); }
+
+.modal-container {
+  margin: 30px;
 }
-@-webkit-keyframes rotateY {
-  0% { transform: rotateY( 0deg); }
-  100% { transform: rotateY( 360deg); }
+
+.league-header {
+  margin: 30px 0px;
+  font-size: 30px;
+  font-weight: bold;
 }
 </style>

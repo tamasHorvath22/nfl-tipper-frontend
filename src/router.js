@@ -44,7 +44,15 @@ export const router = new Router({
     {
       path: Routes.LEAGUES.path,
       name: Routes.LEAGUES.name,
-      component: () => import('./components/Leagues.vue')
+      component: () => import('./components/Leagues.vue'),
+      beforeEnter: (to, from, next) => {
+        const user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
+        if (user.leagues.indexOf(to.params.leagueId) > -1) {
+          next()
+        } else {
+          next(Routes.ROOT.path)
+        }
+      }
     },
     {
       path: Routes.JOIN_LEAGUE.path,

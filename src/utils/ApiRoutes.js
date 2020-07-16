@@ -34,5 +34,9 @@ export const ApiRoutes = {
   GET_LEAGUES: {
     path: '/api/get-leagues',
     name: 'GET_LEAGUES'
+  },
+  GET_LEAGUE: {
+    path: '/api/get-league',
+    name: 'GET_LEAGUE'
   }
 }

@@ -48,7 +48,6 @@
 <script>
 import { Routes } from './utils/Routes'
 import Spinner from './components/Spinner'
-import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import localStorageKeys from './constants/localStorageKeys'
 import SpinnerService from './services/SpinnerService'
 import 'bootstrap/dist/css/bootstrap.css'

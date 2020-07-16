@@ -61,27 +61,38 @@
 
     <div class="md-layout-item md-size-50 md-small-size-90 card-margin">
       <md-card class="card-bg">
+
+      <md-dialog-prompt
+        :md-active.sync="isModalOpen"
+        v-model="newLeagueName"
+        md-title="Type the name of your league"
+        md-input-placeholder="here..."
+        @md-confirm="onCreateLeague"
+        md-confirm-text="Create" />
+
         <md-card-header>
-          <div>My leagues</div>
+          <div class="leagues-header">My leagues</div>
         </md-card-header>
         <md-card-content>
-          <div v-for="league in leagues" :key="league._id">
-            <md-button
-              class="md-raised md-primary submit-button"
-              @click="onSelectLeague(league._id)">
-              {{ league.name }}
-            </md-button>
+          <div class="md-layout">
+            <div class="md-layout-item md-size-25 md-small-size-100">
+              <md-button class="md-primary md-raised create-league-button" @click="isModalOpen = true">Create league</md-button>
+            </div>
+            <div class="md-layout-item md-size-75 md-small-size-100">
+              <div v-for="league in leagues" :key="league._id">
+                <md-button
+                  class="md-raised submit-button"
+                  @click="onSelectLeague(league._id)">
+                  {{ league.name }}
+                </md-button>
+              </div>
+            </div>
           </div>
         </md-card-content>
       </md-card>
     </div>
 
     <!-- <div class="md-layout-item md-small-size-100 md-medium-size-50">
-      <md-button
-        class="md-raised md-primary submit-button"
-        @click="onCreateLeague">
-        Create league
-      </md-button>
       <md-button
         class="md-raised md-primary submit-button"
         @click="onInvite">
@@ -118,7 +129,9 @@ export default {
       isUserDataDisabled: true,
       headers: null,
       leagues: [],
-      TEMP_leagueId: '5f0de1d9ac1c5b253c69fe0f'
+      TEMP_leagueId: '5f0de1d9ac1c5b253c69fe0f',
+      isModalOpen: false,
+      newLeagueName: null
     }
   },
   methods: {
@@ -147,18 +160,10 @@ export default {
     },
     async onCreateLeague () {
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CREATE_LEAGUE.path}`
-      await axios.post(path, { name: new Date().getTime(), leagueAvatarUrl: null }, { headers: this.headers })
+      await axios.post(path, { name: this.newLeagueName, leagueAvatarUrl: null }, { headers: this.headers })
         .then(resp => {
           console.log(resp)
         })
-    },
-    async onInvite () {
-      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.LEAGUE_INVITATION.path}`
-      await axios.post(path, { leagueId: this.TEMP_leagueId, invitedEmail: 'tompa22@gmail.com' }, { headers: this.headers })
-        .then(resp => {
-          console.log(resp)
-        })
-      // TODO, continue
     },
     async onDeleteInvitation () {
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.DELETE_LEAGUE_INVITATION.path}`
@@ -181,7 +186,6 @@ export default {
       await axios.post(path, { leagueIds: this.user.leagues }, { headers: this.headers })
         .then(leagues => {
           this.leagues = leagues.data
-          console.log(this.leagues)
           SpinnerService.setSpinner(false)
         })
     },
@@ -192,14 +196,12 @@ export default {
   mounted () {
     SpinnerService.setSpinner(true)
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
-    console.log(this.user)
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer ' + this.token
     }
     this.getLeagues()
-    // this.getLeagues()
   }
 }
 </script>
@@ -226,5 +228,11 @@ export default {
 
 .card-bg {
   background-color: rgb(181, 186, 192);
+}
+.create-league-button {
+  margin: 20px;
+}
+.leagues-header {
+  font-size: 26px;
 }
 </style>
