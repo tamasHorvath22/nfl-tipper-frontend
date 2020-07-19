@@ -5,7 +5,7 @@
     </div>
     <div v-if="league" class="md-layout-item md-size-20">
       <div>
-        <modal name="modal" width="400" height="200">
+        <modal name="modal" width="400" height="180">
           <div class="modal-container">
             <div class="invite-modal-header">Type your friend's email</div>
             <md-field class="email-field">
@@ -65,7 +65,7 @@ export default {
       axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
         .then(league => {
           this.league = league.data
-          this.isOwner = this.league.creator === this.user._id
+          this.isOwner = this.league.creator === this.user.userId
           this.standings = this.league.seasons.find(season => season.isCurrent).standings
           this.standings.sort((a, b) => {
             return a.score > b.score ? -1 : 1
