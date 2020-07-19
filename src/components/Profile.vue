@@ -124,11 +124,9 @@ import * as axios from 'axios'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import SpinnerService from '../services/SpinnerService'
 import { Routes } from '../utils/Routes'
-import getUserMixin from '../mixins/getUserMixin'
 
 export default {
   name: 'Profile',
-  mixins: [getUserMixin],
   data () {
     return {
       user: null,
@@ -184,8 +182,15 @@ export default {
         })
     },
     handleUserResponse (user) {
-      this.user = user
-      localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
+      const userToSave = {
+        username: user.username,
+        userId: user._id,
+        email: user.email,
+        leagues: user.leagues,
+        invitations: user.invitations
+      }
+      this.user = userToSave
+      localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(userToSave))
     },
     onSelectLeague (leagueId) {
       this.$router.push({ name: Routes.LEAGUES.name, params: { leagueId: leagueId } })
