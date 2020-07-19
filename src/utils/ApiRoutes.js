@@ -15,6 +15,10 @@ export const ApiRoutes = {
     path: '/api/get-user',
     name: 'GET_USER'
   },
+  CHANGE_PASSWORD: {
+    path: '/api/change-pass',
+    name: 'CHANGE_PASSWORD'
+  },
   CREATE_LEAGUE: {
     path: '/api/league',
     name: 'CREATE_LEAGUE'

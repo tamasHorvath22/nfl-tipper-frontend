@@ -32,14 +32,14 @@
       <div v-if="showWrongCred" class="error-message">Wrong username or password!</div>
       <div>
         <md-button
-          class="md-raised md-primary submit-button"
+          class="md-raised md-primary submit-button material-button"
           @click="onLogin">
           Login
         </md-button>
       </div>
       <div>
         <md-button
-          class="md-dense md-primary go-register-button"
+          class="md-dense md-primary go-register-button material-button"
           @click="goRegister">
             Not registered yet?
         </md-button>
@@ -97,7 +97,8 @@ export default {
         userId: userResponse.data._id,
         email: userResponse.data.email,
         leagues: userResponse.data.leagues,
-        invitations: userResponse.data.invitations
+        invitations: userResponse.data.invitations,
+        avatarUrl: userResponse.data.avatarUrl
       }
       localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(userToSave))
     },

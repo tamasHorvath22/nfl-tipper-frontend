@@ -1,136 +1,219 @@
 <template>
-  <div class="md-layout">
-    <div v-if="league" class="md-layout-item md-size-100 league-header">
-      {{ league.name }}
-    </div>
-    <div v-if="league" class="md-layout-item md-size-20">
-      <div>
-        <modal name="modal" width="400" height="180">
-          <div class="modal-container">
-            <div class="invite-modal-header">Type your friend's email</div>
-            <md-field class="email-field">
-              <md-input
-                name="email"
+    <div>
+        <md-card class="card-bg">
+        <modal :name="modals.createLeague" width="400" height="auto">
+            <div class="modal-container">
+            <div class="invite-modal-header">Type the name of your league</div>
+            <md-field>
+                <md-input
+                name="newLeague"
                 placeholder="here..."
-                v-validate="{ required: true, validEmail: true }"
-                v-model="invitedEmail"/>
+                v-model="newLeagueName"/>
             </md-field>
-            <md-button class="md-primary md-raised create-league-button" @click="onInvite">Invite</md-button>
-            <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
-            <div v-if="noUserFound" class="error-message">No user found by this email</div>
-          </div>
+            <md-button
+                class="md-raised create-league-button material-button"
+                @click="hideModal(modals.createLeague)">
+                Close
+            </md-button>
+            <md-button
+                class="md-primary md-raised create-league-button material-button"
+                @click="onCreateLeague">
+                Create
+            </md-button>
+            <div
+                v-if="showCreateLeagueError"
+                class="error-message">
+                There was an error while creating your league. Please try again!
+            </div>
+            </div>
         </modal>
 
-        <md-button v-if="isOwner" class="md-primary md-raised create-league-button" @click="showModal">Invite player</md-button>
-        <div>
-          Standings
-          <div v-for="player in standings" :key="player.id">
-            <div>{{ player.name }} - {{ player.score }}</div>
-          </div>
-        </div>
-      </div>
+        <md-card-header>
+            <div class="leagues-header">My leagues</div>
+        </md-card-header>
+            <md-card-content>
+                <div class="md-layout">
+                <div class="md-layout-item md-size-25 md-small-size-100">
+                    <md-button
+                        class="md-primary md-raised create-league-button material-button"
+                        @click="showModal(modals.createLeague)">
+                        Create league
+                    </md-button>
+                    <div v-if="user">
+                    <div>Invitations</div>
+
+                    <modal :name="modals.acceptInvitation" width="400" height="auto">
+                        <div class="modal-container">
+                        <div
+                            class="invite-modal-header"
+                            v-if="currentLeagueToJoin">
+                            Do you accept the invitation to "{{ currentLeagueToJoin.name }}" league?
+                            </div>
+                        <md-button
+                            class="md-raised create-league-button material-button"
+                            @click="hideModal(modals.acceptInvitation)">
+                            No
+                        </md-button>
+                        <md-button
+                            class="md-primary md-raised create-league-button material-button"
+                            @click="onAcceptInvitation">
+                            Yes
+                        </md-button>
+                        <div
+                            v-if="showAcceptInvitationError"
+                            class="error-message">
+                            There was an error while joining the league. Please try again!
+                        </div>
+                        </div>
+                    </modal>
+
+                    <div v-for="inv of user.invitations" :key="inv.leagueId">
+                        <md-button
+                        class="md-primary md-raised create-league-button material-button"
+                        @click="showModal(modals.acceptInvitation, inv)">
+                            {{ inv.name }}
+                        </md-button>
+                    </div>
+                    </div>
+                </div>
+                <div v-if="user" class="md-layout-item md-size-75 md-small-size-100">
+                    <div v-for="league in user.leagues" :key="league.leagueId">
+                    <md-button
+                        class="md-raised submit-button material-button"
+                        @click="onSelectLeague(league.leagueId)">
+                        {{ league.name }}
+                    </md-button>
+                    </div>
+                </div>
+                </div>
+            </md-card-content>
+        </md-card>
     </div>
-  </div>
 </template>
 
 <script>
-import { ApiRoutes } from '../utils/ApiRoutes'
-import * as axios from 'axios'
 import localStorageKeys from '../constants/localStorageKeys'
+import * as axios from 'axios'
+import { ApiRoutes } from '../utils/ApiRoutes'
 import SpinnerService from '../services/SpinnerService'
-import validationMixin from '../mixins/validationMixin'
+import { Routes } from '../utils/Routes'
 import ApiErrorMessages from '../constants/api-response-messages'
 
 export default {
   name: 'Leagues',
-  mixins: [validationMixin],
   data () {
     return {
+      modals: {
+        acceptInvitation: 'accept-invitation-modal',
+        createLeague: 'create-league'
+      },
+      user: null,
+      token: null,
+      isUserDataDisabled: true,
       headers: null,
-      leagueId: null,
-      league: null,
-      standings: null,
-      invitedEmail: null,
-      isModalOpen: null,
-      showInvalidEmailError: false,
-      noUserFound: false,
-      isOwner: null
+      isModalOpen: false,
+      newLeagueName: null,
+      currentLeagueToJoin: null,
+      showCreateLeagueError: false,
+      showAcceptInvitationError: false
     }
   },
   methods: {
-    getLeague () {
+    onCreateLeague () {
       SpinnerService.setSpinner(true)
-      this.leagueId = this.$route.params.leagueId
-      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUE.path}`
-      axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
-        .then(league => {
-          this.league = league.data
-          this.isOwner = this.league.creator === this.user.userId
-          this.standings = this.league.seasons.find(season => season.isCurrent).standings
-          this.standings.sort((a, b) => {
-            return a.score > b.score ? -1 : 1
-          })
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CREATE_LEAGUE.path}`
+      axios.post(path, { name: this.newLeagueName, leagueAvatarUrl: null }, { headers: this.headers })
+        .then(resp => {
+          if (resp.data === ApiErrorMessages.LEAGUE.CREATE_FAIL) {
+            this.showCreateLeagueError = true
+          } else {
+            this.hideModal(this.modals.createLeague)
+            this.handleUserResponse(resp.data)
+          }
           SpinnerService.setSpinner(false)
         })
     },
-    onInvite () {
-      this.$validator.validateAll().then(valid => {
-        if (valid) {
-          this.showInvalidEmailError = false
-          SpinnerService.setSpinner(true)
-          const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.LEAGUE_INVITATION.path}`
-          axios.post(path, { leagueId: this.leagueId, invitedEmail: this.invitedEmail }, { headers: this.headers })
-            .then(resp => {
-              if (resp.data === ApiErrorMessages.USER.NO_EMAIL_FOUND) {
-                this.noUserFound = true
-              } else {
-                this.noUserFound = false
-                this.hideModal()
-              }
-              SpinnerService.setSpinner(false)
-            })
-        } else {
-          this.showInvalidEmailError = true
-        }
-      })
-
-      // TODO, continue
+    onAcceptInvitation () {
+      this.showAcceptInvitationError = false
+      SpinnerService.setSpinner(true)
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.ACCEPT_LEAGUE_INVITATION.path}`
+      axios.post(path, { leagueId: this.currentLeagueToJoin.leagueId }, { headers: this.headers })
+        .then(resp => {
+          if (resp.data === ApiErrorMessages.LEAGUE.JOIN_FAIL) {
+            this.showAcceptInvitationError = true
+          } else {
+            this.hideModal(this.modals.acceptInvitation)
+            this.showAcceptInvitationError = false
+            this.handleUserResponse(resp.data)
+          }
+          SpinnerService.setSpinner(false)
+        })
     },
-    showModal () {
-      this.$modal.show('modal')
+    handleUserResponse (user) {
+      const userToSave = {
+        username: user.username,
+        userId: user._id,
+        email: user.email,
+        leagues: user.leagues,
+        invitations: user.invitations,
+        avatarUrl: user.avatarUrl
+      }
+      this.user = userToSave
+      localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(userToSave))
     },
-    hideModal () {
-      this.$modal.hide('modal')
+    onSelectLeague (leagueId) {
+      this.$router.push({ name: Routes.LEAGUE.name, params: { leagueId: leagueId } })
+    },
+    showModal (modal, league) {
+      this.showCreateLeagueError = false
+      this.showAcceptInvitationError = false
+      this.currentLeagueToJoin = league
+      this.$modal.show(modal)
+    },
+    hideModal (modal) {
+      this.$modal.hide(modal)
     }
   },
   mounted () {
-    this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
+    this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer ' + this.token
     }
-    this.getLeague()
   }
 }
-
 </script>
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
 
-.email-field {
-  width: 80%;
+.profile-header {
+  font-size: 30pt;
+}
+
+.profile-container {
+  width: 600px;
   margin: auto;
 }
-
-.invite-modal-header {
-  font-size: 20px;
+.user-data-container {
+  margin-top: 50px;
 }
 
-.league-header {
-  margin: 30px 0px;
-  font-size: 30px;
-  font-weight: bold;
+.card-margin {
+  margin-left: 5%;
+  margin-top: 30px;
 }
+
+.create-league-button {
+  margin: 20px;
+}
+.leagues-header {
+  font-size: 26px;
+}
+.button {
+  background-color: rgb(65, 134, 83) !important;
+  text-transform: none
+}
+
 </style>

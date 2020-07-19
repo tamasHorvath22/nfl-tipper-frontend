@@ -74,7 +74,7 @@
       </div>
       <div>
         <md-button
-          class="md-raised md-primary submit-button"
+          class="md-raised md-primary submit-button material-button"
           @click="onRegister">
           Register
         </md-button>
