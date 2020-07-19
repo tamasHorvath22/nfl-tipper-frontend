@@ -62,7 +62,7 @@
     <div class="md-layout-item md-size-50 md-small-size-90 card-margin">
       <md-card class="card-bg">
 
-        <modal :name="modals.createLeague" width="400" height="250">
+        <modal :name="modals.createLeague" width="400" height="auto">
           <div class="modal-container">
             <div class="invite-modal-header">Type the name of your league</div>
             <md-field>
@@ -72,7 +72,7 @@
                 v-model="newLeagueName"/>
             </md-field>
             <md-button class="md-raised create-league-button" @click="hideModal(modals.createLeague)">Close</md-button>
-            <md-button class="md-primary md-raised create-league-button" @click="onCreateLeague">Invite</md-button>
+            <md-button class="md-primary md-raised create-league-button" @click="onCreateLeague">Create</md-button>
             <div v-if="showCreateLeagueError" class="error-message">There was an error while creating your league. Please try again!</div>
           </div>
         </modal>
@@ -87,7 +87,7 @@
               <div v-if="user">
                 <div>Invitations</div>
 
-                <modal :name="modals.acceptInvitation" width="400" height="150">
+                <modal :name="modals.acceptInvitation" width="400" height="auto">
                   <div class="modal-container">
                     <div
                       class="invite-modal-header"
@@ -96,6 +96,11 @@
                       </div>
                     <md-button class="md-raised create-league-button" @click="hideModal(modals.acceptInvitation)">No</md-button>
                     <md-button class="md-primary md-raised create-league-button" @click="onAcceptInvitation">Yes</md-button>
+                    <div
+                      v-if="showAcceptInvitationError"
+                      class="error-message">
+                        There was an error while joining the league. Please try again!
+                    </div>
                   </div>
                 </modal>
 
@@ -148,7 +153,8 @@ export default {
       isModalOpen: false,
       newLeagueName: null,
       currentLeagueToJoin: null,
-      showCreateLeagueError: false
+      showCreateLeagueError: false,
+      showAcceptInvitationError: false
     }
   },
   methods: {
@@ -190,12 +196,18 @@ export default {
         })
     },
     onAcceptInvitation () {
+      this.showAcceptInvitationError = false
       SpinnerService.setSpinner(true)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.ACCEPT_LEAGUE_INVITATION.path}`
       axios.post(path, { leagueId: this.currentLeagueToJoin.leagueId }, { headers: this.headers })
         .then(resp => {
-          this.hideModal(this.modals.acceptInvitation)
-          this.handleUserResponse(resp.data)
+          if (resp.data === ApiErrorMessages.LEAGUE.JOIN_FAIL) {
+            this.showAcceptInvitationError = true
+          } else {
+            this.hideModal(this.modals.acceptInvitation)
+            this.showAcceptInvitationError = false
+            this.handleUserResponse(resp.data)
+          }
           SpinnerService.setSpinner(false)
         })
     },
@@ -215,6 +227,7 @@ export default {
     },
     showModal (modal, league) {
       this.showCreateLeagueError = false
+      this.showAcceptInvitationError = false
       this.currentLeagueToJoin = league
       this.$modal.show(modal)
     },
