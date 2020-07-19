@@ -1,6 +1,6 @@
 <template>
   <div class="md-layout">
-    <div class="md-layout-item md-size-100 league-header">
+    <div v-if="league" class="md-layout-item md-size-100 league-header">
       {{ league.name }}
     </div>
     <div v-if="league" class="md-layout-item md-size-20">
@@ -17,10 +17,11 @@
             </md-field>
             <md-button class="md-primary md-raised create-league-button" @click="onInvite">Invite</md-button>
             <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
+            <div v-if="noUserFound" class="error-message">No user found by this email</div>
           </div>
         </modal>
 
-        <md-button class="md-primary md-raised create-league-button" @click="showModal">Invite</md-button>
+        <md-button v-if="isOwner" class="md-primary md-raised create-league-button" @click="showModal">Invite player</md-button>
         <div>
           Standings
           <div v-for="player in standings" :key="player.id">
@@ -38,6 +39,7 @@ import * as axios from 'axios'
 import localStorageKeys from '../constants/localStorageKeys'
 import SpinnerService from '../services/SpinnerService'
 import validationMixin from '../mixins/validationMixin'
+import ApiErrorMessages from '../constants/api-response-messages'
 
 export default {
   name: 'Leagues',
@@ -50,17 +52,20 @@ export default {
       standings: null,
       invitedEmail: null,
       isModalOpen: null,
-      showInvalidEmailError: false
+      showInvalidEmailError: false,
+      noUserFound: false,
+      isOwner: null
     }
   },
   methods: {
     getLeague () {
+      SpinnerService.setSpinner(true)
       this.leagueId = this.$route.params.leagueId
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUE.path}`
       axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
         .then(league => {
           this.league = league.data
-          console.log(this.league)
+          this.isOwner = this.league.creator === this.user._id
           this.standings = this.league.seasons.find(season => season.isCurrent).standings
           this.standings.sort((a, b) => {
             return a.score > b.score ? -1 : 1
@@ -71,13 +76,17 @@ export default {
     onInvite () {
       this.$validator.validateAll().then(valid => {
         if (valid) {
-          this.hideModal()
           this.showInvalidEmailError = false
           SpinnerService.setSpinner(true)
           const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.LEAGUE_INVITATION.path}`
           axios.post(path, { leagueId: this.leagueId, invitedEmail: this.invitedEmail }, { headers: this.headers })
             .then(resp => {
-              console.log(resp)
+              if (resp.data === ApiErrorMessages.USER.NO_EMAIL_FOUND) {
+                this.noUserFound = true
+              } else {
+                this.noUserFound = false
+                this.hideModal()
+              }
               SpinnerService.setSpinner(false)
             })
         } else {
@@ -96,11 +105,11 @@ export default {
   },
   mounted () {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
+    this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
     this.headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer ' + this.token
     }
-    SpinnerService.setSpinner(true)
     this.getLeague()
   }
 }
@@ -117,10 +126,6 @@ export default {
 
 .invite-modal-header {
   font-size: 20px;
-}
-
-.modal-container {
-  margin: 30px;
 }
 
 .league-header {

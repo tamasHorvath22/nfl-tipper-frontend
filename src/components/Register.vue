@@ -91,7 +91,7 @@ import * as axios from 'axios'
 import responseMessages from '../constants/api-response-messages'
 
 export default {
-  name: 'Login',
+  name: 'Register',
   mixins: [validationMixin],
   data () {
     return {

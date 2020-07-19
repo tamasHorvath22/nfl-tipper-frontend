@@ -17,8 +17,6 @@ export const router = new Router({
       name: Routes.ROOT.name,
       component: () => import('./components/Profile.vue'),
       beforeEnter: (to, from, next) => {
-        console.log(from)
-        console.log(to)
         if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
           next()
         } else {
@@ -47,7 +45,14 @@ export const router = new Router({
       component: () => import('./components/Leagues.vue'),
       beforeEnter: (to, from, next) => {
         const user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
-        if (user.leagues.indexOf(to.params.leagueId) > -1) {
+        let isUserInLeague = false
+        for (let i = 0; i < user.leagues.length; i++) {
+          if (user.leagues[i].leagueId === to.params.leagueId) {
+            isUserInLeague = true
+            break
+          }
+        }
+        if (isUserInLeague) {
           next()
         } else {
           next(Routes.ROOT.path)

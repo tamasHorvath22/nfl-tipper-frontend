@@ -77,12 +77,35 @@
           <div class="md-layout">
             <div class="md-layout-item md-size-25 md-small-size-100">
               <md-button class="md-primary md-raised create-league-button" @click="isModalOpen = true">Create league</md-button>
+              <div v-if="user">
+                <div>Invitations</div>
+
+                <modal name="accept-invitation-modal" width="400" height="150">
+                  <div class="modal-container">
+                    <div
+                      class="invite-modal-header"
+                      v-if="currentLeagueToJoin">
+                        Do you accept the invitation to "{{ currentLeagueToJoin.name }}" league?
+                      </div>
+                    <md-button class="md-raised create-league-button" @click="hideModal('accept-invitation-modal')">No</md-button>
+                    <md-button class="md-primary md-raised create-league-button" @click="onAcceptInvitation">Yes</md-button>
+                  </div>
+                </modal>
+
+                <div v-for="inv of user.invitations" :key="inv.leagueId">
+                  <md-button
+                    class="md-primary md-raised create-league-button"
+                    @click="showModal('accept-invitation-modal', inv)">
+                      {{ inv.name }}
+                  </md-button>
+                </div>
+              </div>
             </div>
-            <div class="md-layout-item md-size-75 md-small-size-100">
-              <div v-for="league in leagues" :key="league._id">
+            <div v-if="user" class="md-layout-item md-size-75 md-small-size-100">
+              <div v-for="league in user.leagues" :key="league.leagueId">
                 <md-button
                   class="md-raised submit-button"
-                  @click="onSelectLeague(league._id)">
+                  @click="onSelectLeague(league.leagueId)">
                   {{ league.name }}
                 </md-button>
               </div>
@@ -91,24 +114,6 @@
         </md-card-content>
       </md-card>
     </div>
-
-    <!-- <div class="md-layout-item md-small-size-100 md-medium-size-50">
-      <md-button
-        class="md-raised md-primary submit-button"
-        @click="onInvite">
-        Invite user
-      </md-button>
-      <md-button
-        class="md-raised md-primary submit-button"
-        @click="onDeleteInvitation">
-        Delete invitation
-      </md-button>
-      <md-button
-        class="md-raised md-primary submit-button"
-        @click="onAcceptInvitation">
-        Accept invitation
-      </md-button>
-    </div> -->
 
   </div>
 </template>
@@ -119,19 +124,20 @@ import * as axios from 'axios'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import SpinnerService from '../services/SpinnerService'
 import { Routes } from '../utils/Routes'
+import getUserMixin from '../mixins/getUserMixin'
 
 export default {
   name: 'Profile',
+  mixins: [getUserMixin],
   data () {
     return {
       user: null,
       token: null,
       isUserDataDisabled: true,
       headers: null,
-      leagues: [],
-      TEMP_leagueId: '5f0de1d9ac1c5b253c69fe0f',
       isModalOpen: false,
-      newLeagueName: null
+      newLeagueName: null,
+      currentLeagueToJoin: null
     }
   },
   methods: {
@@ -158,50 +164,47 @@ export default {
         }
       })
     },
-    async onCreateLeague () {
+    onCreateLeague () {
+      SpinnerService.setSpinner(true)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CREATE_LEAGUE.path}`
-      await axios.post(path, { name: this.newLeagueName, leagueAvatarUrl: null }, { headers: this.headers })
+      axios.post(path, { name: this.newLeagueName, leagueAvatarUrl: null }, { headers: this.headers })
         .then(resp => {
-          console.log(resp)
-        })
-    },
-    async onDeleteInvitation () {
-      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.DELETE_LEAGUE_INVITATION.path}`
-      await axios.post(path, { leagueId: this.TEMP_leagueId, invitedEmail: 'tompa22@gmail.com' }, { headers: this.headers })
-        .then(resp => {
-          console.log(resp)
-        })
-      // TODO, continue
-    },
-    async onAcceptInvitation () {
-      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.ACCEPT_LEAGUE_INVITATION.path}`
-      await axios.post(path, { leagueId: this.TEMP_leagueId }, { headers: this.headers })
-        .then(resp => {
-          console.log(resp)
-        })
-      // TODO, continue
-    },
-    async getLeagues () {
-      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUES.path}`
-      await axios.post(path, { leagueIds: this.user.leagues }, { headers: this.headers })
-        .then(leagues => {
-          this.leagues = leagues.data
+          this.handleUserResponse(resp.data)
           SpinnerService.setSpinner(false)
         })
     },
+    onAcceptInvitation () {
+      SpinnerService.setSpinner(true)
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.ACCEPT_LEAGUE_INVITATION.path}`
+      axios.post(path, { leagueId: this.currentLeagueToJoin.leagueId }, { headers: this.headers })
+        .then(resp => {
+          this.hideModal('accept-invitation-modal')
+          this.handleUserResponse(resp.data)
+          SpinnerService.setSpinner(false)
+        })
+    },
+    handleUserResponse (user) {
+      this.user = user
+      localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
+    },
     onSelectLeague (leagueId) {
       this.$router.push({ name: Routes.LEAGUES.name, params: { leagueId: leagueId } })
+    },
+    showModal (modal, league) {
+      this.currentLeagueToJoin = league
+      this.$modal.show(modal)
+    },
+    hideModal (modal) {
+      this.$modal.hide(modal)
     }
   },
   mounted () {
-    SpinnerService.setSpinner(true)
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer ' + this.token
     }
-    this.getLeagues()
   }
 }
 </script>

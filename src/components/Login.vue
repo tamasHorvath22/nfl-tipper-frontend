@@ -96,7 +96,8 @@ export default {
         username: userResponse.data.username,
         userId: userResponse.data._id,
         email: userResponse.data.email,
-        leagues: userResponse.data.leagues
+        leagues: userResponse.data.leagues,
+        invitations: userResponse.data.invitations
       }
       localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(userToSave))
     },
