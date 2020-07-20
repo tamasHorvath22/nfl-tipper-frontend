@@ -14,6 +14,9 @@
 .error-message {
   color: rgb(187, 61, 61);
 }
+.success-message {
+  color: rgb(84, 190, 51);
+}
 .background-image {
   width: 100%;
   min-width: 1000px;
@@ -29,4 +32,10 @@ input {
 }
 .material-button {
   text-transform: none;
+}
+hr {
+  background-color: black;
+}
+.container-margin {
+  margin: 30px auto;
 }

@@ -7,6 +7,10 @@ export const ApiRoutes = {
     path: '/register',
     name: 'REGISTER'
   },
+  CONFIRM_EMAIL: {
+    path: '/confirm-email',
+    name: 'CONFIRM_EMAIL'
+  },
   CHANGE_USER_DATA: {
     path: '/api/user/change',
     name: 'CHANGE_USER_DATA'

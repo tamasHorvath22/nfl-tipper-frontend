@@ -15,10 +15,10 @@ export const router = new Router({
     {
       path: Routes.ROOT.path,
       name: Routes.ROOT.name,
-      component: () => import('./components/Home.vue'),
+      component: () => import('./components/Leagues.vue'),
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
-          next()
+          next(Routes.LEAGUES.path)
         } else {
           next(Routes.LOGIN.path)
         }
@@ -34,11 +34,21 @@ export const router = new Router({
       name: Routes.REGISTER.name,
       component: () => import('./components/Register.vue')
     },
-    // {
-    //   path: Routes.PROFILE.path,
-    //   name: Routes.PROFILE.name,
-    //   component: () => import('./components/Profile.vue')
-    // },
+    {
+      path: Routes.CONFIRM_EMAIL.path,
+      name: Routes.CONFIRM_EMAIL.name,
+      component: () => import('./components/ConfirmEmail.vue')
+    },
+    {
+      path: Routes.PROFILE.path,
+      name: Routes.PROFILE.name,
+      component: () => import('./components/Profile.vue')
+    },
+    {
+      path: Routes.LEAGUES.path,
+      name: Routes.LEAGUES.name,
+      component: () => import('./components/Leagues.vue')
+    },
     {
       path: Routes.LEAGUE.path,
       name: Routes.LEAGUE.name,

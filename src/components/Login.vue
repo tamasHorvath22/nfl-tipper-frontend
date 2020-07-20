@@ -30,6 +30,7 @@
       </md-field>
       <div class="error-message">{{ errors.first('password') }}</div>
       <div v-if="showWrongCred" class="error-message">Wrong username or password!</div>
+      <div v-if="showEmailNotConfirmed" class="error-message">Your email is not confirmed yet!</div>
       <div>
         <md-button
           class="md-raised md-primary submit-button material-button"
@@ -39,7 +40,7 @@
       </div>
       <div>
         <md-button
-          class="md-dense md-primary go-register-button material-button"
+          class="md-dense go-register-button material-button not-registered"
           @click="goRegister">
             Not registered yet?
         </md-button>
@@ -62,7 +63,8 @@ export default {
     return {
       username: null,
       password: null,
-      showWrongCred: false
+      showWrongCred: false,
+      showEmailNotConfirmed: false
     }
   },
   methods: {
@@ -77,7 +79,9 @@ export default {
               if (loginResp.data.token) {
                 await this.saveUserToLocalStorage(loginResp.data.token)
                 localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)
-                this.$router.push(Routes.PROFILE.path)
+                this.$router.push(Routes.LEAGUES.path)
+              } else if (loginResp.data === responseMessages.USER.EMAIL_NOT_CONFIRMED) {
+                this.showEmailNotConfirmed = true
               } else if (loginResp.data === responseMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
                 this.showWrongCred = true
               }
@@ -143,5 +147,9 @@ export default {
 }
 .label {
   padding-left: 10px;
+}
+.not-registered {
+  color: rgb(29, 209, 185) !important;
+  font-size: 14px;
 }
 </style>

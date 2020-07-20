@@ -8,7 +8,8 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="bold">
-          <b-nav-item @click="onHome">Home</b-nav-item>
+          <b-nav-item @click="onProfile">Profile</b-nav-item>
+          <b-nav-item @click="onLeagues">Leagues</b-nav-item>
           <!-- <b-nav-item href="#" >Disabled</b-nav-item> -->
         </b-navbar-nav>
 
@@ -65,8 +66,11 @@ export default {
       localStorage.removeItem(localStorageKeys.NFL_TIPPER_USER)
       this.$router.push(Routes.LOGIN.path)
     },
-    onHome () {
-      this.$router.push(Routes.ROOT.path)
+    onProfile () {
+      this.$router.push(Routes.PROFILE.path)
+    },
+    onLeagues () {
+      this.$router.push(Routes.LEAGUES.path)
     },
     onToggleCollapse () {
       this.isMenuOpen = !this.isMenuOpen
@@ -84,7 +88,8 @@ export default {
   },
   watch: {
     $route (to, from) {
-      this.showMenu = !(to.fullPath === Routes.LOGIN.path || to.fullPath === Routes.REGISTER.path)
+      const confirmPath = Routes.CONFIRM_EMAIL.path.substring(0, 14)
+      this.showMenu = !(to.fullPath === Routes.LOGIN.path || to.fullPath === Routes.REGISTER.path || to.fullPath.startsWith(confirmPath))
     }
   },
   created () {
@@ -104,6 +109,8 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-color: $nfl-blue;
+  min-height: 100vh;
 }
 .toggle-icon {
   font-size: 20px;
@@ -118,7 +125,7 @@ export default {
 }
 
 .nav-bar {
-  background-color: $nfl-blue !important;
+  background-color: $nfl-red !important;
 }
 
 </style>

@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <form v-if="user">
+  <div class="md-layout">
+    <form v-if="user" class="md-layout-item md-size-50 md-small-size-90 card-bg container-margin">
       <md-card class="card-bg">
         <md-card-header>
           <div class="md-title">
             <img v-if="user.avatarUrl" :src="user.avatarUrl" alt="avatar" class="avatar">
             {{ user.username }}
           </div>
+          <hr>
         </md-card-header>
 
         <md-card-content>
@@ -57,9 +58,8 @@
           </div>
           <div class="md-layout">
             <div class="md-layout-item md-small-size-100">
-              <modal name="change-password" width="300" height="auto" shiftX="0.04">
+              <modal name="change-password" width="300" height="auto">
                 <div class="modal-container">
-
                   <md-field>
                     <label class="label">Old password</label>
                     <div class="login-input">
@@ -106,7 +106,6 @@
                       class="error-message">
                       The entered passords are not equal!
                   </div>
-
                   <md-button
                     class="md-raised create-league-button material-button"
                     @click="hideModal('change-password')">
@@ -117,7 +116,6 @@
                     @click="changePassword">
                     Change
                   </md-button>
-
                 </div>
               </modal>
               <md-button

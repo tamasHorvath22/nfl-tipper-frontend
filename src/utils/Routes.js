@@ -11,6 +11,10 @@ export const Routes = {
     path: '/register',
     name: 'REGISTER'
   },
+  CONFIRM_EMAIL: {
+    path: '/confirm-email/:hash',
+    name: 'CONFIRM_EMAIL'
+  },
   CHECK_BEFORE_REGISTER: {
     path: '/user-check',
     name: 'USER_CHECK'
@@ -26,6 +30,10 @@ export const Routes = {
   LEAGUE: {
     path: '/league/:leagueId',
     name: 'LEAGUE'
+  },
+  LEAGUES: {
+    path: '/leagues',
+    name: 'LEAGUES'
   }
 
   // getPackageSelectorUrlForGroupCode (groupCode) {

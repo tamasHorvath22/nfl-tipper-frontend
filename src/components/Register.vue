@@ -74,6 +74,11 @@
       </div>
       <div>
         <md-button
+          class="md-raised submit-button material-button to-login"
+          @click="onLoginPage">
+          To Login page
+        </md-button>
+        <md-button
           class="md-raised md-primary submit-button material-button"
           @click="onRegister">
           Register
@@ -148,6 +153,9 @@ export default {
     },
     passwordsAreEqual () {
       return this.password === this.confirm_password
+    },
+    onLoginPage () {
+      this.$router.push(Routes.LOGIN.path)
     }
   }
 }
@@ -186,5 +194,13 @@ export default {
 }
 .label {
   padding-left: 10px;
+}
+.to-login {
+  background-color: rgb(94, 202, 245) !important;
+}
+.md-field.md-theme-default.md-focused label {
+  color: white !important;
+  font-size: 14px;
+  font-weight: bold;
 }
 </style>

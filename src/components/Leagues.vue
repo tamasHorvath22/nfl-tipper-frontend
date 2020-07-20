@@ -1,94 +1,96 @@
 <template>
-    <div>
-        <md-card class="card-bg">
-        <modal :name="modals.createLeague" width="400" height="auto">
-            <div class="modal-container">
-            <div class="invite-modal-header">Type the name of your league</div>
-            <md-field>
-                <md-input
-                name="newLeague"
-                placeholder="here..."
-                v-model="newLeagueName"/>
-            </md-field>
-            <md-button
-                class="md-raised create-league-button material-button"
-                @click="hideModal(modals.createLeague)">
-                Close
-            </md-button>
-            <md-button
-                class="md-primary md-raised create-league-button material-button"
-                @click="onCreateLeague">
-                Create
-            </md-button>
-            <div
-                v-if="showCreateLeagueError"
-                class="error-message">
-                There was an error while creating your league. Please try again!
+  <div class="md-layout">
+    <md-card class="md-layout-item md-size-50 md-small-size-90 card-bg container-margin">
+      <modal :name="modals.createLeague" width="400" height="auto">
+        <div class="modal-container">
+        <div class="invite-modal-header">Type the name of your league</div>
+        <md-field>
+          <md-input
+          name="newLeague"
+          placeholder="here..."
+          v-model="newLeagueName"/>
+        </md-field>
+        <md-button
+          class="md-raised create-league-button material-button"
+          @click="hideModal(modals.createLeague)">
+          Close
+        </md-button>
+        <md-button
+          class="md-primary md-raised create-league-button material-button"
+          @click="onCreateLeague">
+          Create
+        </md-button>
+        <div
+          v-if="showCreateLeagueError"
+          class="error-message">
+          There was an error while creating your league. Please try again!
+        </div>
+        </div>
+      </modal>
+
+      <md-card-header>
+        <div class="leagues-header">My leagues</div>
+        <hr>
+      </md-card-header>
+      <md-card-content>
+        <div class="md-layout">
+        <div class="md-layout-item md-size-25 md-small-size-100">
+          <md-button
+            class="md-primary md-raised create-league-button material-button"
+            @click="showModal(modals.createLeague)">
+            Create league
+          </md-button>
+            <div v-if="user">
+              <md-card v-if="user.invitations.length">
+                <div>Invitations</div>
+                <div v-for="inv of user.invitations" :key="inv.leagueId">
+                  <md-button
+                    class="md-primary md-raised create-league-button material-button invitation-button"
+                    @click="showModal(modals.acceptInvitation, inv)">
+                    {{ inv.name }}
+                  </md-button>
+                </div>
+              </md-card>
+
+              <modal :name="modals.acceptInvitation" width="400" height="auto">
+                <div class="modal-container">
+                  <div
+                    class="invite-modal-header"
+                    v-if="currentLeagueToJoin">
+                    Do you accept the invitation to "{{ currentLeagueToJoin.name }}" league?
+                  </div>
+                  <md-button
+                    class="md-raised create-league-button material-button"
+                    @click="hideModal(modals.acceptInvitation)">
+                    No
+                  </md-button>
+                  <md-button
+                    class="md-primary md-raised create-league-button material-button"
+                    @click="onAcceptInvitation">
+                    Yes
+                  </md-button>
+                  <div
+                    v-if="showAcceptInvitationError"
+                    class="error-message">
+                    There was an error while joining the league. Please try again!
+                  </div>
+                </div>
+              </modal>
             </div>
-            </div>
-        </modal>
-
-        <md-card-header>
-            <div class="leagues-header">My leagues</div>
-        </md-card-header>
-            <md-card-content>
-                <div class="md-layout">
-                <div class="md-layout-item md-size-25 md-small-size-100">
-                    <md-button
-                        class="md-primary md-raised create-league-button material-button"
-                        @click="showModal(modals.createLeague)">
-                        Create league
-                    </md-button>
-                    <div v-if="user">
-                    <div>Invitations</div>
-
-                    <modal :name="modals.acceptInvitation" width="400" height="auto">
-                        <div class="modal-container">
-                        <div
-                            class="invite-modal-header"
-                            v-if="currentLeagueToJoin">
-                            Do you accept the invitation to "{{ currentLeagueToJoin.name }}" league?
-                            </div>
-                        <md-button
-                            class="md-raised create-league-button material-button"
-                            @click="hideModal(modals.acceptInvitation)">
-                            No
-                        </md-button>
-                        <md-button
-                            class="md-primary md-raised create-league-button material-button"
-                            @click="onAcceptInvitation">
-                            Yes
-                        </md-button>
-                        <div
-                            v-if="showAcceptInvitationError"
-                            class="error-message">
-                            There was an error while joining the league. Please try again!
-                        </div>
-                        </div>
-                    </modal>
-
-                    <div v-for="inv of user.invitations" :key="inv.leagueId">
-                        <md-button
-                        class="md-primary md-raised create-league-button material-button"
-                        @click="showModal(modals.acceptInvitation, inv)">
-                            {{ inv.name }}
-                        </md-button>
-                    </div>
-                    </div>
-                </div>
-                <div v-if="user" class="md-layout-item md-size-75 md-small-size-100">
-                    <div v-for="league in user.leagues" :key="league.leagueId">
-                    <md-button
-                        class="md-raised submit-button material-button"
-                        @click="onSelectLeague(league.leagueId)">
-                        {{ league.name }}
-                    </md-button>
-                    </div>
-                </div>
-                </div>
-            </md-card-content>
-        </md-card>
-    </div>
+        </div>
+        <div v-if="user" class="md-layout-item md-size-75 md-small-size-100">
+          <div v-for="league in user.leagues" :key="league.leagueId">
+            <md-button
+              class="md-raised submit-button material-button"
+              @click="onSelectLeague(league.leagueId)">
+              {{ league.name }}
+            </md-button>
+          </div>
+        </div>
+        </div>
+      </md-card-content>
+    </md-card>
+  </div>
 </template>
 
 <script>
@@ -109,9 +111,7 @@ export default {
       },
       user: null,
       token: null,
-      isUserDataDisabled: true,
       headers: null,
-      isModalOpen: false,
       newLeagueName: null,
       currentLeagueToJoin: null,
       showCreateLeagueError: false,
@@ -214,6 +214,12 @@ export default {
 .button {
   background-color: rgb(65, 134, 83) !important;
   text-transform: none
+}
+.invitation-button {
+  background-color: rgb(73, 205, 245) !important;
+}
+.container-margin {
+  margin: 30px auto;
 }
 
 </style>
