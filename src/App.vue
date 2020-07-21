@@ -89,7 +89,12 @@ export default {
   watch: {
     $route (to, from) {
       const confirmPath = Routes.CONFIRM_EMAIL.path.substring(0, 14)
-      this.showMenu = !(to.fullPath === Routes.LOGIN.path || to.fullPath === Routes.REGISTER.path || to.fullPath.startsWith(confirmPath))
+      const resetPassPath = Routes.RESET_PASSWORD.path.substring(0, 15)
+      this.showMenu = !(
+        to.fullPath === Routes.LOGIN.path ||
+        to.fullPath === Routes.REGISTER.path ||
+        to.fullPath.startsWith(confirmPath) ||
+        to.fullPath.startsWith(resetPassPath))
     }
   },
   created () {

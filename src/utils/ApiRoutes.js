@@ -11,6 +11,18 @@ export const ApiRoutes = {
     path: '/confirm-email',
     name: 'CONFIRM_EMAIL'
   },
+  RESET_PASSWORD: {
+    path: '/reset-password',
+    name: 'RESET_PASSWORD'
+  },
+  NEW_PASSWORD: {
+    path: '/new-password',
+    name: 'NEW_PASSWORD'
+  },
+  CHECK_PASS_HASH: {
+    path: '/check-pass-token',
+    name: 'CHECK_PASS_HASH'
+  },
   CHANGE_USER_DATA: {
     path: '/api/user/change',
     name: 'CHANGE_USER_DATA'

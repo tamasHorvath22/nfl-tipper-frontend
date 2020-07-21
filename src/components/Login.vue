@@ -45,6 +45,33 @@
             Not registered yet?
         </md-button>
       </div>
+      <div>
+        <md-button
+          class="md-dense go-register-button material-button not-registered"
+          @click="showModal">
+            Forgot your password?
+        </md-button>
+      </div>
+
+      <modal name="modal" width="400" height="auto">
+        <div class="modal-container">
+          <div class="invite-modal-header">
+            Type your email and click OK.
+            We send you an email, just click on the link, and enter a new passwoed.
+          </div>
+          <md-field class="email-field">
+            <md-input
+              name="email"
+              placeholder="email"
+              v-validate="{ required: true, validEmail: true }"
+              v-model="forgotEmail"/>
+          </md-field>
+          <md-button class="md-primary md-raised create-league-button material-button" @click="onForgotPassword">OK</md-button>
+          <div v-if="noUserFound" class="error-message">No user found by this email</div>
+          <div v-if="showFailedResetPassMessage" class="error-message">There was an error, please try again!</div>
+        </div>
+      </modal>
+
     </div>
   </div>
 </template>
@@ -53,9 +80,9 @@
 import { ApiRoutes } from '../utils/ApiRoutes'
 import { Routes } from '../utils/Routes'
 import * as axios from 'axios'
-import responseMessages from '../constants/api-response-messages'
 import localStorageKeys from '../constants/localStorageKeys'
 import SpinnerService from '../services/SpinnerService'
+import ApiErrorMessages from '../constants/api-response-messages'
 
 export default {
   name: 'Login',
@@ -64,7 +91,10 @@ export default {
       username: null,
       password: null,
       showWrongCred: false,
-      showEmailNotConfirmed: false
+      showEmailNotConfirmed: false,
+      noUserFound: false,
+      showFailedResetPassMessage: false,
+      forgotEmail: null
     }
   },
   methods: {
@@ -80,9 +110,9 @@ export default {
                 await this.saveUserToLocalStorage(loginResp.data.token)
                 localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)
                 this.$router.push(Routes.LEAGUES.path)
-              } else if (loginResp.data === responseMessages.USER.EMAIL_NOT_CONFIRMED) {
+              } else if (loginResp.data === ApiErrorMessages.USER.EMAIL_NOT_CONFIRMED) {
                 this.showEmailNotConfirmed = true
-              } else if (loginResp.data === responseMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
+              } else if (loginResp.data === ApiErrorMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
                 this.showWrongCred = true
               }
               SpinnerService.setSpinner(false)
@@ -108,6 +138,29 @@ export default {
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)
+    },
+    onForgotPassword () {
+      SpinnerService.setSpinner(true)
+      this.showResetPassMessage = false
+      this.noUserFound = false
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.RESET_PASSWORD.path}`
+      axios.post(path, { email: this.forgotEmail }, { headers: this.headers })
+        .then(resp => {
+          if (resp.data === ApiErrorMessages.USER.NOT_FOUND) {
+            this.noUserFound = true
+          } else if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_EMAIL_FAIL) {
+            this.showFailedResetPassMessage = true
+          } else if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_EMAIL_SENT) {
+            this.hideModal()
+          }
+          SpinnerService.setSpinner(false)
+        })
+    },
+    showModal () {
+      this.$modal.show('modal')
+    },
+    hideModal () {
+      this.$modal.hide('modal')
     }
   }
 }

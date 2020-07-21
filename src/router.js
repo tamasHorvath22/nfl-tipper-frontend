@@ -40,6 +40,11 @@ export const router = new Router({
       component: () => import('./components/ConfirmEmail.vue')
     },
     {
+      path: Routes.RESET_PASSWORD.path,
+      name: Routes.RESET_PASSWORD.name,
+      component: () => import('./components/ResetPassword.vue')
+    },
+    {
       path: Routes.PROFILE.path,
       name: Routes.PROFILE.name,
       component: () => import('./components/Profile.vue')

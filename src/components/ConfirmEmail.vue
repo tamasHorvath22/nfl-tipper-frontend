@@ -30,7 +30,7 @@
 import { ApiRoutes } from '../utils/ApiRoutes'
 import * as axios from 'axios'
 import { Routes } from '../utils/Routes'
-import responseMessages from '../constants/api-response-messages'
+import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
 
 export default {
@@ -47,11 +47,11 @@ export default {
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CONFIRM_EMAIL.path}/${hash}`
       axios.get(path)
         .then(resp => {
-          if (resp.data === responseMessages.USER.EMAIL_CONFIRMED) {
+          if (resp.data === ApiErrorMessages.USER.EMAIL_CONFIRMED) {
             this.isConfirmed = true
-          } else if (resp.data === responseMessages.USER.EMAIL_CONFIRM_FAIL) {
+          } else if (resp.data === ApiErrorMessages.USER.EMAIL_CONFIRM_FAIL) {
             this.isNotConfirmed = true
-          } else if (resp.data === responseMessages.USER.NO_EMAIL_HASH_FOUND) {
+          } else if (resp.data === ApiErrorMessages.USER.NO_EMAIL_HASH_FOUND) {
             this.noHashFound = true
           }
           SpinnerService.setSpinner(false)

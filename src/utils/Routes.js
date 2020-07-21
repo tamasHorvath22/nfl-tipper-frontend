@@ -15,6 +15,14 @@ export const Routes = {
     path: '/confirm-email/:hash',
     name: 'CONFIRM_EMAIL'
   },
+  RESET_PASSWORD: {
+    path: '/reset-password/:hash',
+    name: 'RESET_PASSWORD'
+  },
+  CHECK_PASS_TOKEN: {
+    path: '/check-pass-token',
+    name: 'CHECK_PASS_TOKEN'
+  },
   CHECK_BEFORE_REGISTER: {
     path: '/user-check',
     name: 'USER_CHECK'

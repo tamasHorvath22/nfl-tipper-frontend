@@ -104,7 +104,7 @@ import { Routes } from '../utils/Routes'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import validationMixin from '../mixins/validationMixin'
 import * as axios from 'axios'
-import responseMessages from '../constants/api-response-messages'
+import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
 
 export default {
@@ -142,13 +142,13 @@ export default {
       })
     },
     handleRegisterResponse (response) {
-      if (response === responseMessages.USER.SUCCESSFUL_REGISTRATION) {
+      if (response === ApiErrorMessages.USER.SUCCESSFUL_REGISTRATION) {
         this.showModal()
-      } else if (response === responseMessages.USER.USERNAME_TAKEN) {
+      } else if (response === ApiErrorMessages.USER.USERNAME_TAKEN) {
         this.showUsernameTaken = true
-      } else if (response === responseMessages.USER.EMAIL_TAKEN) {
+      } else if (response === ApiErrorMessages.USER.EMAIL_TAKEN) {
         this.showEmailTaken = true
-      } else if (response === responseMessages.USER.UNSUCCESSFUL_REGISTRATION) {
+      } else if (response === ApiErrorMessages.USER.UNSUCCESSFUL_REGISTRATION) {
         this.showRegistrationFail = true
       }
     },
