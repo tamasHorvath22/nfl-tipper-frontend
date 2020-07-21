@@ -84,6 +84,17 @@
           Register
         </md-button>
       </div>
+
+      <modal name="modal" width="400" height="auto" :clickToClose="false">
+        <div class="modal-container">
+          <div class="invite-modal-header margin-bottom-30">
+            You registered succcessfully! An email was sent to your address.
+            Please click on the link to confirm your email, and activate your account
+          </div>
+          <md-button class="md-primary md-raised create-league-button material-button" @click="onLoginPage">Ok</md-button>
+        </div>
+      </modal>
+
     </div>
   </div>
 </template>
@@ -94,6 +105,7 @@ import { ApiRoutes } from '../utils/ApiRoutes'
 import validationMixin from '../mixins/validationMixin'
 import * as axios from 'axios'
 import responseMessages from '../constants/api-response-messages'
+import SpinnerService from '../services/SpinnerService'
 
 export default {
   name: 'Register',
@@ -112,6 +124,7 @@ export default {
   },
   methods: {
     onRegister () {
+      SpinnerService.setSpinner(true)
       this.hideAllMessages()
       this.$validator.validateAll().then(valid => {
         if (valid) {
@@ -120,6 +133,7 @@ export default {
             axios.post(regPath, this.createUserToRegister())
               .then(registerResp => {
                 this.handleRegisterResponse(registerResp.data)
+                SpinnerService.setSpinner(false)
               })
           } else {
             this.showNotEqualPasses = true
@@ -129,7 +143,7 @@ export default {
     },
     handleRegisterResponse (response) {
       if (response === responseMessages.USER.SUCCESSFUL_REGISTRATION) {
-        this.$router.push(Routes.LOGIN.path)
+        this.showModal()
       } else if (response === responseMessages.USER.USERNAME_TAKEN) {
         this.showUsernameTaken = true
       } else if (response === responseMessages.USER.EMAIL_TAKEN) {
@@ -156,6 +170,12 @@ export default {
     },
     onLoginPage () {
       this.$router.push(Routes.LOGIN.path)
+    },
+    showModal () {
+      this.$modal.show('modal')
+    },
+    hideModal () {
+      this.$modal.hide('modal')
     }
   }
 }
@@ -171,6 +191,7 @@ export default {
   opacity: 0.5;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 .bg-image {
   width: 100%;
@@ -197,10 +218,5 @@ export default {
 }
 .to-login {
   background-color: rgb(94, 202, 245) !important;
-}
-.md-field.md-theme-default.md-focused label {
-  color: white !important;
-  font-size: 14px;
-  font-weight: bold;
 }
 </style>
