@@ -79,7 +79,10 @@ export default {
                 SpinnerService.setSpinner(false)
                 if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_SUCCESS) {
                   this.onGoToLoginPage()
-                } else if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_FAIL || resp.data === ApiErrorMessages.COMMON.ERROR) {
+                } else if (
+                  resp.data === ApiErrorMessages.USER.RESET_PASSWORD_FAIL ||
+                  resp.data === ApiErrorMessages.COMMON.ERROR ||
+                  resp.data === ApiErrorMessages.FORGET_PASSWORD.NO_REQUEST_FOUND) {
                   this.showError = true
                 }
               })
