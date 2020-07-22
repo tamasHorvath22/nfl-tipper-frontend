@@ -139,7 +139,10 @@ export default {
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.ACCEPT_LEAGUE_INVITATION.path}`
       axios.post(path, { leagueId: this.currentLeagueToJoin.leagueId }, { headers: this.headers })
         .then(resp => {
-          if (resp.data === ApiErrorMessages.LEAGUE.JOIN_FAIL) {
+          if (resp.data === ApiErrorMessages.LEAGUE.JOIN_FAIL ||
+              resp.data === ApiErrorMessages.LEAGUE.LEAGUES_NOT_FOUND ||
+              resp.data === ApiErrorMessages.USER.NOT_FOUND ||
+              resp.data === ApiErrorMessages.LEAGUE.USER_NOT_INVITED) {
             this.showAcceptInvitationError = true
           } else {
             this.hideModal(this.modals.acceptInvitation)

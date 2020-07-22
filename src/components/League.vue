@@ -18,6 +18,10 @@
             <md-button class="md-primary md-raised create-league-button material-button" @click="onInvite">Invite</md-button>
             <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
             <div v-if="noUserFound" class="error-message">No user found by this email</div>
+            <div v-if="noLeagueFound" class="error-message">No league found, please try again!</div>
+            <div v-if="userAlreadyInLeague" class="error-message">This user is already in the league.</div>
+            <div v-if="userAlreadyInvited" class="error-message">This user is already invited.</div>
+            <div v-if="errorWhileInvitation" class="error-message">There was an error during invitation. Please try again!</div>
           </div>
         </modal>
 
@@ -54,6 +58,10 @@ export default {
       isModalOpen: null,
       showInvalidEmailError: false,
       noUserFound: false,
+      noLeagueFound: false,
+      userAlreadyInLeague: false,
+      userAlreadyInvited: false,
+      errorWhileInvitation: false,
       isOwner: null
     }
   },
@@ -76,16 +84,23 @@ export default {
     onInvite () {
       this.$validator.validateAll().then(valid => {
         if (valid) {
-          this.showInvalidEmailError = false
+          this.hideAllErrorMessages()
           SpinnerService.setSpinner(true)
           const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.LEAGUE_INVITATION.path}`
           axios.post(path, { leagueId: this.leagueId, invitedEmail: this.invitedEmail }, { headers: this.headers })
             .then(resp => {
               if (resp.data === ApiErrorMessages.USER.NO_EMAIL_FOUND) {
                 this.noUserFound = true
-              } else {
-                this.noUserFound = false
+              } else if (resp.data === ApiErrorMessages.LEAGUE.LEAGUES_NOT_FOUND) {
+                this.noLeagueFound = true
+              } else if (resp.data === ApiErrorMessages.LEAGUE.USER_ALREADY_IN_LEAGUE) {
+                this.userAlreadyInLeague = true
+              } else if (resp.data === ApiErrorMessages.LEAGUE.USER_ALREADY_INVITED) {
+                this.userAlreadyInvited = true
+              } else if (resp.data === ApiErrorMessages.LEAGUE.INVITATION_SUCCESS) {
                 this.hideModal()
+              } else {
+                this.errorWhileInvitation = true
               }
               SpinnerService.setSpinner(false)
             })
@@ -93,6 +108,14 @@ export default {
           this.showInvalidEmailError = true
         }
       })
+    },
+    hideAllErrorMessages () {
+      this.showInvalidEmailError = false
+      this.noUserFound = false
+      this.noLeagueFound = false
+      this.userAlreadyInLeague = false
+      this.userAlreadyInvited = false
+      this.errorWhileInvitation = false
     },
     showModal () {
       this.$modal.show('modal')
