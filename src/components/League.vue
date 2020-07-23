@@ -1,10 +1,11 @@
 <template>
-  <div class="md-layout">
+  <div class="md-layout font-color">
     <div v-if="league" class="md-layout-item md-size-100 league-header">
       {{ league.name }}
     </div>
     <div v-if="league" class="md-layout-item md-size-20">
       <div>
+
         <modal name="modal" width="400" height="180">
           <div class="modal-container">
             <div class="invite-modal-header">Type your friend's email</div>
@@ -82,9 +83,9 @@ export default {
         })
     },
     onInvite () {
+      this.hideAllErrorMessages()
       this.$validator.validateAll().then(valid => {
         if (valid) {
-          this.hideAllErrorMessages()
           SpinnerService.setSpinner(true)
           const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.LEAGUE_INVITATION.path}`
           axios.post(path, { leagueId: this.leagueId, invitedEmail: this.invitedEmail }, { headers: this.headers })
@@ -139,16 +140,16 @@ export default {
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
-
+.font-color {
+  color: rgb(255, 255, 255);
+}
 .email-field {
   width: 80%;
   margin: auto;
 }
-
 .invite-modal-header {
   font-size: 20px;
 }
-
 .league-header {
   margin: 30px 0px;
   font-size: 30px;
