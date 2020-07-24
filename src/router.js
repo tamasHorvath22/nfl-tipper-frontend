@@ -27,12 +27,26 @@ export const router = new Router({
     {
       path: Routes.LOGIN.path,
       name: Routes.LOGIN.name,
-      component: () => import('./components/Login.vue')
+      component: () => import('./components/Login.vue'),
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
+          next(Routes.LEAGUES.path)
+        } else {
+          next()
+        }
+      }
     },
     {
       path: Routes.REGISTER.path,
       name: Routes.REGISTER.name,
-      component: () => import('./components/Register.vue')
+      component: () => import('./components/Register.vue'),
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
+          next(Routes.LEAGUES.path)
+        } else {
+          next()
+        }
+      }
     },
     {
       path: Routes.CONFIRM_EMAIL.path,
@@ -71,24 +85,6 @@ export const router = new Router({
           next()
         } else {
           next(Routes.ROOT.path)
-        }
-      }
-    },
-    {
-      path: Routes.JOIN_LEAGUE.path,
-      name: Routes.JOIN_LEAGUE.name,
-      component: () => import('./components/JoinLeague.vue'),
-      beforeEnter: (to, from, next) => {
-        // this.$router.push(Routes.LOGIN.path)
-        console.log(from)
-        console.log(to)
-        if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
-          next()
-        } else {
-          localStorage.setItem('LEAUGE-JOIN-TOKEN', to.params.token)
-          next(Routes.LOGIN.path)
-
-          // this.$router.push(Routes.LOGIN.path)
         }
       }
     },

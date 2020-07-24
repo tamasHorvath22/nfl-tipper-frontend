@@ -8,7 +8,7 @@
 
         <modal name="modal" width="400" height="180">
           <div class="modal-container">
-            <div class="invite-modal-header">Type your friend's email</div>
+            <div class="invite-modal-header header">Type your friend's email</div>
             <md-field class="email-field">
               <md-input
                 name="email"
@@ -154,5 +154,8 @@ export default {
   margin: 30px 0px;
   font-size: 30px;
   font-weight: bold;
+}
+.header {
+  color: black;
 }
 </style>
