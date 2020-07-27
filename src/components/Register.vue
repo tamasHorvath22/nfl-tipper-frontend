@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div class="page"><img class="bg-image" src="../assets/images/nfl-helmet.jpg"></div>
     <div class="register-form-container input-box">
       <md-field>
         <label class="label">Username</label>
@@ -184,18 +183,6 @@ export default {
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
 
-.page {
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0.5;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-.bg-image {
-  width: 100%;
-}
 .register-form-container {
   position: absolute;
   top: 50px;

@@ -1,32 +1,6 @@
 <template>
   <div class="md-layout">
     <md-card class="md-layout-item md-size-50 md-small-size-90 card-bg container-margin">
-      <modal :name="modals.createLeague" width="400" height="auto">
-        <div class="modal-container">
-        <div class="invite-modal-header">Type the name of your league</div>
-        <md-field>
-          <md-input
-          name="newLeague"
-          placeholder="here..."
-          v-model="newLeagueName"/>
-        </md-field>
-        <md-button
-          class="md-raised create-league-button material-button"
-          @click="hideModal(modals.createLeague)">
-          Close
-        </md-button>
-        <md-button
-          class="md-primary md-raised create-league-button material-button"
-          @click="onCreateLeague">
-          Create
-        </md-button>
-        <div
-          v-if="showCreateLeagueError"
-          class="error-message">
-          There was an error while creating your league. Please try again!
-        </div>
-        </div>
-      </modal>
 
       <md-card-header>
         <div class="leagues-header">My leagues</div>
@@ -51,6 +25,30 @@
                   </md-button>
                 </div>
               </md-card>
+
+              <modal :name="modals.createLeague" width="400" height="auto">
+                <div class="modal-container">
+                  <div class="invite-modal-header">Type the name of your league</div>
+                  <md-field>
+                    <md-input name="newLeague" placeholder="here..." v-model="newLeagueName"/>
+                  </md-field>
+                  <md-button
+                    class="md-raised create-league-button material-button"
+                    @click="hideModal(modals.createLeague)">
+                    Close
+                  </md-button>
+                  <md-button
+                    class="md-primary md-raised create-league-button material-button"
+                    @click="onCreateLeague">
+                    Create
+                  </md-button>
+                  <div
+                    v-if="showCreateLeagueError"
+                    class="error-message">
+                    There was an error while creating your league. Please try again!
+                  </div>
+                </div>
+              </modal>
 
               <modal :name="modals.acceptInvitation" width="400" height="auto">
                 <div class="modal-container">

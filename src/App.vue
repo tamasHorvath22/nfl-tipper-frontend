@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="background-image"><img class="bg-image" src="./assets/images/ball.jpg"></div>
     <Spinner v-if="showSpinner"/>
     <b-navbar v-if="showMenu" toggleable="lg" type="dark" variant="primary" class="nav-bar">
       <b-navbar-brand href="#">NFL Tipper</b-navbar-brand>
@@ -108,29 +109,35 @@ export default {
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
 
+.background-image {
+  position: fixed;
+  left: 0;
+  top: 0;
+  opacity: 0.5;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.bg-image {
+  width: 100%;
+}
 #app {
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-color: $nfl-blue;
+  background-color: $background-color;
   min-height: 100vh;
 }
 .toggle-icon {
   font-size: 20px;
 }
-.v-sidebar-menu {
-  width: 200px;
-  background-color: $nfl-blue;
-}
-
 .bold {
   font-weight: bold;
 }
-
 .nav-bar {
-  background-color: $nfl-red !important;
+  background-color: $nfl-blue !important;
 }
 
 </style>
