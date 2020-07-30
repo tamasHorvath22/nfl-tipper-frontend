@@ -39,6 +39,14 @@ export const ApiRoutes = {
     path: '/api/league',
     name: 'CREATE_LEAGUE'
   },
+  GET_SEASON: {
+    path: '/api/league/get-season',
+    name: 'GET_SEASON'
+  },
+  SAVE_BETS: {
+    path: '/api/league/save-week-bets',
+    name: 'SAVE_BETS'
+  },
   LEAGUE_INVITATION: {
     path: '/api/league/invite',
     name: 'LEAGUE_INVITATION'

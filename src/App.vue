@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <div class="background-image"><img class="bg-image" src="./assets/images/ball.jpg"></div>
     <Spinner v-if="showSpinner"/>
+    <div class="background-image"><img class="bg-image" src="./assets/images/ball.jpg"></div>
     <b-navbar v-if="showMenu" toggleable="lg" type="dark" variant="primary" class="nav-bar">
       <b-navbar-brand href="#">NFL Tipper</b-navbar-brand>
 

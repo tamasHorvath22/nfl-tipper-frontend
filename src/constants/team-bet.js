@@ -1,3 +1,4 @@
 export default Object.freeze({
-  ID: '_id'
+  HOME: 'HOME',
+  AWAY: 'AWAY'
 })
