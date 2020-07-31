@@ -4,46 +4,58 @@
       <div class="md-layout">
         <div class="md-layout-item md-size-100">Super bowl {{ season.numberOfSuperBowl }}, {{ season.year }}</div>
 
-        <md-field class="md-layout-item selector md-size-40">
-          <md-select v-model="selectedWeek">
-            <md-option
-              v-for="week of weeks" :key="week.number"
-              :value="week.number">
-              {{ week.label }}
-            </md-option>
-          </md-select>
-        </md-field>
+        <div class="selector-container">
+          <md-field class="md-layout-item selector md-size-40">
+            <md-select v-model="selectedWeek">
+              <md-option
+                v-for="week of weeks" :key="week.number"
+                :value="week.number">
+                {{ week.label }}
+              </md-option>
+            </md-select>
+          </md-field>
 
-        <md-field class="md-layout-item selector md-size-40">
-          <md-select v-model="selectedPlayer">
-            <md-option
-              v-for="player of players" :key="player.id"
-              :value="player.id">
-              {{ player.name }}
-            </md-option>
-          </md-select>
-        </md-field>
+          <md-field class="md-layout-item selector md-size-40">
+            <md-select v-model="selectedPlayer">
+              <md-option
+                v-for="player of players" :key="player.id"
+                :value="player.id">
+                {{ player.name }}
+              </md-option>
+            </md-select>
+          </md-field>
+        </div>
 
-        <div>
-          <div v-for="game in gameList" :key="game._id">
-            <md-button
-              class="md-raised"
-              :class="{ 'md-primary': isThisTeamSelected(game, teamBet.AWAY) }"
-              :disabled="!game.isOpen"
-              @click="onBet(game, teamBet.AWAY)">
-              {{ getTeamLabel(game.awayTeamAlias) }}
-            </md-button>
+        <div class="md-layout-item md-size-100">
+          <div v-for="game in gameList" :key="game._id" class="game-container">
+            <div class="team-container">
+              <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
+
+              <md-button
+                class="md-raised material-button"
+                :class="{ 'md-primary': isThisTeamSelected(game, teamBet.AWAY) }"
+                :disabled="!game.isOpen"
+                @click="onBet(game, teamBet.AWAY)">
+                {{ getTeamLabel(game.awayTeamAlias) }}
+              </md-button>
+            </div>
+
             <i class="fa fa-at at-icon" aria-hidden="true"></i>
-            <md-button
-              class="md-raised"
-              :class="{ 'md-primary': isThisTeamSelected(game, teamBet.HOME) }"
-              :disabled="!game.isOpen"
-              @click="onBet(game, teamBet.HOME)">
-              {{ getTeamLabel(game.homeTeamAlias) }}
-            </md-button>
+
+            <div class="team-container">
+              <md-button
+                class="md-raised material-button"
+                :class="{ 'md-primary': isThisTeamSelected(game, teamBet.HOME) }"
+                :disabled="!game.isOpen"
+                @click="onBet(game, teamBet.HOME)">
+                {{ getTeamLabel(game.homeTeamAlias) }}
+              </md-button>
+
+              <img :src="require(`../assets/team-logos/${game.homeTeamAlias}.gif`)" class="logo">
+            </div>
           </div>
           <md-button
-            class="md-primary md-raised"
+            class="md-primary md-raised material-button"
             @click="onSaveBets">
             Save bets
           </md-button>
@@ -141,10 +153,29 @@ export default {
 .card-padding {
   padding: 20px;
 }
+.selector-container {
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
 .selector {
-  width: 250px;
+  width: 180px;
+  margin: 10px;
 }
 .at-icon {
   font-size: 20px;
+  margin-top: 14px;
+}
+.logo {
+  width: 50px;
+  margin-top: 9px;
+}
+.game-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.team-container {
+  width: 170px;
 }
 </style>

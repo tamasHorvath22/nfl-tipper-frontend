@@ -4,11 +4,11 @@
       <md-card class="md-layout-item md-size-90 header">
         <div class="league-name">{{ league.name }}</div>
       </md-card>
-      <div v-if="season" class="md-layout-item md-size-25 md-small-size-90 card-margin">
+      <div v-if="season" class="md-layout-item md-size-35 md-small-size-90 card-margin">
         <Standings :standings="season.standings"/>
       </div>
 
-      <div class="md-layout-item md-size-60 md-small-size-90 card-margin margin-right-5">
+      <div class="md-layout-item md-size-40 md-small-size-90 card-margin margin-right-5">
         <Game
           :season="league.seasons[0]"
           :players="league.players"

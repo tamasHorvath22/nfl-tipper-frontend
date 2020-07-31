@@ -4,7 +4,7 @@ export default {
       teamLabels: {
         JAC: 'Jaguars',
         TEN: 'Titans',
-        NYG: 'Giats',
+        NYG: 'Giants',
         CHI: 'Bears',
         DET: 'Lions',
         GB: 'Packers',
