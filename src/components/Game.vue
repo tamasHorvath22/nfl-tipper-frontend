@@ -6,17 +6,17 @@
 
         <div class="selector-container">
           <md-field class="md-layout-item selector md-size-40">
-            <md-select v-model="selectedWeek">
+            <md-select v-model="selectedWeekNumber">
               <md-option
-                v-for="week of weeks" :key="week.number"
+                v-for="week of season.weeks" :key="week.number"
                 :value="week.number">
-                {{ week.label }}
+                Week {{ week.number }}
               </md-option>
             </md-select>
           </md-field>
 
           <md-field class="md-layout-item selector md-size-40">
-            <md-select v-model="selectedPlayer">
+            <md-select v-model="selectedPlayer" :disabled="isPlayerSelectDisabled">
               <md-option
                 v-for="player of players" :key="player.id"
                 :value="player.id">
@@ -26,35 +26,39 @@
           </md-field>
         </div>
 
-        <div class="md-layout-item md-size-100">
-          <div v-for="game in gameList" :key="game._id" class="game-container">
-            <div class="team-container">
-              <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
+        <div v-if="selectedWeek" class="md-layout-item md-size-100">
+          <div v-for="game in selectedWeek.games" :key="game._id" class="game-container">
+            <div class="inner-game-container">
+              <div class="team-container">
+                <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
 
-              <md-button
-                class="md-raised material-button"
-                :class="{ 'md-primary': isThisTeamSelected(game, teamBet.AWAY) }"
-                :disabled="!game.isOpen"
-                @click="onBet(game, teamBet.AWAY)">
-                {{ getTeamLabel(game.awayTeamAlias) }}
-              </md-button>
+                <md-button
+                  class="md-raised material-button"
+                  :class="getTeamButtonColor(game, game.awayTeamAlias, teamBet.AWAY)"
+                  :disabled="isGameDisabled(game)"
+                  @click="onBet(game, teamBet.AWAY)">
+                  {{ getTeamLabel(game.awayTeamAlias) }}
+                </md-button>
+              </div>
+
+              <i class="fa fa-at at-icon" aria-hidden="true"></i>
+
+              <div class="team-container">
+                <md-button
+                  class="md-raised material-button"
+                  :class="getTeamButtonColor(game, game.homeTeamAlias, teamBet.HOME)"
+                  :disabled="isGameDisabled(game)"
+                  @click="onBet(game, teamBet.HOME)">
+                  {{ getTeamLabel(game.homeTeamAlias) }}
+                </md-button>
+
+                <img :src="require(`../assets/team-logos/${game.homeTeamAlias}.gif`)" class="logo">
+              </div>
             </div>
-
-            <i class="fa fa-at at-icon" aria-hidden="true"></i>
-
-            <div class="team-container">
-              <md-button
-                class="md-raised material-button"
-                :class="{ 'md-primary': isThisTeamSelected(game, teamBet.HOME) }"
-                :disabled="!game.isOpen"
-                @click="onBet(game, teamBet.HOME)">
-                {{ getTeamLabel(game.homeTeamAlias) }}
-              </md-button>
-
-              <img :src="require(`../assets/team-logos/${game.homeTeamAlias}.gif`)" class="logo">
-            </div>
+            <div>{{ getStartTime(game.startTime) }}</div>
           </div>
           <md-button
+            v-if="selectedWeek && selectedWeek.isOpen"
             class="md-primary md-raised material-button"
             @click="onSaveBets">
             Save bets
@@ -68,16 +72,16 @@
 
 <script>
 import localStorageKeys from '../constants/localStorageKeys'
-// import * as getTeamLabel from '../constants/team-names'
 import teamNamesMixin from '../mixins/teamNamesMixin'
 import teamBet from '../constants/team-bet'
 import SpinnerService from '../services/SpinnerService'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import * as axios from 'axios'
+import utilsMixin from '../mixins/utils'
 
 export default {
   name: 'Game',
-  mixins: [teamNamesMixin],
+  mixins: [teamNamesMixin, utilsMixin],
   props: {
     season: Object,
     players: Array,
@@ -85,54 +89,83 @@ export default {
   },
   data () {
     return {
-      weeks: [],
+      selectedWeekNumber: null,
       selectedWeek: null,
       selectedPlayer: null,
       user: null,
-      gameList: [],
-      teamBet: teamBet
+      teamBet: teamBet,
+      isPlayerSelectDisabled: false
     }
   },
   methods: {
-    createWeeksList () {
-      this.season.weeks.forEach(week => {
-        this.weeks.push({ number: week.number, label: `week ${week.number}` })
-      })
-      this.selectedWeek = this.weeks[this.weeks.length - 1].number
+    setLastWeekAsSelectedWeek () {
+      this.selectedWeek = this.season.weeks[this.season.weeks.length - 1]
+      this.selectedWeekNumber = this.selectedWeek.number
+      if (this.selectedWeek.isOpen) {
+        this.isPlayerSelectDisabled = true
+      }
     },
-    setDefaultUPlayer () {
+    setDefaultPlayer () {
       this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
       this.selectedPlayer = this.user.userId
-    },
-    createGameList () {
-      const currentWeek = this.season.weeks.find(week => week.number === this.selectedWeek)
-      this.gameList = currentWeek.games
-      console.log(this.gameList)
     },
     onBet (game, bet) {
       const userBet = game.bets.find(bet => bet.id === this.user.userId)
       userBet.bet = bet
     },
     isThisTeamSelected (game, bet) {
-      const userBet = game.bets.find(bet => bet.id === this.user.userId)
+      const userBet = game.bets.find(bet => bet.id === this.selectedPlayer)
       return userBet.bet === bet
+    },
+    isGameDisabled (game) {
+      return !this.selectedWeek.isOpen || !game.isOpen
     },
     onSaveBets () {
       SpinnerService.setSpinner(true)
-      const week = this.season.weeks.find(week => week.number === this.selectedWeek)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.SAVE_BETS.path}`
-      axios.post(path, { leagueId: this.leagueId, week: week }, { headers: this.headers })
+      axios.post(path, { leagueId: this.leagueId, week: this.selectedWeek }, { headers: this.headers })
         .then(resp => {
           console.log(resp)
-          // SpinnerService.setSpinner(false)
+          SpinnerService.setSpinner(false)
         })
+    },
+    getStartTime (time) {
+      const date = new Date(time)
+      return `${this.getMonthName(date.getMonth())} ${this.twoDigits(date.getDate())}. ${this.twoDigits(date.getHours())}:${this.twoDigits(date.getMinutes())}`
+    },
+    getTeamButtonColor (game, team, bet) {
+      if (this.selectedWeek.isOpen) {
+        if (this.isThisTeamSelected(game, bet)) {
+          return 'active-team-selected'
+        }
+      } else {
+        if (game.winner) {
+          const isWinnerTeam = team === game[`${game.winner.toLowerCase()}TeamAlias`]
+          if (game.bets.find(bet => bet.id === this.selectedPlayer).bet === game.winner) {
+            if (isWinnerTeam) {
+              return 'team-success'
+            }
+          } else {
+            if (!isWinnerTeam) {
+              return 'team-fail'
+            }
+          }
+        } else {
+          if (this.isThisTeamSelected(game, bet)) {
+            return 'active-team-selected'
+          }
+        }
+      }
     }
   },
   watch: {
-    selectedWeek: function (val) {
-      this.createGameList()
-    },
-    selectedPlayer: function (val) {}
+    selectedWeekNumber: function (val) {
+      this.selectedWeek = this.season.weeks.find(week => week.number === val)
+      if (this.selectedWeek.isOpen) {
+        this.selectedPlayer = this.user.userId
+      }
+      this.isPlayerSelectDisabled = this.selectedWeek.isOpen
+    }
   },
   mounted () {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
@@ -140,10 +173,8 @@ export default {
       'Content-Type': 'application/json',
       'authorization': 'Bearer ' + this.token
     }
-    console.log(this.season)
-    this.createWeeksList()
-    this.setDefaultUPlayer()
-    this.createGameList()
+    this.setDefaultPlayer()
+    this.setLastWeekAsSelectedWeek()
   }
 }
 </script>
@@ -171,11 +202,24 @@ export default {
   margin-top: 9px;
 }
 .game-container {
+  margin-bottom: 20px;
+}
+.inner-game-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
 }
 .team-container {
   width: 170px;
+}
+.active-team-selected {
+  background-color: rgb(94, 202, 245) !important;
+}
+.team-success {
+  background-color: rgb(75, 190, 75) !important;
+  color: black !important;
+}
+.team-fail {
+  background-color: rgb(219, 55, 77) !important;
+  color: black !important;
 }
 </style>

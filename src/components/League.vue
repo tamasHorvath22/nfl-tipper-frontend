@@ -4,15 +4,16 @@
       <md-card class="md-layout-item md-size-90 header">
         <div class="league-name">{{ league.name }}</div>
       </md-card>
-      <div v-if="season" class="md-layout-item md-size-35 md-small-size-90 card-margin">
+      <!-- <div v-if="season" class="md-layout-item md-size-35 md-small-size-90 card-margin">
         <Standings :standings="season.standings"/>
-      </div>
+      </div> -->
 
       <div class="md-layout-item md-size-40 md-small-size-90 card-margin margin-right-5">
         <Game
           :season="league.seasons[0]"
           :players="league.players"
-          :leagueId="league._id"/>
+          :leagueId="league._id"
+          class="game"/>
       </div>
     </div>
     <div v-if="league" class="md-layout-item md-size-20">
@@ -48,14 +49,14 @@ import localStorageKeys from '../constants/localStorageKeys'
 import SpinnerService from '../services/SpinnerService'
 import validationMixin from '../mixins/validationMixin'
 import ApiErrorMessages from '../constants/api-response-messages'
-import Standings from '../components/Standings'
+// import Standings from '../components/Standings'
 import Game from '../components/Game'
 
 export default {
   name: 'League',
   mixins: [validationMixin],
   components: {
-    Standings,
+    // Standings,
     Game
   },
   data () {
@@ -188,5 +189,8 @@ export default {
 }
 .margin-right-5 {
   margin-right: 5%;
+}
+.game {
+  margin-bottom: 30px;
 }
 </style>
