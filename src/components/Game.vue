@@ -1,8 +1,8 @@
 <template>
   <div>
-    <md-card class="card-padding">
+    <md-card class="outer-card">
       <div class="md-layout">
-        <div class="md-layout-item md-size-100">Super bowl {{ season.numberOfSuperBowl }}, {{ season.year }}</div>
+        <md-card class="md-layout-item md-size-100 game-header">Super Bowl {{ romanize(season.numberOfSuperBowl) }}, {{ season.year }}</md-card>
 
         <div class="selector-container">
           <md-field class="md-layout-item selector md-size-40">
@@ -27,7 +27,7 @@
         </div>
 
         <div v-if="selectedWeek" class="md-layout-item md-size-100">
-          <div v-for="game in selectedWeek.games" :key="game._id" class="game-container">
+          <md-card v-for="game in selectedWeek.games" :key="game._id" class="game-container">
             <div class="inner-game-container">
               <div class="team-container">
                 <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
@@ -56,7 +56,7 @@
               </div>
             </div>
             <div>{{ getStartTime(game.startTime) }}</div>
-          </div>
+          </md-card>
           <md-button
             v-if="selectedWeek && selectedWeek.isOpen"
             class="md-primary md-raised material-button"
@@ -129,9 +129,11 @@ export default {
           SpinnerService.setSpinner(false)
         })
     },
-    getStartTime (time) {
-      const date = new Date(time)
-      return `${this.getMonthName(date.getMonth())} ${this.twoDigits(date.getDate())}. ${this.twoDigits(date.getHours())}:${this.twoDigits(date.getMinutes())}`
+    getStartTime (timeStamp) {
+      const date = new Date(timeStamp)
+      const day = `${this.getDayName(date.getDay())}, ${this.getMonthName(date.getMonth())} ${this.twoDigits(date.getDate())}.`
+      const time = `${this.twoDigits(date.getHours())}:${this.twoDigits(date.getMinutes())}`
+      return `${day} ${time}`
     },
     getTeamButtonColor (game, team, bet) {
       if (this.selectedWeek.isOpen) {
@@ -181,16 +183,24 @@ export default {
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
-.card-padding {
+.game-header {
+  font-size: 24px;
+  font-weight: bold;
   padding: 20px;
+}
+.outer-card {
+  padding: 20px;
+  background-color: rgb(214, 214, 255);
 }
 .selector-container {
   margin: auto;
   display: flex;
   justify-content: center;
 }
+.select {
+  background-color: rgb(214, 214, 255);
+}
 .selector {
-  width: 180px;
   margin: 10px;
 }
 .at-icon {
@@ -203,6 +213,7 @@ export default {
 }
 .game-container {
   margin-bottom: 20px;
+  padding: 10px;
 }
 .inner-game-container {
   display: flex;

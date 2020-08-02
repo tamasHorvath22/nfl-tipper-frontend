@@ -1,14 +1,14 @@
 <template>
   <div class="md-layout">
-    <form v-if="user" class="md-layout-item md-size-50 md-small-size-90 card-bg container-margin">
+    <form v-if="user" class="md-layout-item md-size-40 md-small-size-90 card-bg container-margin">
       <md-card class="card-bg">
-        <md-card-header>
+        <!-- <md-card-header>
           <div class="md-title">
             <img v-if="user.avatarUrl" :src="user.avatarUrl" alt="avatar" class="avatar">
             {{ user.username }}
           </div>
           <hr>
-        </md-card-header>
+        </md-card-header> -->
 
         <md-card-content>
           <div class="md-layout">
@@ -47,13 +47,30 @@
                   class="input-field"
                   v-model="user.avatarUrl"
                   :disabled="isUserDataDisabled"/>
-                </md-field>
-                <md-button
-                  type="button"
-                  class="md-primary md-raised button material-button material-button"
-                  @click="onEdit">
-                    {{ isUserDataDisabled ? 'Edit URL' : 'Save URL' }}
-                </md-button>
+              </md-field>
+
+              <!-- <md-field v-if="teams" class="md-layout-item md-small-size-50">
+                <md-select v-model="selectedTeamAvatar" placeholder="Select team logo">
+                  <label for="Select team logo"></label>
+                  <md-option
+                    v-for="team of teams" :key="team"
+                    :value="team">
+                    <div>
+                      <span class="team-name">{{ getTeamLabel(team) }}</span>
+                      <span>
+                        <img :src="require(`../assets/team-logos/${team}.gif`)" class="team-logo">
+                      </span>
+                    </div>
+                  </md-option>
+                </md-select>
+              </md-field> -->
+
+              <md-button
+                type="button"
+                class="md-primary md-raised button material-button material-button"
+                @click="onEdit">
+                  {{ isUserDataDisabled ? 'Edit URL' : 'Save URL' }}
+              </md-button>
             </div>
           </div>
           <div class="md-layout">
@@ -136,12 +153,13 @@ import localStorageKeys from '../constants/localStorageKeys'
 import * as axios from 'axios'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import validationMixin from '../mixins/validationMixin'
+import teamNamesMixin from '../mixins/teamNamesMixin'
 import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
 
 export default {
   name: 'Profile',
-  mixins: [validationMixin],
+  mixins: [validationMixin, teamNamesMixin],
   data () {
     return {
       user: null,
@@ -151,7 +169,8 @@ export default {
       oldPassword: null,
       confirm_new_password: null,
       newPassword: null,
-      wrongOldPassword: null
+      wrongOldPassword: null,
+      selectedTeamAvatar: null
     }
   },
   computed: {
@@ -175,7 +194,6 @@ export default {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_USER_DATA.path
       axios.post(changePath, this.user, { headers: this.headers })
         .then(user => {
-          console.log(user.data)
           this.user = user.data
           localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
           this.isUserDataDisabled = true
@@ -222,11 +240,9 @@ export default {
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
-
 .profile-header {
   font-size: 30pt;
 }
-
 .profile-container {
   width: 600px;
   margin: auto;
@@ -234,34 +250,31 @@ export default {
 .user-data-container {
   margin-top: 50px;
 }
-
 .card-margin {
   margin-left: 5%;
   margin-top: 30px;
 }
-
 .button {
   background-color: rgb(65, 134, 83) !important;
   float: left;
 }
-
 .not-editable-input.md-field::after {
   height: 0px !important;
 }
-
 .avatar {
   max-width: 30px;
   max-height: 30px;
 }
-
-.modal {
-  z-index: 2;
-  background-color: yellow;
-}
-
 .card-margin {
   margin-left: 5%;
   margin-top: 30px;
+}
+.team-logo {
+  width: 80px;
+}
+.team-name {
+  margin-left: 10px;
+  font-size: 16px;
 }
 
 </style>

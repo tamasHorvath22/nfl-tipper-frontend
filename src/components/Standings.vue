@@ -1,9 +1,17 @@
 <template>
   <div class="md-layout">
-    <md-card class="card-padding">
+    <md-card class="standings-container">
       <div class="standings-header">Standings</div>
-      <div v-if="colors">
-        <div v-for="(player, index) in standings" :key="player.name">
+      <div v-if="colors.length">
+        <md-card
+          v-for="(player, index) in standings" :key="player.name"
+          class="standing-card"
+          :class="{ 'own-row': player.id === user.userId }">
+          <div class="name-points">
+            <span class="font-22">{{ index + 1 }}. </span>
+            <span>{{ player.name }} - </span>
+            <span class="font-22">{{ player.score }}</span>
+          </div>
           <div
             class="bar"
             :style="{
@@ -11,9 +19,8 @@
               backgroundColor: colors[index].bgColor,
               color: colors[index].color }"
             >
-            {{ player.name }} - {{ player.score }}
           </div>
-        </div>
+        </md-card>
       </div>
       <!-- <LineChart :standings="standings"/> -->
     </md-card>
@@ -22,6 +29,7 @@
 
 <script>
 // import LineChart from '../charts/LineChart.vue'
+import localStorageKeys from '../constants/localStorageKeys'
 
 export default {
   name: 'Standings',
@@ -33,15 +41,15 @@ export default {
   },
   data () {
     return {
+      user: null,
       colors: []
     }
   },
   methods: {
     getBarWidth (player) {
-      const maxWidth = 250
       const maxValue = this.standings[0].score
-      const width = player.score / maxValue * maxWidth
-      return `${width}px`
+      const width = player.score / maxValue * 100
+      return `${width}%`
     },
     createColors () {
       for (let i = 0; i < this.standings.length; i++) {
@@ -57,28 +65,46 @@ export default {
     }
   },
   mounted () {
+    this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
     this.createColors()
     console.log(this.standings)
+    console.log(this.user)
   }
 }
 </script>
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
-.card-padding {
+.standings-container {
+  width: 100%;
   padding: 20px;
 }
+.standing-card {
+  padding: 7px;
+  margin-bottom: 5px;
+  background-color: rgb(233, 233, 233);
+}
+.name-points {
+  text-align: left;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+.font-22 {
+  font-size: 22px;
+}
 .bar {
-  background-color: rgb(222, 222, 222);
-  min-height: 25px;
+  height: 10px;
   width: 200px;
   border-radius: 8px;
   text-align: left;
-  padding-left: 10px;
-  margin-bottom: 15px;
   font-weight: bold;
 }
 .standings-header {
   margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+.own-row {
+  background-color: rgb(182, 223, 182);
 }
 </style>

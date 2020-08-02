@@ -34,7 +34,12 @@ export default {
         ARI: 'Cardinals',
         MIN: 'Vikings',
         IND: 'Colts'
-      }
+      },
+      teams: [
+        'JAC', 'TEN', 'NYG', 'CHI', 'DET', 'GB', 'CAR', 'TB', 'BUF', 'MIA', 'SF', 'NYJ',
+        'BAL', 'HOU', 'CIN', 'CLE', 'NO', 'LV', 'LA', 'PHI', 'NE', 'SEA',
+        'ATL', 'DAL', 'KC', 'LAC', 'DEN', 'PIT', 'WAS', 'ARI', 'MIN', 'IND'
+      ]
     }
   },
   methods: {

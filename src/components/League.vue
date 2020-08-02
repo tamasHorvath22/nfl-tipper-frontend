@@ -1,43 +1,47 @@
 <template>
   <div class="font-color">
     <div v-if="league" class="md-layout">
-      <md-card class="md-layout-item md-size-90 header">
-        <div class="league-name">{{ league.name }}</div>
-      </md-card>
-      <!-- <div v-if="season" class="md-layout-item md-size-35 md-small-size-90 card-margin">
-        <Standings :standings="season.standings"/>
-      </div> -->
-
-      <div class="md-layout-item md-size-40 md-small-size-90 card-margin margin-right-5">
-        <Game
-          :season="league.seasons[0]"
-          :players="league.players"
-          :leagueId="league._id"
-          class="game"/>
+      <div class="md-layout-item md-size-100">
+        <md-card class="md-layout-item md-size-40 league-name">{{ league.name }}</md-card>
       </div>
-    </div>
-    <div v-if="league" class="md-layout-item md-size-20">
-      <modal name="modal" width="400" height="180">
-        <div class="modal-container">
-          <div class="invite-modal-header header">Type your friend's email</div>
-          <md-field class="email-field">
-            <md-input
-              name="email"
-              placeholder="here..."
-              v-validate="{ required: true, validEmail: true }"
-              v-model="invitedEmail"/>
-          </md-field>
-          <md-button class="md-primary md-raised create-league-button material-button" @click="onInvite">Invite</md-button>
-          <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
-          <div v-if="noUserFound" class="error-message">No user found by this email</div>
-          <div v-if="noLeagueFound" class="error-message">No league found, please try again!</div>
-          <div v-if="userAlreadyInLeague" class="error-message">This user is already in the league.</div>
-          <div v-if="userAlreadyInvited" class="error-message">This user is already invited.</div>
-          <div v-if="errorWhileInvitation" class="error-message">There was an error during invitation. Please try again!</div>
+      <div class="md-layout md-layout-item md-size-100">
+
+        <div v-if="season" class="md-layout-item md-size-40 md-small-size-90 card-margin">
+          <Standings :standings="season.standings"/>
         </div>
-      </modal>
-      <md-button v-if="isOwner" class="md-primary md-raised create-league-button material-button" @click="showModal">Invite player</md-button>
-    </div>
+
+        <div class="md-layout-item md-size-45 md-small-size-90 card-margin margin-right-5">
+          <Game
+            :season="league.seasons[0]"
+            :players="league.players"
+            :leagueId="league._id"
+            class="game"/>
+        </div>
+      </div>
+
+      <div v-if="league" class="md-layout-item md-size-20">
+        <modal name="modal" width="400" height="180">
+          <div class="modal-container">
+            <div class="invite-modal-header header">Type your friend's email</div>
+            <md-field class="email-field">
+              <md-input
+                name="email"
+                placeholder="here..."
+                v-validate="{ required: true, validEmail: true }"
+                v-model="invitedEmail"/>
+            </md-field>
+            <md-button class="md-primary md-raised create-league-button material-button" @click="onInvite">Invite</md-button>
+            <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
+            <div v-if="noUserFound" class="error-message">No user found by this email</div>
+            <div v-if="noLeagueFound" class="error-message">No league found, please try again!</div>
+            <div v-if="userAlreadyInLeague" class="error-message">This user is already in the league.</div>
+            <div v-if="userAlreadyInvited" class="error-message">This user is already invited.</div>
+            <div v-if="errorWhileInvitation" class="error-message">There was an error during invitation. Please try again!</div>
+          </div>
+        </modal>
+        <md-button v-if="isOwner" class="md-primary md-raised create-league-button material-button" @click="showModal">Invite player</md-button>
+        </div>
+      </div>
 
   </div>
 </template>
@@ -49,14 +53,14 @@ import localStorageKeys from '../constants/localStorageKeys'
 import SpinnerService from '../services/SpinnerService'
 import validationMixin from '../mixins/validationMixin'
 import ApiErrorMessages from '../constants/api-response-messages'
-// import Standings from '../components/Standings'
+import Standings from '../components/Standings'
 import Game from '../components/Game'
 
 export default {
   name: 'League',
   mixins: [validationMixin],
   components: {
-    // Standings,
+    Standings,
     Game
   },
   data () {
@@ -90,7 +94,7 @@ export default {
           this.standings.sort((a, b) => {
             return a.score > b.score ? -1 : 1
           })
-          SpinnerService.setSpinner(false)
+          // SpinnerService.setSpinner(false)
         })
     },
     onInvite () {
@@ -159,11 +163,11 @@ export default {
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
-.header {
-  margin: auto;
-}
 .league-name {
+  padding: 30px;
+  margin: 30px auto;
   font-size: 26px;
+  height: 80px;
 }
 .font-color {
   color: rgb(255, 255, 255);
