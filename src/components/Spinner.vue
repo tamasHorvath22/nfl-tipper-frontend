@@ -16,16 +16,16 @@ export default {
 @import '../styles/_variables.scss';
 
 .spinner-backdrop {
-  position: relative;
+  position: absolute;
   background-color: rgba(220,220,220, 0.3);
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 9999;
 }
 .spinner {
-  position: absolute;
-  left: calc(50% - 150px);
-  top: calc(50% - 95px);
+  position: fixed;
+  left: calc(50vw - 150px);
+  top: calc(50vh - 95px);
   width: 300x;
   height: 167px;
   animation: rotateY 1.7s infinite;
