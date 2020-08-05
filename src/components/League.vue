@@ -2,7 +2,10 @@
   <div class="font-color">
     <div v-if="league" class="md-layout">
       <div class="md-layout-item md-size-100">
-        <md-card class="md-layout-item md-size-40 league-name">{{ league.name }}</md-card>
+        <md-card class="md-layout-item md-size-40 header-container">
+          <md-button v-if="isOwner" class="md-primary md-raised create-league-button material-button" @click="showModal">Invite player</md-button>
+          <div class="header">{{ league.name }}</div>
+        </md-card>
       </div>
       <div class="md-layout md-layout-item md-size-100">
 
@@ -39,7 +42,6 @@
             <div v-if="errorWhileInvitation" class="error-message">There was an error during invitation. Please try again!</div>
           </div>
         </modal>
-        <md-button v-if="isOwner" class="md-primary md-raised create-league-button material-button" @click="showModal">Invite player</md-button>
         </div>
       </div>
 
@@ -163,11 +165,15 @@ export default {
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
-.league-name {
-  padding: 30px;
+.header-container {
+  padding: 10px;
   margin: 30px auto;
   font-size: 26px;
-  height: 80px;
+  display: flex;
+  align-items: center;
+}
+.header {
+ margin: auto;
 }
 .font-color {
   color: rgb(255, 255, 255);

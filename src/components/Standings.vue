@@ -46,8 +46,16 @@ export default {
     }
   },
   methods: {
+    sortStandings () {
+      this.standings.sort((a, b) => {
+        return a > b ? 1 : -1
+      })
+    },
     getBarWidth (player) {
       const maxValue = this.standings[0].score
+      if (!player.score) {
+        return '3%'
+      }
       const width = player.score / maxValue * 100
       return `${width}%`
     },
@@ -66,9 +74,8 @@ export default {
   },
   mounted () {
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
+    this.sortStandings()
     this.createColors()
-    console.log(this.standings)
-    console.log(this.user)
   }
 }
 </script>
