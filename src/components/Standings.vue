@@ -17,25 +17,20 @@
             :style="{
               width: getBarWidth(player),
               backgroundColor: colors[index]
-              }"
-            >
+            }"
+          >
           </div>
         </md-card>
       </div>
-      <!-- <LineChart :standings="standings"/> -->
     </md-card>
   </div>
 </template>
 
 <script>
-// import LineChart from '../charts/LineChart.vue'
 import localStorageKeys from '../constants/localStorageKeys'
 
 export default {
   name: 'Standings',
-  // components: {
-  //   LineChart
-  // },
   props: {
     standings: Array
   },
@@ -112,5 +107,8 @@ export default {
 }
 .own-row {
   background-color: rgb(182, 223, 182);
+}
+.avatar {
+  width: 30px;
 }
 </style>

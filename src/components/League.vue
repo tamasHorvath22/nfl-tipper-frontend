@@ -169,7 +169,6 @@ export default {
 .header-container {
   padding: 10px;
   margin: 30px auto;
-  font-size: 26px;
   display: flex;
   align-items: center;
 }
@@ -193,6 +192,8 @@ export default {
 }
 .header {
   color: black;
+  font-size: 30px;
+  font-weight: 600;
 }
 .card-margin {
   margin-left: 5%;

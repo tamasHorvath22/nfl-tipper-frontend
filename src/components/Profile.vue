@@ -2,13 +2,13 @@
   <div class="md-layout">
     <form v-if="user" class="md-layout-item md-size-40 md-small-size-90 card-bg container-margin">
       <md-card class="card-bg">
-        <!-- <md-card-header>
+        <md-card-header>
           <div class="md-title">
             <img v-if="user.avatarUrl" :src="user.avatarUrl" alt="avatar" class="avatar">
             {{ user.username }}
           </div>
           <hr>
-        </md-card-header> -->
+        </md-card-header>
 
         <md-card-content>
           <div class="md-layout">
@@ -44,33 +44,13 @@
                 <md-input
                   name="username"
                   type="text"
-                  class="input-field"
+                  ref="urlInput"
+                  class="input-field avatar-input"
+                  :class="{ 'url-editable': !isUserDataDisabled }"
                   v-model="user.avatarUrl"
                   :disabled="isUserDataDisabled"/>
               </md-field>
 
-              <!-- <md-field v-if="teams" class="md-layout-item md-small-size-50">
-                <md-select v-model="selectedTeamAvatar" placeholder="Select team logo">
-                  <label for="Select team logo"></label>
-                  <md-option
-                    v-for="team of teams" :key="team"
-                    :value="team">
-                    <div>
-                      <span class="team-name">{{ getTeamLabel(team) }}</span>
-                      <span>
-                        <img :src="require(`../assets/team-logos/${team}.gif`)" class="team-logo">
-                      </span>
-                    </div>
-                  </md-option>
-                </md-select>
-              </md-field> -->
-
-              <md-button
-                type="button"
-                class="md-primary md-raised button material-button material-button"
-                @click="onEdit">
-                  {{ isUserDataDisabled ? 'Edit URL' : 'Save URL' }}
-              </md-button>
             </div>
           </div>
           <div class="md-layout">
@@ -137,6 +117,13 @@
               </modal>
               <md-button
                 type="button"
+                class="md-primary md-raised button material-button material-button"
+                :class="{}"
+                @click="onEdit">
+                  {{ isUserDataDisabled ? 'Edit URL' : 'Save URL' }}
+              </md-button>
+              <md-button
+                type="button"
                 class="md-primary md-raised button material-button"
                 @click="showModal('change-password')">Change password
               </md-button>
@@ -189,11 +176,15 @@ export default {
     onEdit () {
       if (this.isUserDataDisabled) {
         this.isUserDataDisabled = !this.isUserDataDisabled
+        this.$nextTick(function () {
+          this.$refs['urlInput'].$el.focus()
+        })
         return
       }
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_USER_DATA.path
       axios.post(changePath, this.user, { headers: this.headers })
         .then(user => {
+          console.log(user)
           this.user = user.data
           localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
           this.isUserDataDisabled = true
@@ -275,6 +266,13 @@ export default {
 .team-name {
   margin-left: 10px;
   font-size: 16px;
+}
+.url-editable {
+  background-color: rgb(207, 207, 202) !important;
+}
+.avatar-input {
+  margin: 0;
+  padding-left: 5px;
 }
 
 </style>
