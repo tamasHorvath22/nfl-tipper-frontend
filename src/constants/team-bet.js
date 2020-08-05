@@ -1,4 +1,5 @@
 export default Object.freeze({
   HOME: 'HOME',
-  AWAY: 'AWAY'
+  AWAY: 'AWAY',
+  TIE: 'TIE'
 })

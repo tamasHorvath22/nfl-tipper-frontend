@@ -94,7 +94,7 @@ export default {
           this.standings.sort((a, b) => {
             return a.score > b.score ? -1 : 1
           })
-          // SpinnerService.setSpinner(false)
+          SpinnerService.setSpinner(false)
         })
     },
     onInvite () {

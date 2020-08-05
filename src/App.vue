@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <Spinner v-if="showSpinner"/>
-    <div class="background-image"><img class="bg-image" src="./assets/images/ball.jpg"></div>
+    <!-- <div class="background-image"><img class="bg-image" src="./assets/images/ball.jpg"></div> -->
+    <div class="nfl-bg-image"></div>
     <b-navbar v-if="showMenu" toggleable="lg" type="dark" variant="primary" class="nav-bar">
       <b-navbar-brand href="#">NFL Tipper</b-navbar-brand>
 
@@ -109,7 +110,32 @@ export default {
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
 
-.background-image {
+@media(max-width: 979px){
+  .nfl-bg-image {
+    background-image: url('./assets/images/nfl-vertical.jpg') !important;
+    background-size: 100%;
+  }
+}
+
+@media(min-width: 980px){
+  .nfl-bg-image {
+    background-image: url('./assets/images/ball.jpg') !important;
+    background-size: 100%;
+  }
+}
+// .background-image {
+//   position: fixed;
+//   left: 0;
+//   top: 0;
+//   opacity: 0.5;
+//   width: 100%;
+//   height: 100%;
+//   overflow: hidden;
+// }
+// .bg-image {
+//   width: 100%;
+// }
+.nfl-bg-image {
   position: fixed;
   left: 0;
   top: 0;
@@ -117,9 +143,6 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
-}
-.bg-image {
-  width: 100%;
 }
 #app {
   font-family: 'Roboto', Helvetica, Arial, sans-serif;

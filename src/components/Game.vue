@@ -29,23 +29,25 @@
         <div v-if="selectedWeek" class="md-layout-item md-size-100">
           <md-card v-for="game in selectedWeek.games" :key="game._id" class="game-container">
             <div class="inner-game-container">
-              <div class="team-container">
+              <div class="team-container left-team">
                 <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
 
                 <md-button
-                  class="md-raised material-button"
+                  class="md-raised material-button strong-font-color"
                   :class="getTeamButtonColor(game, game.awayTeamAlias, teamBet.AWAY)"
                   :disabled="isGameDisabled(game)"
                   @click="onBet(game, teamBet.AWAY)">
                   {{ getTeamLabel(game.awayTeamAlias) }}
                 </md-button>
+                <div v-if="game.awayScore" class="score">{{ game.awayScore }}</div>
               </div>
 
               <i class="fa fa-at at-icon" aria-hidden="true"></i>
 
-              <div class="team-container">
+              <div class="team-container right-team">
+                <div v-if="game.homeScore" class="score">{{ game.homeScore }}</div>
                 <md-button
-                  class="md-raised material-button"
+                  class="md-raised material-button strong-font-color"
                   :class="getTeamButtonColor(game, game.homeTeamAlias, teamBet.HOME)"
                   :disabled="isGameDisabled(game)"
                   @click="onBet(game, teamBet.HOME)">
@@ -137,12 +139,13 @@ export default {
     },
     getTeamButtonColor (game, team, bet) {
       if (this.selectedWeek.isOpen) {
-        if (this.isThisTeamSelected(game, bet)) {
-          return 'active-team-selected'
-        }
+        return this.teamSelectedClass(game, bet)
       } else {
         if (game.winner) {
-          const isWinnerTeam = team === game[`${game.winner.toLowerCase()}TeamAlias`]
+          const isWinnerTeam = team === game.winnerTeamAlias
+          if (game.winner === this.teamBet.TIE) {
+            return 'tie'
+          }
           if (game.bets.find(bet => bet.id === this.selectedPlayer).bet === game.winner) {
             if (isWinnerTeam) {
               return 'team-success'
@@ -153,10 +156,13 @@ export default {
             }
           }
         } else {
-          if (this.isThisTeamSelected(game, bet)) {
-            return 'active-team-selected'
-          }
+          return this.teamSelectedClass(game, bet)
         }
+      }
+    },
+    teamSelectedClass (game, bet) {
+      if (this.isThisTeamSelected(game, bet)) {
+        return 'active-team-selected'
       }
     }
   },
@@ -208,8 +214,9 @@ export default {
   margin-top: 14px;
 }
 .logo {
-  width: 50px;
-  margin-top: 9px;
+  margin-top: 8px;
+  max-width: 60px;
+  max-height: 40px;
 }
 .game-container {
   margin-bottom: 20px;
@@ -220,17 +227,35 @@ export default {
   justify-content: center;
 }
 .team-container {
-  width: 170px;
+  width: 190px;
+  display: flex;
+}
+.left-team {
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+.right-team {
+  padding-left: 10px;
+}
+.score {
+  font-size: 20px;
+  font-weight: bold;
+  padding-top: 13px;
+  min-width: 25px;
+}
+.strong-font-color {
+  color: black !important;
 }
 .active-team-selected {
   background-color: rgb(94, 202, 245) !important;
 }
 .team-success {
   background-color: rgb(75, 190, 75) !important;
-  color: black !important;
 }
 .team-fail {
   background-color: rgb(219, 55, 77) !important;
-  color: black !important;
+}
+.tie {
+  background-color: rgb(230, 187, 193) !important;
 }
 </style>
