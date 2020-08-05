@@ -1,28 +1,33 @@
 <template>
   <div class="md-layout">
-    <md-card class="md-layout-item md-size-50 md-small-size-90 card-bg container-margin">
+    <md-card class="md-layout-item md-size-50 md-small-size-90 card-bg container">
 
       <md-card-header>
-        <div class="leagues-header">My leagues</div>
+        <div class="leagues-header">{{ user.username }}'s leagues</div>
         <hr>
       </md-card-header>
       <md-card-content>
         <div class="md-layout">
         <div class="md-layout-item md-size-25 md-small-size-100">
           <md-button
-            class="md-primary md-raised create-league-button material-button"
+            class="md-primary md-raised create-league-button material-button create-league-button"
             @click="showModal(modals.createLeague)">
             Create league
           </md-button>
             <div v-if="user">
-              <md-card v-if="user.invitations.length">
-                <div>Invitations</div>
-                <div v-for="inv of user.invitations" :key="inv.leagueId">
-                  <md-button
-                    class="md-primary md-raised create-league-button material-button invitation-button"
-                    @click="showModal(modals.acceptInvitation, inv)">
-                    {{ inv.name }}
-                  </md-button>
+              <md-card class="invitation-card">
+                <div class="invitation-header">Invitations</div>
+                <div v-if="user.invitations.length">
+                  <div v-for="inv of user.invitations" :key="inv.leagueId">
+                    <md-button
+                      class="md-primary md-raised create-league-button material-button invitation-button"
+                      @click="showModal(modals.acceptInvitation, inv)">
+                      {{ inv.name }}
+                    </md-button>
+                  </div>
+                </div>
+                <div v-if="!user.invitations.length">
+                  You have no pending invitations.
                 </div>
               </md-card>
 
@@ -76,15 +81,15 @@
               </modal>
             </div>
         </div>
-        <div v-if="user" class="md-layout-item md-size-75 md-small-size-100">
+        <md-card v-if="user" class="md-layout-item md-size-70 md-small-size-100 leagues-card">
           <div v-for="league in user.leagues" :key="league.leagueId">
             <md-button
-              class="md-raised submit-button material-button"
+              class="md-raised submit-button material-button league-button"
               @click="onSelectLeague(league.leagueId)">
               {{ league.name }}
             </md-button>
           </div>
-        </div>
+        </md-card>
         </div>
       </md-card-content>
     </md-card>
@@ -192,7 +197,6 @@ export default {
 .profile-header {
   font-size: 30pt;
 }
-
 .profile-container {
   width: 600px;
   margin: auto;
@@ -200,12 +204,10 @@ export default {
 .user-data-container {
   margin-top: 50px;
 }
-
 .card-margin {
   margin-left: 5%;
   margin-top: 30px;
 }
-
 .create-league-button {
   margin: 20px;
 }
@@ -219,8 +221,26 @@ export default {
 .invitation-button {
   background-color: rgb(73, 205, 245) !important;
 }
-.container-margin {
+.container {
   margin: 30px auto;
+  background-color: $bg-grey !important;
 }
-
+.invitation-card {
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.invitation-header {
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: bold;
+}
+.league-button {
+  background-color: rgb(235, 176, 50) !important;
+}
+.leagues-card {
+  margin-left: 5%;
+}
+.create-league-button {
+  margin-top: 0px;
+}
 </style>

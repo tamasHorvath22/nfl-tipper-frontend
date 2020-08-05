@@ -196,7 +196,7 @@ export default {
 }
 .outer-card {
   padding: 20px;
-  background-color: rgb(214, 214, 255);
+  background-color: $bg-grey;
 }
 .selector-container {
   margin: auto;
@@ -204,7 +204,7 @@ export default {
   justify-content: center;
 }
 .select {
-  background-color: rgb(214, 214, 255);
+  background-color: $bg-grey;
 }
 .selector {
   margin: 10px;

@@ -94,15 +94,3 @@ export const router = new Router({
     }
   ]
 })
-
-// router.beforeEach((to, from, next) => {
-//   if (to.path === Routes.LOGIN.path || to.path === Routes.REGISTER.path) {
-//     next()
-//     return
-//   }
-//   if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
-//     next()
-//   } else {
-//     next(Routes.LOGIN.path)
-//   }
-// })
