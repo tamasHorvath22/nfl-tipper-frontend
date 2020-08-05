@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <div class="register-form-container input-box">
       <md-field>
         <label class="label">Username</label>
@@ -184,6 +184,7 @@ export default {
 @import '../styles/_variables.scss';
 
 .register-form-container {
+  width: 250px;
   position: absolute;
   top: 50px;
   right: 50px;

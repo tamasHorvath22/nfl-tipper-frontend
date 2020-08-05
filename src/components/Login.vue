@@ -56,12 +56,13 @@
         <div class="modal-container">
           <div class="invite-modal-header">
             Type your email and click OK.
-            We send you an email, just click on the link, and enter a new passwoed.
+            We send you an email, just click on the link in it, and enter a new password.
           </div>
           <md-field class="email-field">
             <md-input
               name="email"
               placeholder="email"
+              autofocus
               v-validate="{ required: true, validEmail: true }"
               v-model="forgotEmail"/>
           </md-field>

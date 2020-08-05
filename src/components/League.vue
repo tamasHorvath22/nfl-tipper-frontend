@@ -2,7 +2,7 @@
   <div class="font-color">
     <div v-if="league" class="md-layout">
       <div class="md-layout-item md-size-100">
-        <md-card class="md-layout-item md-size-40 header-container">
+        <md-card class="md-layout-item md-size-40 md-small-size-90 header-container">
           <md-button v-if="isOwner" class="md-primary md-raised create-league-button material-button" @click="showModal">Invite player</md-button>
           <div class="header">{{ league.name }}</div>
         </md-card>
