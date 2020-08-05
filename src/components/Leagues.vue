@@ -1,5 +1,5 @@
 <template>
-  <div class="md-layout">
+  <div v-if="user" class="md-layout">
     <md-card class="md-layout-item md-size-50 md-small-size-90 card-bg container">
 
       <md-card-header>
@@ -15,6 +15,7 @@
             Create league
           </md-button>
             <div v-if="user">
+
               <md-card class="invitation-card">
                 <div class="invitation-header">Invitations</div>
                 <div v-if="user.invitations.length">
@@ -35,7 +36,7 @@
                 <div class="modal-container">
                   <div class="invite-modal-header">Type the name of your league</div>
                   <md-field>
-                    <md-input name="newLeague" placeholder="here..." v-model="newLeagueName"/>
+                    <md-input name="newLeague" placeholder="here..." v-model="newLeagueName" autofocus/>
                   </md-field>
                   <md-button
                     class="md-raised create-league-button material-button"
@@ -178,15 +179,21 @@ export default {
     },
     hideModal (modal) {
       this.$modal.hide(modal)
+    },
+    async getUser () {
+      SpinnerService.setSpinner(true)
+      const userResponse = await axios.post(process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path, {}, { headers: this.headers })
+      this.handleUserResponse(userResponse.data)
+      SpinnerService.setSpinner(false)
     }
   },
   mounted () {
-    this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer ' + this.token
     }
+    this.getUser()
   }
 }
 </script>

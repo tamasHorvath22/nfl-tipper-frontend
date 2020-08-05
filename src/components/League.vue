@@ -30,6 +30,7 @@
               <md-input
                 name="email"
                 placeholder="here..."
+                autofocus
                 v-validate="{ required: true, validEmail: true }"
                 v-model="invitedEmail"/>
             </md-field>

@@ -16,8 +16,8 @@
             class="bar"
             :style="{
               width: getBarWidth(player),
-              backgroundColor: colors[index].bgColor,
-              color: colors[index].color }"
+              backgroundColor: colors[index]
+              }"
             >
           </div>
         </md-card>
@@ -48,7 +48,7 @@ export default {
   methods: {
     sortStandings () {
       this.standings.sort((a, b) => {
-        return a > b ? 1 : -1
+        return a > b ? -1 : 1
       })
     },
     getBarWidth (player) {
@@ -65,10 +65,9 @@ export default {
         const r = Math.floor(Math.random() * maxValue)
         const g = Math.floor(Math.random() * maxValue)
         const b = Math.floor(Math.random() * maxValue)
-        this.colors.push({
-          bgColor: `rgba(${r}, ${g}, ${b}, 0.5)`,
-          color: `rgb(${r - 150 < 0 ? r + 150 : r - 150}, ${g - 150 < 0 ? g + 150 : g - 150}, ${b - 150 < 0 ? b + 150 : b - 150})`
-        })
+        this.colors.push(
+          `rgba(${r}, ${g}, ${b}, 0.6)`
+        )
       }
     }
   },
