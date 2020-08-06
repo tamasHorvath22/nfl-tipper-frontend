@@ -127,7 +127,6 @@ export default {
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.SAVE_BETS.path}`
       axios.post(path, { leagueId: this.leagueId, week: this.selectedWeek }, { headers: this.headers })
         .then(resp => {
-          console.log(resp)
           SpinnerService.setSpinner(false)
         })
     },
