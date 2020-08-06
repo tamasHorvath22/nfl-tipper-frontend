@@ -103,6 +103,7 @@ export default {
       this.$validator.validateAll().then(valid => {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
+          // test
           SpinnerService.setSpinner(true)
           axios.post(loginPath, { username: this.username, password: this.password })
             .then(async (loginResp) => {
