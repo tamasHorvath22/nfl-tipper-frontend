@@ -184,11 +184,9 @@ export default {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_USER_DATA.path
       axios.post(changePath, this.user, { headers: this.headers })
         .then(user => {
-          console.log(user)
           this.user = user.data
           localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
           this.isUserDataDisabled = true
-          // this.handleRegisterResponse(registerResp.data)
         })
     },
     changePassword () {
