@@ -34,6 +34,11 @@
         v-if="showEmailTaken">
           This email is taken
       </div>
+      <div
+        class="error-message"
+        v-if="showEmailNotValid">
+          This email is not valid.
+      </div>
       <div class="error-message">{{ errors.first('email') }}</div>
       <md-field>
         <label class="label">Password</label>
@@ -118,7 +123,8 @@ export default {
       showNotEqualPasses: false,
       showUsernameTaken: false,
       showEmailTaken: false,
-      showRegistrationFail: false
+      showRegistrationFail: false,
+      showEmailNotValid: false
     }
   },
   methods: {
@@ -147,6 +153,8 @@ export default {
         this.showUsernameTaken = true
       } else if (response === ApiErrorMessages.USER.EMAIL_TAKEN) {
         this.showEmailTaken = true
+      } else if (response === ApiErrorMessages.EMAIL.NOT_VALID) {
+        this.showEmailNotValid = true
       } else if (response === ApiErrorMessages.USER.UNSUCCESSFUL_REGISTRATION) {
         this.showRegistrationFail = true
       }
@@ -163,6 +171,7 @@ export default {
       this.showUsernameTaken = false
       this.showEmailTaken = false
       this.showRegistrationFail = false
+      this.showEmailNotValid = false
     },
     passwordsAreEqual () {
       return this.password === this.confirm_password
