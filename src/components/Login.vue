@@ -99,7 +99,7 @@ export default {
       headers: null,
       resetPassHeaders: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': 'https://sheltered-eyrie-43776.herokuapp.com'
       }
     }
   },
@@ -111,14 +111,14 @@ export default {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
           SpinnerService.setSpinner(true)
-          axios.post(loginPath, { username: this.username, password: this.password })
+          axios.post(loginPath, { username: this.username, password: this.password }, { headers: this.headers })
             .then(async (loginResp) => {
               if (loginResp.data.token) {
                 this.token = loginResp.data.token
                 this.headers = {
                   'Content-Type': 'application/json',
                   'authorization': 'Bearer ' + this.token,
-                  'Access-Control-Allow-Origin': '*'
+                  'Access-Control-Allow-Origin': 'https://sheltered-eyrie-43776.herokuapp.com'
                 }
                 await this.saveUserToLocalStorage(loginResp.data.token)
                 localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)

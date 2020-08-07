@@ -192,7 +192,7 @@ export default {
     this.headers = {
       'Content-Type': 'application/json',
       'authorization': 'Bearer ' + this.token,
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': 'https://sheltered-eyrie-43776.herokuapp.com'
     }
     this.getUser()
   }

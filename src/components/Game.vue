@@ -182,7 +182,7 @@ export default {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.headers = {
       'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Origin': 'https://sheltered-eyrie-43776.herokuapp.com',
       'authorization': 'Bearer ' + this.token
     }
     this.setDefaultPlayer()
