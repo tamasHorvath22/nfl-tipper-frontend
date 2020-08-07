@@ -111,7 +111,7 @@ export default {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
           SpinnerService.setSpinner(true)
-          axios.post(loginPath, { username: this.username, password: this.password }, { headers: this.headers })
+          axios.post(loginPath, { username: this.username, password: this.password }, { headers: this.resetPassHeaders })
             .then(async (loginResp) => {
               if (loginResp.data.token) {
                 this.token = loginResp.data.token
