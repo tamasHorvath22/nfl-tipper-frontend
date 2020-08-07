@@ -191,7 +191,8 @@ export default {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.headers = {
       'Content-Type': 'application/json',
-      'authorization': 'Bearer ' + this.token
+      'authorization': 'Bearer ' + this.token,
+      'Access-Control-Allow-Origin': '*'
     }
     this.getUser()
   }

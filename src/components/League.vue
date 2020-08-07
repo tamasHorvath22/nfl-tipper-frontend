@@ -155,7 +155,8 @@ export default {
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
     this.headers = {
       'Content-Type': 'application/json',
-      'authorization': 'Bearer ' + this.token
+      'authorization': 'Bearer ' + this.token,
+      'Access-Control-Allow-Origin': '*'
     }
     this.getLeague()
     this.getSeason()

@@ -83,23 +83,28 @@
           To Login page
         </md-button>
         <md-button
+          type="submit"
           class="md-raised md-primary submit-button material-button"
           @click="onRegister">
           Register
         </md-button>
+        <!-- <vue-recaptcha
+          @verify="onVerify"
+          :sitekey="siteKey"><button type="submit">submit</button>
+        </vue-recaptcha> -->
       </div>
-
-      <modal name="modal" width="400" height="auto" :clickToClose="false">
-        <div class="modal-container">
-          <div class="invite-modal-header margin-bottom-30">
-            You registered succcessfully! An email was sent to your address.
-            Please click on the link to confirm your email, and activate your account
-          </div>
-          <md-button class="md-primary md-raised create-league-button material-button" @click="onLoginPage">Ok</md-button>
-        </div>
-      </modal>
-
     </div>
+
+    <modal name="modal" width="400" height="auto" :clickToClose="false">
+      <div class="modal-container">
+        <div class="invite-modal-header margin-bottom-30">
+          You registered succcessfully! An email was sent to your address.
+          Please click on the link to confirm your email, and activate your account
+        </div>
+        <md-button class="md-primary md-raised create-league-button material-button" @click="onLoginPage">Ok</md-button>
+      </div>
+    </modal>
+
   </div>
 </template>
 
@@ -110,9 +115,11 @@ import validationMixin from '../mixins/validationMixin'
 import * as axios from 'axios'
 import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
+// import VueRecaptcha from 'vue-recaptcha'
 
 export default {
   name: 'Register',
+  // components: { VueRecaptcha },
   mixins: [validationMixin],
   data () {
     return {

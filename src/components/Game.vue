@@ -120,6 +120,10 @@ export default {
       return userBet.bet === bet
     },
     isGameDisabled (game) {
+      // TODO uncomment this for production
+      // const now = new Date().getTime()
+      // const isAfterDeadline = now > new Date(game.startTime).getTime()
+      // return !this.selectedWeek.isOpen || isAfterDeadline
       return !this.selectedWeek.isOpen || !game.isOpen
     },
     onSaveBets () {
@@ -178,6 +182,7 @@ export default {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.headers = {
       'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
       'authorization': 'Bearer ' + this.token
     }
     this.setDefaultPlayer()

@@ -88,26 +88,38 @@ export default {
   name: 'Login',
   data () {
     return {
+      token: null,
       username: null,
       password: null,
       showWrongCred: false,
       showEmailNotConfirmed: false,
       noUserFound: false,
       showFailedResetPassMessage: false,
-      forgotEmail: null
+      forgotEmail: null,
+      headers: null,
+      resetPassHeaders: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
     }
   },
   methods: {
     async onLogin () {
       this.showWrongCred = false
+      this.showEmailNotConfirmed = false
       this.$validator.validateAll().then(valid => {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
-          // test
           SpinnerService.setSpinner(true)
           axios.post(loginPath, { username: this.username, password: this.password })
             .then(async (loginResp) => {
               if (loginResp.data.token) {
+                this.token = loginResp.data.token
+                this.headers = {
+                  'Content-Type': 'application/json',
+                  'authorization': 'Bearer ' + this.token,
+                  'Access-Control-Allow-Origin': '*'
+                }
                 await this.saveUserToLocalStorage(loginResp.data.token)
                 localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)
                 this.$router.push(Routes.LEAGUES.path)
@@ -122,11 +134,7 @@ export default {
       })
     },
     async saveUserToLocalStorage (token) {
-      const headers = {
-        'Content-Type': 'application/json',
-        'authorization': 'Bearer ' + token
-      }
-      const userResponse = await axios.post(process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path, {}, { headers: headers })
+      const userResponse = await axios.post(process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path, {}, { headers: this.headers })
       const userToSave = {
         username: userResponse.data.username,
         userId: userResponse.data._id,
@@ -145,7 +153,7 @@ export default {
       this.showResetPassMessage = false
       this.noUserFound = false
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.RESET_PASSWORD.path}`
-      axios.post(path, { email: this.forgotEmail }, { headers: this.headers })
+      axios.post(path, { email: this.forgotEmail }, { headers: this.resetPassHeaders })
         .then(resp => {
           if (resp.data === ApiErrorMessages.USER.NOT_FOUND) {
             this.noUserFound = true
