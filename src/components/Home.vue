@@ -29,11 +29,9 @@ export default {
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
-
 .profile-header {
   font-size: 30pt;
 }
-
 .profile-container {
   width: 600px;
   margin: auto;
@@ -41,14 +39,9 @@ export default {
 .user-data-container {
   margin-top: 50px;
 }
-
 .card-margin {
   margin-left: 5%;
   margin-top: 30px;
-}
-
-.create-league-button {
-  margin: 20px;
 }
 .leagues-header {
   font-size: 26px;

@@ -101,7 +101,7 @@
           You registered succcessfully! An email was sent to your address.
           Please click on the link to confirm your email, and activate your account
         </div>
-        <md-button class="md-primary md-raised create-league-button material-button" @click="onLoginPage">Ok</md-button>
+        <md-button class="md-primary md-raised material-button" @click="onLoginPage">Ok</md-button>
       </div>
     </modal>
 

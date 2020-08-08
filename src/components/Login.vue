@@ -66,7 +66,7 @@
               v-validate="{ required: true, validEmail: true }"
               v-model="forgotEmail"/>
           </md-field>
-          <md-button class="md-primary md-raised create-league-button material-button" @click="onForgotPassword">OK</md-button>
+          <md-button class="md-primary md-raised material-button" @click="onForgotPassword">OK</md-button>
           <div v-if="noUserFound" class="error-message">No user found by this email</div>
           <div v-if="showFailedResetPassMessage" class="error-message">There was an error, please try again!</div>
         </div>

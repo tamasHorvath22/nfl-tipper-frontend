@@ -1,6 +1,6 @@
 <template>
   <div v-if="user" class="md-layout">
-    <md-card class="md-layout-item md-size-50 md-small-size-90 card-bg container">
+    <md-card class="md-layout-item md-size-50 md-small-size-90 container">
 
       <md-card-header>
         <div class="leagues-header">{{ user.username }}'s leagues</div>
@@ -10,7 +10,7 @@
         <div class="md-layout">
         <div class="md-layout-item md-size-25 md-small-size-100">
           <md-button
-            class="md-primary md-raised create-league-button material-button create-league-button"
+            class="md-primary md-raised button-margin-0-20 material-button"
             @click="showModal(modals.createLeague)">
             Create league
           </md-button>
@@ -21,7 +21,7 @@
                 <div v-if="user.invitations.length">
                   <div v-for="inv of user.invitations" :key="inv.leagueId">
                     <md-button
-                      class="md-primary md-raised create-league-button material-button invitation-button"
+                      class="md-primary md-raised material-button invitation-button"
                       @click="showModal(modals.acceptInvitation, inv)">
                       {{ inv.name }}
                     </md-button>
@@ -34,17 +34,17 @@
 
               <modal :name="modals.createLeague" width="400" height="auto">
                 <div class="modal-container">
-                  <div class="invite-modal-header">Type the name of your league</div>
+                  <div class="modal-headers">Type the name of your league</div>
                   <md-field>
                     <md-input name="newLeague" placeholder="here..." v-model="newLeagueName" autofocus/>
                   </md-field>
                   <md-button
-                    class="md-raised create-league-button material-button"
+                    class="md-raised button-margin-0-20 material-button"
                     @click="hideModal(modals.createLeague)">
                     Close
                   </md-button>
                   <md-button
-                    class="md-primary md-raised create-league-button material-button"
+                    class="md-primary md-raised button-margin-0-20 material-button"
                     @click="onCreateLeague">
                     Create
                   </md-button>
@@ -56,23 +56,22 @@
                 </div>
               </modal>
 
-              <modal :name="modals.acceptInvitation" width="400" height="auto">
-                <div class="modal-container">
+               <modal :name="modals.acceptInvitation" width="400" height="auto">
+                <div v-if="currentLeagueToJoin" class="modal-container">
                   <div
-                    class="invite-modal-header"
-                    v-if="currentLeagueToJoin">
+                    class="modal-headers">
                     Do you accept the invitation to "{{ currentLeagueToJoin.name }}" league?
                   </div>
                   <md-button
-                    class="md-raised create-league-button material-button"
+                    class="md-raised button-margin-0-20 material-button"
                     @click="hideModal(modals.acceptInvitation)">
-                    No
+                    Close
                   </md-button>
-                  <md-button
-                    class="md-primary md-raised create-league-button material-button"
+                  <button
+                    class="md-raised button-margin-0-20 material-button accept-invitation"
                     @click="onAcceptInvitation">
                     Yes
-                  </md-button>
+                  </button>
                   <div
                     v-if="showAcceptInvitationError"
                     class="error-message">
@@ -80,6 +79,7 @@
                   </div>
                 </div>
               </modal>
+
             </div>
         </div>
         <md-card v-if="user" class="md-layout-item md-size-70 md-small-size-100 leagues-card">
@@ -215,8 +215,8 @@ export default {
   margin-left: 5%;
   margin-top: 30px;
 }
-.create-league-button {
-  margin: 20px;
+.button-margin-0-20 {
+  margin: 0px 20px 20px 20px;
 }
 .leagues-header {
   font-size: 26px;
@@ -247,7 +247,15 @@ export default {
 .leagues-card {
   margin-left: 5%;
 }
-.create-league-button {
-  margin-top: 0px;
+.modal-headers {
+  margin-bottom: 20px;
+}
+.accept-invitation {
+  background-color: rgb(46, 212, 46) !important;
+  color: rgb(24, 23, 23) !important;
+  padding: 6px;
+  width: 88px;
+  border-color: #2ed42e !important;
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
 }
 </style>

@@ -3,7 +3,7 @@
     <div v-if="league" class="md-layout">
       <div class="md-layout-item md-size-100">
         <md-card class="md-layout-item md-size-40 md-small-size-90 header-container">
-          <md-button v-if="isOwner" class="md-primary md-raised create-league-button material-button" @click="showModal">Invite player</md-button>
+          <md-button v-if="isOwner" class="md-primary md-raised material-button invite-player" @click="showModal">Invite player</md-button>
           <div class="header">{{ league.name }}</div>
         </md-card>
       </div>
@@ -23,9 +23,9 @@
       </div>
 
       <div v-if="league" class="md-layout-item md-size-20">
-        <modal name="modal" width="400" height="180">
+        <modal name="modal" width="400" height="auto">
           <div class="modal-container">
-            <div class="invite-modal-header header">Type your friend's email</div>
+            <div class="header">Type your friend's email</div>
             <md-field class="email-field">
               <md-input
                 name="email"
@@ -34,7 +34,7 @@
                 v-validate="{ required: true, validEmail: true }"
                 v-model="invitedEmail"/>
             </md-field>
-            <md-button class="md-primary md-raised create-league-button material-button" @click="onInvite">Invite</md-button>
+            <md-button class="md-primary md-raised material-button" @click="onInvite">Invite</md-button>
             <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
             <div v-if="noUserFound" class="error-message">No user found by this email</div>
             <div v-if="noLeagueFound" class="error-message">No league found, please try again!</div>
@@ -182,12 +182,9 @@ export default {
   width: 80%;
   margin: auto;
 }
-.invite-modal-header {
-  font-size: 20px;
-}
 .league-header {
   margin: 30px 0px;
-  font-size: 30px;
+  font-size: 26px;
   font-weight: bold;
 }
 .header {
@@ -204,5 +201,8 @@ export default {
 }
 .game {
   margin-bottom: 30px;
+}
+.invite-player {
+  margin: 0;
 }
 </style>

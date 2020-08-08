@@ -104,12 +104,12 @@
                       The entered passords are not equal!
                   </div>
                   <md-button
-                    class="md-raised create-league-button material-button"
+                    class="md-raised material-button"
                     @click="hideModal('change-password')">
                     Cancel
                   </md-button>
                   <md-button
-                    class="md-primary md-raised create-league-button material-button"
+                    class="md-primary md-raised material-button"
                     @click="changePassword">
                     Change
                   </md-button>

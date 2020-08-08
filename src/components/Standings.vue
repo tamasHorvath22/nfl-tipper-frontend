@@ -79,6 +79,7 @@ export default {
 .standings-container {
   width: 100%;
   padding: 20px;
+  background-color: $bg-grey;
 }
 .standing-card {
   padding: 7px;
