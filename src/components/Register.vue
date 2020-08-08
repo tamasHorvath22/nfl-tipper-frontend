@@ -136,11 +136,11 @@ export default {
   },
   methods: {
     onRegister () {
-      SpinnerService.setSpinner(true)
       this.hideAllMessages()
       this.$validator.validateAll().then(valid => {
         if (valid) {
           if (this.passwordsAreEqual()) {
+            SpinnerService.setSpinner(true)
             const regPath = process.env.VUE_APP_BASE_URL + ApiRoutes.REGISTER.path
             axios.post(regPath, this.createUserToRegister())
               .then(registerResp => {

@@ -43,7 +43,7 @@ export default {
   methods: {
     sortStandings () {
       this.standings.sort((a, b) => {
-        return a > b ? -1 : 1
+        return a.score > b.score ? -1 : 1
       })
     },
     getBarWidth (player) {

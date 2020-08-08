@@ -30,6 +30,9 @@ export default {
         roman = (key[+digits.pop() + (i * 10)] || '') + roman
       }
       return Array(+digits.join('') + 1).join('M') + roman
+    },
+    notNullOrUndefinded (item) {
+      return item !== null && item !== undefined
     }
   }
 }

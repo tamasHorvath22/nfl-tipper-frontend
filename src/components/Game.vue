@@ -39,13 +39,13 @@
                   @click="onBet(game, teamBet.AWAY)">
                   {{ getTeamLabel(game.awayTeamAlias) }}
                 </md-button>
-                <div v-if="game.awayScore" class="score">{{ game.awayScore }}</div>
+                <div v-if="notNullOrUndefinded(game.awayScore)" class="score">{{ game.awayScore }}</div>
               </div>
 
               <i class="fa fa-at at-icon" aria-hidden="true"></i>
 
               <div class="team-container right-team">
-                <div v-if="game.homeScore" class="score">{{ game.homeScore }}</div>
+                <div v-if="notNullOrUndefinded(game.homeScore)" class="score">{{ game.homeScore }}</div>
                 <md-button
                   class="md-raised material-button strong-font-color"
                   :class="getTeamButtonColor(game, game.homeTeamAlias, teamBet.HOME)"
