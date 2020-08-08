@@ -96,11 +96,7 @@ export default {
       noUserFound: false,
       showFailedResetPassMessage: false,
       forgotEmail: null,
-      headers: null,
-      resetPassHeaders: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'https://sheltered-eyrie-43776.herokuapp.com'
-      }
+      headers: null
     }
   },
   methods: {
@@ -111,14 +107,13 @@ export default {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
           SpinnerService.setSpinner(true)
-          axios.post(loginPath, { username: this.username, password: this.password }, { headers: this.resetPassHeaders })
+          axios.post(loginPath, { username: this.username, password: this.password })
             .then(async (loginResp) => {
               if (loginResp.data.token) {
                 this.token = loginResp.data.token
                 this.headers = {
                   'Content-Type': 'application/json',
-                  'authorization': 'Bearer ' + this.token,
-                  'Access-Control-Allow-Origin': 'https://sheltered-eyrie-43776.herokuapp.com'
+                  'authorization': 'Bearer ' + this.token
                 }
                 await this.saveUserToLocalStorage(loginResp.data.token)
                 localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)
@@ -153,7 +148,7 @@ export default {
       this.showResetPassMessage = false
       this.noUserFound = false
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.RESET_PASSWORD.path}`
-      axios.post(path, { email: this.forgotEmail }, { headers: this.resetPassHeaders })
+      axios.post(path, { email: this.forgotEmail })
         .then(resp => {
           if (resp.data === ApiErrorMessages.USER.NOT_FOUND) {
             this.noUserFound = true

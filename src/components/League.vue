@@ -155,8 +155,7 @@ export default {
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
     this.headers = {
       'Content-Type': 'application/json',
-      'authorization': 'Bearer ' + this.token,
-      'Access-Control-Allow-Origin': 'https://sheltered-eyrie-43776.herokuapp.com'
+      'authorization': 'Bearer ' + this.token
     }
     this.getLeague()
     this.getSeason()
