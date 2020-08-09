@@ -11,6 +11,7 @@
         </md-card-header>
 
         <md-card-content>
+          <md-button class="md-primary md-raised material-button" @click="manualTrigger">Run</md-button>
           <div class="md-layout">
             <div class="md-layout-item md-small-size-100">
               <md-field class="not-editable-input">
@@ -214,6 +215,13 @@ export default {
     },
     hideModal (modal) {
       this.$modal.hide(modal)
+    },
+    manualTrigger () {
+      const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.MANUAL_TRIGGER.path
+      axios.post(changePath, { data: 'no data' }, { headers: this.headers })
+        .then(res => {
+          console.log(res)
+        })
     }
   },
   mounted () {

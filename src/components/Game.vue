@@ -10,7 +10,7 @@
               <md-option
                 v-for="week of season.weeks" :key="week.number"
                 :value="week.number">
-                Week {{ week.number }}
+                Regular, week {{ week.number }}
               </md-option>
             </md-select>
           </md-field>

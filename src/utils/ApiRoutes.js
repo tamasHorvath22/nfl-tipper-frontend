@@ -66,5 +66,9 @@ export const ApiRoutes = {
   GET_LEAGUE: {
     path: '/api/get-league',
     name: 'GET_LEAGUE'
+  },
+  MANUAL_TRIGGER: {
+    path: '/api/league/trigger-manually',
+    name: 'MANUAL_TRIGGER'
   }
 }
