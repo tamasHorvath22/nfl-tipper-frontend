@@ -219,9 +219,7 @@ export default {
     manualTrigger () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.MANUAL_TRIGGER.path
       axios.post(changePath, { data: 'no data' }, { headers: this.headers })
-        .then(res => {
-          console.log(res)
-        })
+        .then(res => {})
     }
   },
   mounted () {
