@@ -36,7 +36,11 @@
                 <div class="modal-container">
                   <div class="modal-headers">Type the name of your league</div>
                   <md-field>
-                    <md-input name="newLeague" placeholder="here..." v-model="newLeagueName" autofocus/>
+                    <md-input
+                      name="newLeague"
+                      placeholder="here..."
+                      v-model="newLeagueName"
+                      ref="newLeagueInput"/>
                   </md-field>
                   <md-button
                     class="md-raised button-margin-0-20 material-button"
@@ -172,6 +176,13 @@ export default {
       this.$router.push({ name: Routes.LEAGUE.name, params: { leagueId: leagueId } })
     },
     showModal (modal, league) {
+      if (modal === this.modals.createLeague) {
+        setTimeout(() => {
+          this.$nextTick(function () {
+            this.$refs.newLeagueInput.$el.focus()
+          })
+        })
+      }
       this.showCreateLeagueError = false
       this.showAcceptInvitationError = false
       this.currentLeagueToJoin = league

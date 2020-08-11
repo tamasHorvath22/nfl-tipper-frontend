@@ -10,7 +10,7 @@
               <md-option
                 v-for="week of season.weeks" :key="week.number"
                 :value="week.number">
-                Regular, week {{ week.number }}
+                {{ getWeekLabel(week.number) }}
               </md-option>
             </md-select>
           </md-field>
@@ -103,9 +103,15 @@ export default {
     setLastWeekAsSelectedWeek () {
       this.selectedWeek = this.season.weeks[this.season.weeks.length - 1]
       this.selectedWeekNumber = this.selectedWeek.number
+      this.sortGames()
       if (this.selectedWeek.isOpen) {
         this.isPlayerSelectDisabled = true
       }
+    },
+    sortGames () {
+      this.selectedWeek.games.sort((a, b) => {
+        return new Date(a.startTime).getTime() > new Date(b.startTime).getTime() ? 1 : -1
+      })
     },
     setDefaultPlayer () {
       this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
@@ -167,11 +173,25 @@ export default {
       if (this.isThisTeamSelected(game, bet)) {
         return 'active-team-selected'
       }
+    },
+    getWeekLabel (number) {
+      if (number === 18) {
+        return 'Wild Card'
+      } else if (number === 19) {
+        return 'Divisional'
+      } else if (number === 20) {
+        return 'Conference'
+      } else if (number === 21) {
+        return 'Super Bowl'
+      } else {
+        return `Week ${number}`
+      }
     }
   },
   watch: {
     selectedWeekNumber: function (val) {
       this.selectedWeek = this.season.weeks.find(week => week.number === val)
+      this.sortGames()
       if (this.selectedWeek.isOpen) {
         this.selectedPlayer = this.user.userId
       }

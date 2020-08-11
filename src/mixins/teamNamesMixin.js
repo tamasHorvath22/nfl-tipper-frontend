@@ -33,12 +33,13 @@ export default {
         WAS: 'Redskins',
         ARI: 'Cardinals',
         MIN: 'Vikings',
-        IND: 'Colts'
+        IND: 'Colts',
+        OAK: 'Raiders'
       },
       teams: [
         'JAC', 'TEN', 'NYG', 'CHI', 'DET', 'GB', 'CAR', 'TB', 'BUF', 'MIA', 'SF', 'NYJ',
         'BAL', 'HOU', 'CIN', 'CLE', 'NO', 'LV', 'LA', 'PHI', 'NE', 'SEA',
-        'ATL', 'DAL', 'KC', 'LAC', 'DEN', 'PIT', 'WAS', 'ARI', 'MIN', 'IND'
+        'ATL', 'DAL', 'KC', 'LAC', 'DEN', 'PIT', 'WAS', 'ARI', 'MIN', 'IND', 'OAK'
       ]
     }
   },
