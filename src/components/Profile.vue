@@ -142,12 +142,13 @@ import * as axios from 'axios'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import validationMixin from '../mixins/validationMixin'
 import teamNamesMixin from '../mixins/teamNamesMixin'
+import utilsMixin from '../mixins/utils'
 import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
 
 export default {
   name: 'Profile',
-  mixins: [validationMixin, teamNamesMixin],
+  mixins: [validationMixin, teamNamesMixin, utilsMixin],
   data () {
     return {
       user: null,
@@ -185,7 +186,7 @@ export default {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_USER_DATA.path
       axios.post(changePath, this.user, { headers: this.headers })
         .then(user => {
-          this.user = user.data
+          this.user = this.createUserToSave(user.data)
           localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
           this.isUserDataDisabled = true
         })

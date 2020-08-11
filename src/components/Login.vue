@@ -83,9 +83,11 @@ import * as axios from 'axios'
 import localStorageKeys from '../constants/localStorageKeys'
 import SpinnerService from '../services/SpinnerService'
 import ApiErrorMessages from '../constants/api-response-messages'
+import utilsMixin from '../mixins/utils'
 
 export default {
   name: 'Login',
+  mixins: [utilsMixin],
   data () {
     return {
       token: null,
@@ -130,14 +132,7 @@ export default {
     },
     async saveUserToLocalStorage (token) {
       const userResponse = await axios.post(process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path, {}, { headers: this.headers })
-      const userToSave = {
-        username: userResponse.data.username,
-        userId: userResponse.data._id,
-        email: userResponse.data.email,
-        leagues: userResponse.data.leagues,
-        invitations: userResponse.data.invitations,
-        avatarUrl: userResponse.data.avatarUrl
-      }
+      const userToSave = this.createUserToSave(userResponse.data)
       localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(userToSave))
     },
     goRegister () {

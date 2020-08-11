@@ -34,31 +34,41 @@
           <md-card v-for="game in selectedWeek.games" :key="game._id" class="game-container">
             <div class="inner-game-container">
               <div class="team-container left-team">
-                <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
-
-                <md-button
-                  class="md-raised material-button strong-font-color"
-                  :class="getTeamButtonColor(game, game.awayTeamAlias, teamBet.AWAY)"
-                  :disabled="isGameDisabled(game)"
-                  @click="onBet(game, teamBet.AWAY)">
-                  {{ getTeamLabel(game.awayTeamAlias) }}
-                </md-button>
-                <div v-if="notNullOrUndefinded(game.awayScore)" class="score">{{ game.awayScore }}</div>
+                <div class="image-and-button-left">
+                  <div class="logo-and-button">
+                    <div class="team-logo-container">
+                      <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
+                    </div>
+                    <md-button
+                      class="md-raised material-button strong-font-color"
+                      :class="getTeamButtonColor(game, game.awayTeamAlias, teamBet.AWAY)"
+                      :disabled="isGameDisabled(game)"
+                      @click="onBet(game, teamBet.AWAY)">
+                      {{ getTeamLabel(game.awayTeamAlias) }}
+                    </md-button>
+                  </div>
+                  <div v-if="notNullOrUndefinded(game.awayScore)" class="score">{{ game.awayScore }}</div>
+                </div>
               </div>
 
               <i class="fa fa-at at-icon" aria-hidden="true"></i>
 
               <div class="team-container right-team">
-                <div v-if="notNullOrUndefinded(game.homeScore)" class="score">{{ game.homeScore }}</div>
-                <md-button
-                  class="md-raised material-button strong-font-color"
-                  :class="getTeamButtonColor(game, game.homeTeamAlias, teamBet.HOME)"
-                  :disabled="isGameDisabled(game)"
-                  @click="onBet(game, teamBet.HOME)">
-                  {{ getTeamLabel(game.homeTeamAlias) }}
-                </md-button>
-
-                <img :src="require(`../assets/team-logos/${game.homeTeamAlias}.gif`)" class="logo">
+                <div class="image-and-button-right">
+                  <div v-if="notNullOrUndefinded(game.homeScore)" class="score">{{ game.homeScore }}</div>
+                  <div class="logo-and-button">
+                    <md-button
+                      class="md-raised material-button strong-font-color"
+                      :class="getTeamButtonColor(game, game.homeTeamAlias, teamBet.HOME)"
+                      :disabled="isGameDisabled(game)"
+                      @click="onBet(game, teamBet.HOME)">
+                      {{ getTeamLabel(game.homeTeamAlias) }}
+                    </md-button>
+                    <div class="team-logo-container">
+                      <img :src="require(`../assets/team-logos/${game.homeTeamAlias}.gif`)" class="logo">
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div>{{ getStartTime(game.startTime) }}</div>
@@ -192,8 +202,10 @@ export default {
       }
     },
     getCurrentPlayerAvatar () {
-      const avatar = this.season.standings.find(elem => elem.id === this.selectedPlayer).avatar
-      return this.notNullOrUndefinded(avatar) ? avatar : require('../assets/images/nfl-logo.png')
+      if (this.selectedPlayer) {
+        const avatar = this.season.standings.find(elem => elem.id === this.selectedPlayer).avatar
+        return this.notNullOrUndefinded(avatar) ? avatar : require('../assets/images/nfl-logo.png')
+      }
     }
   },
   watch: {
@@ -214,7 +226,6 @@ export default {
     }
     this.setDefaultPlayer()
     this.setLastWeekAsSelectedWeek()
-    console.log(this.season)
   }
 }
 </script>
@@ -239,13 +250,9 @@ export default {
   background-color: $bg-grey;
 }
 .at-icon {
+  display: flex;
+  align-items: center;
   font-size: 20px;
-  margin-top: 14px;
-}
-.logo {
-  margin-top: 8px;
-  max-width: 60px;
-  max-height: 40px;
 }
 .game-container {
   margin-bottom: 20px;
@@ -269,8 +276,10 @@ export default {
 .score {
   font-size: 20px;
   font-weight: bold;
-  padding-top: 13px;
   min-width: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .strong-font-color {
   color: black !important;
@@ -304,7 +313,27 @@ export default {
   width: 100%;
   padding: 10px;
 }
-.dropdowns-container {
-  display: block;
+.image-and-button-left {
+  display: flex;
+}
+.image-and-button-right {
+  display: flex;
+}
+.logo-and-button {
+  display: flex;
+}
+.team-logo-container {
+  width: 100%;
+  margin: auto;
+}
+.logo {
+  max-width: 60px;
+  max-height: 40px;
+  margin: auto;
+}
+@media(max-width: 1024px){
+  .logo-and-button {
+    display: block;
+  }
 }
 </style>

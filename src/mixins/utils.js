@@ -33,6 +33,16 @@ export default {
     },
     notNullOrUndefinded (item) {
       return item !== null && item !== undefined
+    },
+    createUserToSave (userResponse) {
+      return {
+        username: userResponse.username,
+        userId: userResponse._id,
+        email: userResponse.email,
+        leagues: userResponse.leagues,
+        invitations: userResponse.invitations,
+        avatarUrl: userResponse.avatarUrl
+      }
     }
   }
 }
