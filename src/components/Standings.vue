@@ -7,18 +7,21 @@
           v-for="(player, index) in standings" :key="player.name"
           class="standing-card"
           :class="{ 'own-row': player.id === user.userId }">
+          <img :src="player.avatar ? player.avatar : require('../assets/images/nfl-logo.png')" class="avatar">
           <div class="name-points">
-            <span class="font-22">{{ index + 1 }}. </span>
-            <span>{{ player.name }} - </span>
-            <span class="font-22">{{ player.score }}</span>
-          </div>
-          <div
-            class="bar"
-            :style="{
-              width: getBarWidth(player),
-              backgroundColor: colors[index]
-            }"
-          >
+            <div class="player-data-container">
+              <div class="font-22">{{ index + 1 }}. </div>
+              <div class="player-name">{{ player.name }} - </div>
+              <div class="font-22">{{ player.score }}</div>
+            </div>
+            <div
+              class="bar"
+              :style="{
+                width: getBarWidth(player),
+                backgroundColor: colors[index]
+              }"
+            >
+            </div>
           </div>
         </md-card>
       </div>
@@ -85,11 +88,14 @@ export default {
   padding: 7px;
   margin-bottom: 5px;
   background-color: rgb(233, 233, 233);
+  display: flex;
+  align-items: center;
 }
 .name-points {
   text-align: left;
   margin-bottom: 5px;
   font-size: 16px;
+  width: 100%;
 }
 .font-22 {
   font-size: 22px;
@@ -110,6 +116,15 @@ export default {
   background-color: rgb(182, 223, 182);
 }
 .avatar {
-  width: 30px;
+  max-width: 40px;
+  max-height: 40px;
+  margin-right: 10px;
+}
+.player-data-container {
+  display: flex;
+  margin-bottom: 3px;
+}
+.player-name {
+  margin: 0px 5px;
 }
 </style>

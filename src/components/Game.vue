@@ -3,27 +3,31 @@
     <md-card class="outer-card">
       <div class="md-layout">
         <md-card class="md-layout-item md-size-100 game-header">Super Bowl {{ romanize(season.numberOfSuperBowl) }}, {{ season.year }}</md-card>
+        <div class="week-player-options">
+          <div class="avatar-container">
+            <img :src="getCurrentPlayerAvatar()" class="avatar">
+          </div>
+          <div class="selector-container">
+            <md-field>
+              <md-select v-model="selectedWeekNumber">
+                <md-option
+                  v-for="week of season.weeks" :key="week.number"
+                  :value="week.number">
+                  {{ getWeekLabel(week.number) }}
+                </md-option>
+              </md-select>
+            </md-field>
 
-        <div class="selector-container">
-          <md-field class="md-layout-item selector md-size-40">
-            <md-select v-model="selectedWeekNumber">
-              <md-option
-                v-for="week of season.weeks" :key="week.number"
-                :value="week.number">
-                {{ getWeekLabel(week.number) }}
-              </md-option>
-            </md-select>
-          </md-field>
-
-          <md-field class="md-layout-item selector md-size-40">
-            <md-select v-model="selectedPlayer" :disabled="isPlayerSelectDisabled">
-              <md-option
-                v-for="player of players" :key="player.id"
-                :value="player.id">
-                {{ player.name }}
-              </md-option>
-            </md-select>
-          </md-field>
+            <md-field>
+              <md-select v-model="selectedPlayer" :disabled="isPlayerSelectDisabled">
+                <md-option
+                  v-for="player of players" :key="player.id"
+                  :value="player.id">
+                  {{ player.name }}
+                </md-option>
+              </md-select>
+            </md-field>
+          </div>
         </div>
 
         <div v-if="selectedWeek" class="md-layout-item md-size-100">
@@ -186,6 +190,10 @@ export default {
       } else {
         return `Week ${number}`
       }
+    },
+    getCurrentPlayerAvatar () {
+      const avatar = this.season.standings.find(elem => elem.id === this.selectedPlayer).avatar
+      return this.notNullOrUndefinded(avatar) ? avatar : require('../assets/images/nfl-logo.png')
     }
   },
   watch: {
@@ -206,6 +214,7 @@ export default {
     }
     this.setDefaultPlayer()
     this.setLastWeekAsSelectedWeek()
+    console.log(this.season)
   }
 }
 </script>
@@ -222,15 +231,12 @@ export default {
   background-color: $bg-grey;
 }
 .selector-container {
-  margin: auto;
-  display: flex;
-  justify-content: center;
+  margin: 10px 30px 10px 0px;
+  display: block;
+  width: 55%;
 }
 .select {
   background-color: $bg-grey;
-}
-.selector {
-  margin: 10px;
 }
 .at-icon {
   font-size: 20px;
@@ -280,5 +286,24 @@ export default {
 }
 .tie {
   background-color: rgb(230, 187, 193) !important;
+}
+.avatar-container {
+  display: flex;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  margin: 10px auto;
+}
+.avatar {
+  max-width: 100px;
+  max-height: 100px;
+}
+.week-player-options {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.dropdowns-container {
+  display: block;
 }
 </style>

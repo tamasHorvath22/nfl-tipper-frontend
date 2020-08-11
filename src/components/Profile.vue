@@ -4,7 +4,7 @@
       <md-card class="card-bg">
         <md-card-header>
           <div class="md-title">
-            <img v-if="user.avatarUrl" :src="user.avatarUrl" alt="avatar" class="avatar">
+            <img :src="user.avatarUrl ? user.avatarUrl : require('../assets/images/nfl-logo.png')" class="avatar">
             {{ user.username }}
           </div>
           <hr>
