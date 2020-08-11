@@ -290,18 +290,19 @@ export default {
 .avatar-container {
   display: flex;
   align-items: center;
-  width: 100px;
-  height: 100px;
-  margin: 10px auto;
+  width: 130px;
+  height: 130px;
+  margin-right: 10%;
 }
 .avatar {
-  max-width: 100px;
-  max-height: 100px;
+  max-width: 130px;
+  max-height: 130px;
 }
 .week-player-options {
   display: flex;
   align-items: center;
   width: 100%;
+  padding: 10px;
 }
 .dropdowns-container {
   display: block;

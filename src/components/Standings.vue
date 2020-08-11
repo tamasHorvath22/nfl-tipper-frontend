@@ -7,7 +7,9 @@
           v-for="(player, index) in standings" :key="player.name"
           class="standing-card"
           :class="{ 'own-row': player.id === user.userId }">
-          <img :src="player.avatar ? player.avatar : require('../assets/images/nfl-logo.png')" class="avatar">
+          <div class="avatar-container">
+            <img :src="player.avatar ? player.avatar : require('../assets/images/nfl-logo.png')" class="avatar">
+          </div>
           <div class="name-points">
             <div class="player-data-container">
               <div class="font-22">{{ index + 1 }}. </div>
@@ -115,10 +117,16 @@ export default {
 .own-row {
   background-color: rgb(182, 223, 182);
 }
-.avatar {
-  max-width: 40px;
-  max-height: 40px;
+.avatar-container {
+  width: 40px;
+  height: 40px;
   margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+.avatar {
+  max-width: 100%;
+  max-height: 100%;
 }
 .player-data-container {
   display: flex;
