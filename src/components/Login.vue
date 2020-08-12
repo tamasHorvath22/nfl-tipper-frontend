@@ -84,6 +84,7 @@ import localStorageKeys from '../constants/localStorageKeys'
 import SpinnerService from '../services/SpinnerService'
 import ApiErrorMessages from '../constants/api-response-messages'
 import utilsMixin from '../mixins/utils'
+import CryptoJS from 'crypto-js'
 
 export default {
   name: 'Login',
@@ -109,7 +110,7 @@ export default {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
           SpinnerService.setSpinner(true)
-          axios.post(loginPath, { username: this.username, password: this.password })
+          axios.post(loginPath, { username: this.username, password: this.ncryptPassword() })
             .then(async (loginResp) => {
               if (loginResp.data.token) {
                 this.token = loginResp.data.token
@@ -131,12 +132,22 @@ export default {
       })
     },
     async saveUserToLocalStorage (token) {
-      const userResponse = await axios.post(process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path, {}, { headers: this.headers })
+      const userResponse = await axios.post(
+        process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path,
+        {},
+        { headers: this.headers }
+      )
       const userToSave = this.createUserToSave(userResponse.data)
       localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(userToSave))
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)
+    },
+    ncryptPassword () {
+      return CryptoJS.AES.encrypt(
+        this.password,
+        process.env.VUE_APP_PASSWORD_SECRET_KEY
+      ).toString()
     },
     onForgotPassword () {
       SpinnerService.setSpinner(true)
@@ -170,8 +181,6 @@ export default {
 
 .login-form-container {
   position: absolute;
-  /* left: 30px;
-  bottom: 30px; */
   top: 50px;
   right: 50px;
 }

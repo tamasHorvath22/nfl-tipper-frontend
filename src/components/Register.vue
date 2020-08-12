@@ -115,6 +115,7 @@ import validationMixin from '../mixins/validationMixin'
 import * as axios from 'axios'
 import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
+import CryptoJS from 'crypto-js'
 // import VueRecaptcha from 'vue-recaptcha'
 
 export default {
@@ -153,6 +154,12 @@ export default {
         }
       })
     },
+    ncryptPassword () {
+      return CryptoJS.AES.encrypt(
+        this.password,
+        process.env.VUE_APP_PASSWORD_SECRET_KEY
+      ).toString()
+    },
     handleRegisterResponse (response) {
       if (response === ApiErrorMessages.USER.SUCCESSFUL_REGISTRATION) {
         this.showModal()
@@ -170,7 +177,7 @@ export default {
       return {
         username: this.username,
         email: this.email,
-        password: this.password
+        password: this.ncryptPassword()
       }
     },
     hideAllMessages () {

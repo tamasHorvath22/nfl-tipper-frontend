@@ -30,7 +30,7 @@
               <md-input
                 name="email"
                 placeholder="here..."
-                autofocus
+                ref="userEmailInput"
                 v-validate="{ required: true, validEmail: true }"
                 v-model="invitedEmail"/>
             </md-field>
@@ -137,6 +137,11 @@ export default {
       this.errorWhileInvitation = false
     },
     showModal () {
+      setTimeout(() => {
+        this.$nextTick(function () {
+          this.$refs.userEmailInput.$el.focus()
+        })
+      })
       this.$modal.show('modal')
     },
     hideModal () {
@@ -189,7 +194,7 @@ export default {
 }
 .header {
   color: black;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 600;
 }
 .card-margin {
