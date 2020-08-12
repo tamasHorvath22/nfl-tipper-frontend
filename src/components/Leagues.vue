@@ -193,7 +193,11 @@ export default {
     },
     async getUser () {
       SpinnerService.setSpinner(true)
-      const userResponse = await axios.post(process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path, {}, { headers: this.headers })
+      const userResponse = await axios.post(
+        `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_USER.path}`,
+        {},
+        { headers: this.headers }
+      )
       this.handleUserResponse(userResponse.data)
       SpinnerService.setSpinner(false)
     }

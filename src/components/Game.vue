@@ -169,6 +169,12 @@ export default {
           if (game.winner === this.teamBet.TIE) {
             return 'tie'
           }
+          if (!game.bets.find(bet => bet.id === this.selectedPlayer)) {
+            if (!isWinnerTeam) {
+              return 'team-fail'
+            }
+            return
+          }
           if (game.bets.find(bet => bet.id === this.selectedPlayer).bet === game.winner) {
             if (isWinnerTeam) {
               return 'team-success'

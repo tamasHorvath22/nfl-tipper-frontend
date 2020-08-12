@@ -40,7 +40,11 @@
             <div v-if="noLeagueFound" class="error-message">No league found, please try again!</div>
             <div v-if="userAlreadyInLeague" class="error-message">This user is already in the league.</div>
             <div v-if="userAlreadyInvited" class="error-message">This user is already invited.</div>
-            <div v-if="errorWhileInvitation" class="error-message">There was an error during invitation. Please try again!</div>
+            <div
+              v-if="errorWhileInvitation"
+              class="error-message">
+              There was an error during invitation. Please try again!
+            </div>
           </div>
         </modal>
         </div>
@@ -152,6 +156,7 @@ export default {
       axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
         .then(resp => {
           this.season = resp.data
+          console.log(this.season)
         })
     }
   },
