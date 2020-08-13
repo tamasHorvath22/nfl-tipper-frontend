@@ -120,7 +120,9 @@ export default {
                 }
                 await this.saveUserToLocalStorage(loginResp.data.token)
                 localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)
-                this.$router.push(Routes.LEAGUES.path)
+                const routeToGo = localStorage.getItem(localStorageKeys.ROUTE_TO_GO)
+                localStorage.removeItem(localStorageKeys.ROUTE_TO_GO)
+                this.$router.push(this.notNullOrUndefinded(routeToGo) ? routeToGo : Routes.LEAGUES.path)
               } else if (loginResp.data === ApiErrorMessages.USER.EMAIL_NOT_CONFIRMED) {
                 this.showEmailNotConfirmed = true
               } else if (loginResp.data === ApiErrorMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
@@ -180,7 +182,6 @@ export default {
 
 <style scoped lang="scss">
 @import '../styles/_variables.scss';
-
 .login-form-container {
   position: absolute;
   top: 50px;
@@ -203,5 +204,14 @@ export default {
 .not-registered {
   color: rgb(29, 209, 185) !important;
   font-size: 14px;
+}
+@media(max-width: 1024px){
+  .login-form-container {
+    width: 236px;
+    position: relative;
+    margin: auto;
+    top: 0px;
+    right: 0px;
+  }
 }
 </style>

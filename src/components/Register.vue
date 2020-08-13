@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <div class="register-form-container input-box">
       <md-field>
         <label class="label">Username</label>
@@ -76,7 +76,20 @@
         v-if="showRegistrationFail">
           Registration failed
       </div>
-      <div>
+
+      <vue-recaptcha
+        @verify="onCapchaVerify"
+        @expired="onCapchaExpired"
+        :sitekey="siteKey">
+      </vue-recaptcha>
+
+      <div
+        class="error-message"
+        v-if="showCapchaMessage">
+          Please check this "I'm not robot" checkbox!
+      </div>
+
+      <div class="buttons">
         <md-button
           class="md-raised submit-button material-button to-login"
           @click="onLoginPage">
@@ -88,10 +101,6 @@
           @click="onRegister">
           Register
         </md-button>
-        <!-- <vue-recaptcha
-          @verify="onVerify"
-          :sitekey="siteKey"><button type="submit">submit</button>
-        </vue-recaptcha> -->
       </div>
     </div>
 
@@ -116,11 +125,11 @@ import * as axios from 'axios'
 import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
 import CryptoJS from 'crypto-js'
-// import VueRecaptcha from 'vue-recaptcha'
+import VueRecaptcha from 'vue-recaptcha'
 
 export default {
   name: 'Register',
-  // components: { VueRecaptcha },
+  components: { VueRecaptcha },
   mixins: [validationMixin],
   data () {
     return {
@@ -132,13 +141,20 @@ export default {
       showUsernameTaken: false,
       showEmailTaken: false,
       showRegistrationFail: false,
-      showEmailNotValid: false
+      showEmailNotValid: false,
+      siteKey: process.env.VUE_APP_CAPTCHA_SITE_KEY_LOCALHOST,
+      isNotRobot: false,
+      showCapchaMessage: false
     }
   },
   methods: {
     onRegister () {
       this.hideAllMessages()
       this.$validator.validateAll().then(valid => {
+        if (!this.isNotRobot) {
+          this.showCapchaMessage = true
+          return
+        }
         if (valid) {
           if (this.passwordsAreEqual()) {
             SpinnerService.setSpinner(true)
@@ -186,6 +202,7 @@ export default {
       this.showEmailTaken = false
       this.showRegistrationFail = false
       this.showEmailNotValid = false
+      this.showCapchaMessage = false
     },
     passwordsAreEqual () {
       return this.password === this.confirm_password
@@ -198,6 +215,12 @@ export default {
     },
     hideModal () {
       this.$modal.hide('modal')
+    },
+    onCapchaVerify () {
+      this.isNotRobot = true
+    },
+    onCapchaExpired () {
+      this.isNotRobot = false
     }
   }
 }
@@ -207,7 +230,7 @@ export default {
 @import '../styles/_variables.scss';
 
 .register-form-container {
-  width: 250px;
+  width: 332px;
   position: absolute;
   top: 50px;
   right: 50px;
@@ -229,5 +252,16 @@ export default {
 }
 .to-login {
   background-color: rgb(94, 202, 245) !important;
+}
+.buttons {
+  margin-top: 10px;
+}
+@media(max-width: 1024px){
+  .register-form-container {
+    position: relative;
+    margin: auto;
+    top: 0px;
+    right: 0px;
+  }
 }
 </style>

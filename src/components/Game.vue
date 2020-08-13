@@ -4,7 +4,7 @@
       <div class="md-layout">
         <md-card
           class="md-layout-item md-size-100 game-header">
-          <md-field>
+          <md-field class="season-selector">
             <md-select v-model="selectedSeasonYear">
               <md-option
                 v-for="season of seasons" :key="season.year"
@@ -362,9 +362,23 @@ export default {
   max-height: 40px;
   margin: auto;
 }
+::v-deep .season-selector .md-select .md-input{
+  font-size: 24px;
+  text-align: center;
+}
 @media(max-width: 1024px){
   .logo-and-button {
     display: block;
+  }
+}
+@media(max-width: 600px){
+  .avatar-container {
+    width: 80px;
+    height: 80px;
+  }
+  .avatar {
+    max-width: 80px;
+    max-height: 80px;
   }
 }
 </style>
