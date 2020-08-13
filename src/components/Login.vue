@@ -137,8 +137,10 @@ export default {
         {},
         { headers: this.headers }
       )
-      const userToSave = this.createUserToSave(userResponse.data)
-      localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(userToSave))
+      localStorage.setItem(
+        localStorageKeys.NFL_TIPPER_USER,
+        JSON.stringify(this.createUserToSave(userResponse.data))
+      )
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)

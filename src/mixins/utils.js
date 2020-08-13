@@ -41,7 +41,8 @@ export default {
         email: userResponse.email,
         leagues: userResponse.leagues,
         invitations: userResponse.invitations,
-        avatarUrl: userResponse.avatarUrl
+        avatarUrl: userResponse.avatarUrl,
+        isAdmin: userResponse.isAdmin
       }
     }
   }

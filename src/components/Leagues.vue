@@ -108,9 +108,11 @@ import { ApiRoutes } from '../utils/ApiRoutes'
 import SpinnerService from '../services/SpinnerService'
 import { Routes } from '../utils/Routes'
 import ApiErrorMessages from '../constants/api-response-messages'
+import utilsMixin from '../mixins/utils'
 
 export default {
   name: 'Leagues',
+  mixins: [utilsMixin],
   data () {
     return {
       modals: {
@@ -161,16 +163,11 @@ export default {
         })
     },
     handleUserResponse (user) {
-      const userToSave = {
-        username: user.username,
-        userId: user._id,
-        email: user.email,
-        leagues: user.leagues,
-        invitations: user.invitations,
-        avatarUrl: user.avatarUrl
-      }
-      this.user = userToSave
-      localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(userToSave))
+      this.user = this.createUserToSave(user)
+      localStorage.setItem(
+        localStorageKeys.NFL_TIPPER_USER,
+        JSON.stringify(this.user)
+      )
     },
     onSelectLeague (leagueId) {
       this.$router.push({ name: Routes.LEAGUE.name, params: { leagueId: leagueId } })

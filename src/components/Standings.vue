@@ -8,7 +8,7 @@
           class="standing-card"
           :class="{ 'own-row': player.id === user.userId }">
           <div class="avatar-container">
-            <img :src="player.avatar ? player.avatar : require('../assets/images/nfl-logo.png')" class="avatar">
+            <img :src="getPlayerAvatar(player.id)" class="avatar">
           </div>
           <div class="name-points">
             <div class="player-data-container">
@@ -33,11 +33,14 @@
 
 <script>
 import localStorageKeys from '../constants/localStorageKeys'
+import utilsMixin from '../mixins/utils'
 
 export default {
   name: 'Standings',
+  mixins: [utilsMixin],
   props: {
-    standings: Array
+    standings: Array,
+    players: Array
   },
   data () {
     return {
@@ -69,6 +72,10 @@ export default {
           `rgba(${r}, ${g}, ${b}, 0.6)`
         )
       }
+    },
+    getPlayerAvatar (playerId) {
+      const player = this.players.find(p => p.id === playerId)
+      return this.notNullOrUndefinded(player.avatar) ? player.avatar : require('../assets/images/nfl-logo.png')
     }
   },
   mounted () {

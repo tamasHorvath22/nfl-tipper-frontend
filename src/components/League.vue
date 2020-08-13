@@ -10,12 +10,14 @@
       <div class="md-layout md-layout-item md-size-100">
 
         <div v-if="season" class="md-layout-item md-size-40 md-small-size-90 card-margin">
-          <Standings :standings="season.standings"/>
+          <Standings
+            :standings="season.standings"
+            :players="league.players"/>
         </div>
 
         <div class="md-layout-item md-size-45 md-small-size-90 card-margin margin-right-5">
           <Game
-            :season="league.seasons[0]"
+            :seasons="league.seasons"
             :players="league.players"
             :leagueId="league._id"
             class="game"/>
@@ -156,7 +158,6 @@ export default {
       axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
         .then(resp => {
           this.season = resp.data
-          console.log(this.season)
         })
     }
   },

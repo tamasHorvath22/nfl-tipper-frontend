@@ -2,16 +2,27 @@
   <div>
     <md-card class="outer-card">
       <div class="md-layout">
-        <md-card class="md-layout-item md-size-100 game-header">Super Bowl {{ romanize(season.numberOfSuperBowl) }}, {{ season.year }}</md-card>
+        <md-card
+          class="md-layout-item md-size-100 game-header">
+          <md-field>
+            <md-select v-model="selectedSeasonYear">
+              <md-option
+                v-for="season of seasons" :key="season.year"
+                :value="season.year">
+                Super Bowl {{ romanize(season.numberOfSuperBowl) }}, {{ season.year }}
+              </md-option>
+            </md-select>
+          </md-field>
+        </md-card>
         <div class="week-player-options">
           <div class="avatar-container">
             <img :src="getCurrentPlayerAvatar()" class="avatar">
           </div>
           <div class="selector-container">
-            <md-field>
+            <md-field v-if="selectedSeason">
               <md-select v-model="selectedWeekNumber">
                 <md-option
-                  v-for="week of season.weeks" :key="week.number"
+                  v-for="week of selectedSeason.weeks" :key="week.number"
                   :value="week.number">
                   {{ getWeekLabel(week.number) }}
                 </md-option>
@@ -99,23 +110,29 @@ export default {
   name: 'Game',
   mixins: [teamNamesMixin, utilsMixin],
   props: {
-    season: Object,
+    seasons: Array,
     players: Array,
     leagueId: String
   },
   data () {
     return {
+      selectedSeasonYear: null,
       selectedWeekNumber: null,
       selectedWeek: null,
       selectedPlayer: null,
       user: null,
       teamBet: teamBet,
-      isPlayerSelectDisabled: false
+      isPlayerSelectDisabled: false,
+      selectedSeason: null
     }
   },
   methods: {
+    setSelectedSeason () {
+      this.selectedSeason = this.seasons.find(season => season.isCurrent)
+      this.selectedSeasonYear = this.selectedSeason.year
+    },
     setLastWeekAsSelectedWeek () {
-      this.selectedWeek = this.season.weeks[this.season.weeks.length - 1]
+      this.selectedWeek = this.selectedSeason.weeks[this.selectedSeason.weeks.length - 1]
       this.selectedWeekNumber = this.selectedWeek.number
       this.sortGames()
       if (this.selectedWeek.isOpen) {
@@ -209,19 +226,26 @@ export default {
     },
     getCurrentPlayerAvatar () {
       if (this.selectedPlayer) {
-        const avatar = this.season.standings.find(elem => elem.id === this.selectedPlayer).avatar
+        const avatar = this.players.find(player => player.id === this.selectedPlayer).avatar
         return this.notNullOrUndefinded(avatar) ? avatar : require('../assets/images/nfl-logo.png')
       }
     }
   },
   watch: {
     selectedWeekNumber: function (val) {
-      this.selectedWeek = this.season.weeks.find(week => week.number === val)
+      this.selectedWeek = this.selectedSeason.weeks.find(week => week.number === val)
       this.sortGames()
       if (this.selectedWeek.isOpen) {
         this.selectedPlayer = this.user.userId
       }
       this.isPlayerSelectDisabled = this.selectedWeek.isOpen
+    },
+    selectedSeasonYear: function (val) {
+      this.selectedSeason = this.seasons.find(season => season.year === val)
+      const openWeek = this.selectedSeason.weeks.find(week => week.isOpen)
+      const weeks = this.selectedSeason.weeks
+      this.selectedWeek = this.notNullOrUndefinded(openWeek) ? openWeek : weeks[weeks.length - 1]
+      this.selectedWeekNumber = this.selectedWeek.number
     }
   },
   mounted () {
@@ -231,6 +255,7 @@ export default {
       'authorization': 'Bearer ' + this.token
     }
     this.setDefaultPlayer()
+    this.setSelectedSeason()
     this.setLastWeekAsSelectedWeek()
   }
 }

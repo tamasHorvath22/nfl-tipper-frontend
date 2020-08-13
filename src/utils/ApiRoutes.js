@@ -70,5 +70,9 @@ export const ApiRoutes = {
   MANUAL_TRIGGER: {
     path: '/api/league/trigger-manually',
     name: 'MANUAL_TRIGGER'
+  },
+  CREATE_NEW_SEASON: {
+    path: '/api/league/create-new-season',
+    name: 'CREATE_NEW_SEASON'
   }
 }
