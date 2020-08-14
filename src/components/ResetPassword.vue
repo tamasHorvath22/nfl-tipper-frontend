@@ -50,13 +50,14 @@
 import { Routes } from '../utils/Routes'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import validationMixin from '../mixins/validationMixin'
+import utilsMixin from '../mixins/utils'
 import * as axios from 'axios'
 import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
 
 export default {
   name: 'ResetPassword',
-  mixins: [validationMixin],
+  mixins: [validationMixin, utilsMixin],
   data () {
     return {
       showNotEqualPasses: false,
@@ -74,7 +75,7 @@ export default {
         if (valid) {
           if (this.passwordsAreEqual()) {
             const path = process.env.VUE_APP_BASE_URL + ApiRoutes.NEW_PASSWORD.path
-            axios.post(path, { password: this.password, hash: this.hash })
+            axios.post(path, { password: this.getNcryptedPassword(this.password), hash: this.hash })
               .then(resp => {
                 SpinnerService.setSpinner(false)
                 if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_SUCCESS) {

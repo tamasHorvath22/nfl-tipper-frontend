@@ -11,7 +11,7 @@
         </md-card-header>
 
         <md-card-content>
-          <div v-if="user.isAdmin">
+          <div v-if="user.isAdmin" class="admin-buttons">
             <md-button
               class="md-primary md-raised material-button"
               @click="manualTrigger">
@@ -21,6 +21,11 @@
               class="md-primary md-raised material-button"
               @click="createNewSeason">
               Create new season
+            </md-button>
+            <md-button
+              class="md-primary md-raised material-button"
+              @click="saveBackup">
+              Save backup
             </md-button>
           </div>
           <div class="md-layout">
@@ -207,7 +212,14 @@ export default {
         if (valid) {
           SpinnerService.setSpinner(true)
           const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_PASSWORD.path
-          axios.post(changePath, { oldPassword: this.oldPassword, newPassword: this.newPassword }, { headers: this.headers })
+          axios.post(
+            changePath,
+            {
+              oldPassword: this.getNcryptedPassword(this.oldPassword),
+              newPassword: this.getNcryptedPassword(this.newPassword)
+            },
+            { headers: this.headers }
+          )
             .then(res => {
               if (res.data === ApiErrorMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
                 this.wrongOldPassword = true
@@ -235,6 +247,11 @@ export default {
     },
     createNewSeason () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CREATE_NEW_SEASON.path
+      axios.post(changePath, { data: 'no data' }, { headers: this.headers })
+        .then(res => {})
+    },
+    saveBackup () {
+      const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.SAVE_BACKUP.path
       axios.post(changePath, { data: 'no data' }, { headers: this.headers })
         .then(res => {})
     }
@@ -295,5 +312,7 @@ export default {
   margin: 0;
   padding-left: 5px;
 }
-
+.admin-buttons {
+  margin-bottom: 20px;
+}
 </style>

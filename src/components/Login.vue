@@ -84,7 +84,6 @@ import localStorageKeys from '../constants/localStorageKeys'
 import SpinnerService from '../services/SpinnerService'
 import ApiErrorMessages from '../constants/api-response-messages'
 import utilsMixin from '../mixins/utils'
-import CryptoJS from 'crypto-js'
 
 export default {
   name: 'Login',
@@ -110,7 +109,7 @@ export default {
         if (valid) {
           const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
           SpinnerService.setSpinner(true)
-          axios.post(loginPath, { username: this.username, password: this.ncryptPassword() })
+          axios.post(loginPath, { username: this.username, password: this.getNcryptedPassword(this.password) })
             .then(async (loginResp) => {
               if (loginResp.data.token) {
                 this.token = loginResp.data.token
@@ -146,12 +145,6 @@ export default {
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)
-    },
-    ncryptPassword () {
-      return CryptoJS.AES.encrypt(
-        this.password,
-        process.env.VUE_APP_PASSWORD_SECRET_KEY
-      ).toString()
     },
     onForgotPassword () {
       SpinnerService.setSpinner(true)

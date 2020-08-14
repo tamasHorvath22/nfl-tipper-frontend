@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js'
+
 export default {
   data () {
     return {
@@ -44,6 +46,12 @@ export default {
         avatarUrl: userResponse.avatarUrl,
         isAdmin: userResponse.isAdmin
       }
+    },
+    getNcryptedPassword (password) {
+      return CryptoJS.AES.encrypt(
+        password,
+        process.env.VUE_APP_PASSWORD_SECRET_KEY
+      ).toString()
     }
   }
 }

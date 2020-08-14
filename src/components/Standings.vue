@@ -16,15 +16,12 @@
               <div class="player-name">{{ player.name }} - </div>
               <div class="font-22">{{ player.score }}</div>
             </div>
-
             <div
               class="bar"
               :style="{
                 width: getBarWidth(player),
                 backgroundColor: colors[index]
-              }"
-            >
-
+              }">
             </div>
           </div>
         </md-card>

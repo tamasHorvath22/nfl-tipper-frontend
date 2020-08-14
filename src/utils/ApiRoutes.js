@@ -78,5 +78,9 @@ export const ApiRoutes = {
   CHANGE_LEAGUE_AVATAR: {
     path: '/api/league/chane-avatar',
     name: 'CHANGE_LEAGUE_AVATAR'
+  },
+  SAVE_BACKUP: {
+    path: '/api/league/create-backup',
+    name: 'SAVE_BACKUP'
   }
 }
