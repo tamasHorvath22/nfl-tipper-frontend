@@ -76,11 +76,6 @@
               <div class="league-name">{{ league.name }}</div>
             </div>
           </md-card>
-          <!-- <md-button
-            class="md-raised submit-button material-button league-button"
-            @click="onSelectLeague(league.id)">
-            {{ league.name }}
-          </md-button> -->
         </md-card>
         </div>
 
@@ -183,7 +178,6 @@ export default {
       )
     },
     onSelectLeague (leagueId) {
-      console.log('????')
       this.$router.push({ name: Routes.LEAGUE.name, params: { leagueId: leagueId } })
     },
     showModal (modal, league) {
@@ -285,10 +279,6 @@ export default {
   margin-bottom: 20px;
   font-size: 14px;
   font-weight: bold;
-}
-.league-button {
-  // TODO not in use
-  background-color: rgb(235, 176, 50) !important;
 }
 .leagues-card {
   margin-left: 5%;
