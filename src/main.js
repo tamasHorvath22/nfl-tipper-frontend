@@ -14,7 +14,6 @@ Vue.use(VueMaterial)
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 Vue.use(VModal)
-
 Vue.config.productionTip = false
 
 new Vue({

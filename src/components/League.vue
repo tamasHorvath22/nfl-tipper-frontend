@@ -3,8 +3,49 @@
     <div v-if="league" class="md-layout">
       <div class="md-layout-item md-size-100">
         <md-card class="md-layout-item md-size-40 md-small-size-90 header-container">
-          <md-button v-if="isOwner" class="md-primary md-raised material-button invite-player" @click="showModal">Invite player</md-button>
-          <div class="header">{{ league.name }}</div>
+          <div v-if="!isOwner" class="not-owner">
+            <div class="avatar-container">
+              <img class="avatar" :src="getLeagueAvatar()">
+            </div>
+            <div class="header">{{ league.name }}</div>
+          </div>
+          <md-list v-if="isOwner" class="outer-expand">
+            <md-list-item md-expand class="accordion-elem">
+              <div class="avatar-container">
+                <img class="avatar" :src="getLeagueAvatar()">
+              </div>
+              <div class="header">{{ league.name }}</div>
+              <md-list slot="md-expand">
+                <div>
+                  <md-button
+                    class="md-primary md-raised material-button invite-player"
+                    @click="showModal">
+                    Invite player
+                  </md-button>
+
+                  <div>
+                    <md-field>
+                      <label for="first-name">League avatar URL</label>
+                      <md-input
+                        name="avatarUrl"
+                        type="text"
+                        ref="avatarUrl"
+                        class="input-field avatar-input"
+                        :class="{ 'url-editable': !isUrlFieldDisabled }"
+                        v-model="league.leagueAvatarUrl"
+                        :disabled="isUrlFieldDisabled"/>
+                    </md-field>
+                    <md-button
+                      class="md-primary md-raised material-button invite-player"
+                      @click="editSaveUrl">
+                      {{ isUrlFieldDisabled ? 'Edit URL' : 'Save URL' }}
+                    </md-button>
+                  </div>
+
+                </div>
+              </md-list>
+            </md-list-item>
+          </md-list>
         </md-card>
       </div>
       <div class="md-layout md-layout-item md-size-100">
@@ -64,10 +105,11 @@ import validationMixin from '../mixins/validationMixin'
 import ApiErrorMessages from '../constants/api-response-messages'
 import Standings from '../components/Standings'
 import Game from '../components/Game'
+import utilsMixin from '../mixins/utils'
 
 export default {
   name: 'League',
-  mixins: [validationMixin],
+  mixins: [validationMixin, utilsMixin],
   components: {
     Standings,
     Game
@@ -87,7 +129,8 @@ export default {
       userAlreadyInvited: false,
       errorWhileInvitation: false,
       isOwner: null,
-      season: null
+      season: null,
+      isUrlFieldDisabled: true
     }
   },
   methods: {
@@ -159,6 +202,27 @@ export default {
         .then(resp => {
           this.season = resp.data
         })
+    },
+    editSaveUrl () {
+      if (this.isUrlFieldDisabled) {
+        this.isUrlFieldDisabled = false
+        return
+      }
+      SpinnerService.setSpinner(true)
+      const path = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_LEAGUE_AVATAR.path
+      axios.post(
+        path,
+        { leagueId: this.leagueId, avatarUrl: this.league.leagueAvatarUrl },
+        { headers: this.headers }
+      )
+        .then(resp => {
+          SpinnerService.setSpinner(false)
+        })
+      this.isUrlFieldDisabled = !this.isUrlFieldDisabled
+    },
+    getLeagueAvatar () {
+      const savedAvatar = this.league.leagueAvatarUrl
+      return this.notNullOrUndefinded(savedAvatar) ? savedAvatar : require('../assets/images/nfl-logo.png')
     }
   },
   mounted () {
@@ -183,9 +247,6 @@ export default {
   display: flex;
   align-items: center;
 }
-.header {
- margin: auto;
-}
 .font-color {
   color: rgb(255, 255, 255);
 }
@@ -193,15 +254,11 @@ export default {
   width: 80%;
   margin: auto;
 }
-.league-header {
-  margin: 30px 0px;
-  font-size: 26px;
-  font-weight: bold;
-}
 .header {
   color: black;
   font-size: 20px;
   font-weight: 600;
+  margin: auto;
 }
 .card-margin {
   margin-left: 5%;
@@ -215,5 +272,33 @@ export default {
 }
 .invite-player {
   margin: 0;
+}
+.outer-expand {
+  width: 100%;
+}
+.url-editable {
+  background-color: rgb(207, 207, 202) !important;
+}
+.avatar-input {
+  margin: 0;
+  padding-left: 5px;
+}
+.avatar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+}
+.avatar {
+  max-width: 80px;
+  max-height: 80px;
+}
+.not-owner {
+  display: flex;
+  width: 100%;
+}
+::v-deep .accordion-elem .md-list-item-expand .md-list-item-content {
+  padding: 0;
 }
 </style>

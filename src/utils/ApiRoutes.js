@@ -74,5 +74,9 @@ export const ApiRoutes = {
   CREATE_NEW_SEASON: {
     path: '/api/league/create-new-season',
     name: 'CREATE_NEW_SEASON'
+  },
+  CHANGE_LEAGUE_AVATAR: {
+    path: '/api/league/chane-avatar',
+    name: 'CHANGE_LEAGUE_AVATAR'
   }
 }
