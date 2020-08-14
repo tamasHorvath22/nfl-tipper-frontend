@@ -142,7 +142,7 @@ export default {
       showEmailTaken: false,
       showRegistrationFail: false,
       showEmailNotValid: false,
-      siteKey: process.env.VUE_APP_CAPTCHA_SITE_KEY_LOCALHOST,
+      siteKey: process.env.VUE_APP_CAPTCHA_SITE_KEY,
       isNotRobot: false,
       showCapchaMessage: false
     }
