@@ -5,14 +5,14 @@
         <md-card class="md-layout-item md-size-40 md-small-size-90 header-container">
           <div v-if="!isOwner" class="not-owner">
             <div class="avatar-container">
-              <img class="avatar" :src="getLeagueAvatar()">
+              <img class="avatar" :src="getLeagueAvatar(league.leagueAvatarUrl)">
             </div>
             <div class="header">{{ league.name }}</div>
           </div>
           <md-list v-if="isOwner" class="outer-expand">
             <md-list-item md-expand class="accordion-elem">
               <div class="avatar-container">
-                <img class="avatar" :src="getLeagueAvatar()">
+                <img class="avatar" :src="getLeagueAvatar(league.leagueAvatarUrl)">
               </div>
               <div class="header">{{ league.name }}</div>
               <md-list slot="md-expand">
@@ -106,10 +106,11 @@ import ApiErrorMessages from '../constants/api-response-messages'
 import Standings from '../components/Standings'
 import Game from '../components/Game'
 import utilsMixin from '../mixins/utils'
+import leagueMixin from '../mixins/leagueMixin'
 
 export default {
   name: 'League',
-  mixins: [validationMixin, utilsMixin],
+  mixins: [validationMixin, utilsMixin, leagueMixin],
   components: {
     Standings,
     Game
@@ -219,10 +220,6 @@ export default {
           SpinnerService.setSpinner(false)
         })
       this.isUrlFieldDisabled = !this.isUrlFieldDisabled
-    },
-    getLeagueAvatar () {
-      const savedAvatar = this.league.leagueAvatarUrl
-      return this.notNullOrUndefinded(savedAvatar) ? savedAvatar : require('../assets/images/nfl-logo.png')
     }
   },
   mounted () {

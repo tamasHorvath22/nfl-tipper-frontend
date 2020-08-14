@@ -60,42 +60,53 @@
                 </div>
               </modal>
 
-               <modal :name="modals.acceptInvitation" width="400" height="auto">
-                <div v-if="currentLeagueToJoin" class="modal-container">
-                  <div
-                    class="modal-headers">
-                    Do you accept the invitation to "{{ currentLeagueToJoin.name }}" league?
-                  </div>
-                  <md-button
-                    class="md-raised button-margin-0-20 material-button"
-                    @click="hideModal(modals.acceptInvitation)">
-                    Close
-                  </md-button>
-                  <button
-                    class="md-raised button-margin-0-20 material-button accept-invitation"
-                    @click="onAcceptInvitation">
-                    Yes
-                  </button>
-                  <div
-                    v-if="showAcceptInvitationError"
-                    class="error-message">
-                    There was an error while joining the league. Please try again!
-                  </div>
-                </div>
-              </modal>
-
             </div>
         </div>
-        <md-card v-if="user" class="md-layout-item md-size-70 md-small-size-100 leagues-card">
-          <div v-for="league in user.leagues" :key="league.leagueId">
-            <md-button
-              class="md-raised submit-button material-button league-button"
-              @click="onSelectLeague(league.leagueId)">
-              {{ league.name }}
-            </md-button>
-          </div>
+        <md-card
+          v-if="user && userLeagues"
+          class="md-layout-item md-size-70 md-small-size-100 leagues-card">
+          <md-card
+            v-for="league in userLeagues"
+            :key="league.leagueId"
+            class="league-card">
+            <div @click="onSelectLeague(league.id)" class="league-container">
+              <div class="avatar-container">
+                <img :src="getLeagueAvatar(league.avatar)">
+              </div>
+              <div class="league-name">{{ league.name }}</div>
+            </div>
+          </md-card>
+          <!-- <md-button
+            class="md-raised submit-button material-button league-button"
+            @click="onSelectLeague(league.id)">
+            {{ league.name }}
+          </md-button> -->
         </md-card>
         </div>
+
+         <modal :name="modals.acceptInvitation" width="400" height="auto">
+          <div v-if="currentLeagueToJoin" class="modal-container">
+            <div
+              class="modal-headers">
+              Do you accept the invitation to "{{ currentLeagueToJoin.name }}" league?
+            </div>
+            <md-button
+              class="md-raised button-margin-0-20 material-button"
+              @click="hideModal(modals.acceptInvitation)">
+              Close
+            </md-button>
+            <button
+              class="md-raised button-margin-0-20 material-button accept-invitation"
+              @click="onAcceptInvitation">
+              Yes
+            </button>
+            <div
+              v-if="showAcceptInvitationError"
+              class="error-message">
+              There was an error while joining the league. Please try again!
+            </div>
+          </div>
+        </modal>
       </md-card-content>
     </md-card>
   </div>
@@ -109,10 +120,11 @@ import SpinnerService from '../services/SpinnerService'
 import { Routes } from '../utils/Routes'
 import ApiErrorMessages from '../constants/api-response-messages'
 import utilsMixin from '../mixins/utils'
+import leagueMixin from '../mixins/leagueMixin'
 
 export default {
   name: 'Leagues',
-  mixins: [utilsMixin],
+  mixins: [utilsMixin, leagueMixin],
   data () {
     return {
       modals: {
@@ -120,6 +132,7 @@ export default {
         createLeague: 'create-league'
       },
       user: null,
+      userLeagues: null,
       token: null,
       headers: null,
       newLeagueName: null,
@@ -170,6 +183,7 @@ export default {
       )
     },
     onSelectLeague (leagueId) {
+      console.log('????')
       this.$router.push({ name: Routes.LEAGUE.name, params: { leagueId: leagueId } })
     },
     showModal (modal, league) {
@@ -190,13 +204,32 @@ export default {
     },
     async getUser () {
       SpinnerService.setSpinner(true)
-      const userResponse = await axios.post(
-        `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_USER.path}`,
-        {},
-        { headers: this.headers }
-      )
-      this.handleUserResponse(userResponse.data)
+      try {
+        const userResponse = await axios.post(
+          `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_USER.path}`,
+          {},
+          { headers: this.headers }
+        )
+        this.handleUserResponse(userResponse.data)
+      } catch (err) {
+        return
+      }
+      await this.getUserLeagues()
       SpinnerService.setSpinner(false)
+    },
+    async getUserLeagues () {
+      const leagueIds = []
+      this.user.leagues.forEach(league => {
+        leagueIds.push(league.leagueId)
+      })
+      try {
+        const leaguesResponse = await axios.post(
+          `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUES.path}`,
+          { leagueIds: leagueIds },
+          { headers: this.headers }
+        )
+        this.userLeagues = leaguesResponse.data
+      } catch (err) {}
     }
   },
   mounted () {
@@ -254,6 +287,7 @@ export default {
   font-weight: bold;
 }
 .league-button {
+  // TODO not in use
   background-color: rgb(235, 176, 50) !important;
 }
 .leagues-card {
@@ -270,5 +304,38 @@ export default {
   border-color: #2ed42e !important;
   border-radius: 2px;
   // box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+.avatar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  margin-left: 20px;
+}
+.avatar {
+  max-width: 50px;
+  max-height: 50px;
+}
+.league-card {
+  width: 90%;
+  margin: 10px auto;
+  height: 60px;
+  background-color: rgba(207, 206, 203, 0.6);
+  cursor: pointer;
+}
+.league-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.league-name {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
 }
 </style>

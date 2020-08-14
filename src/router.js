@@ -73,7 +73,14 @@ export const router = new Router({
     {
       path: Routes.LEAGUES.path,
       name: Routes.LEAGUES.name,
-      component: () => import('./components/Leagues.vue')
+      component: () => import('./components/Leagues.vue'),
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
+          next()
+        } else {
+          next(Routes.LOGIN.path)
+        }
+      }
     },
     {
       path: Routes.LEAGUE.path,
