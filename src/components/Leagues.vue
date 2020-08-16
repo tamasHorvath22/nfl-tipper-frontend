@@ -311,8 +311,11 @@ export default {
   width: 90%;
   margin: 10px auto;
   height: 60px;
-  background-color: rgba(207, 206, 203, 0.6);
+  background-color: rgba(207, 206, 203, 0.5);
   cursor: pointer;
+}
+.league-card:hover {
+  background-color: rgb(207, 206, 203);
 }
 .league-container {
   display: flex;

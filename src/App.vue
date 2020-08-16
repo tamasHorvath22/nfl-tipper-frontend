@@ -3,7 +3,7 @@
     <Spinner v-if="showSpinner"/>
     <div class="nfl-bg-image"></div>
     <b-navbar v-if="showMenu" toggleable="lg" type="dark" variant="primary" class="nav-bar" fixed="top">
-      <b-navbar-brand href="#">NFL Tipper</b-navbar-brand>
+      <b-navbar-brand @click="onLeagues" class="bar-tipper">NFL Tipper</b-navbar-brand>
 
         <b-navbar-nav class="bold">
           <b-nav-item @click="onProfile">Profile</b-nav-item>
@@ -82,6 +82,9 @@ export default {
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
 
+.bar-tipper {
+  cursor: pointer;
+}
 @media(max-width: 1024px){
   .nfl-bg-image {
     background-image: url('./assets/images/nfl-vertical.jpg') !important;
