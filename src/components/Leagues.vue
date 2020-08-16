@@ -102,6 +102,20 @@
             </div>
           </div>
         </modal>
+
+        <modal :name="modals.acceptInvitationError" width="400" height="auto">
+          <div class="modal-container">
+            <div class="margin-bottom-30">
+              There was an error while trying to join the league. Please try again!
+            </div>
+            <md-button
+              class="md-primary md-raised material-button"
+              @click="hideModal(modals.acceptInvitationError)">
+              Ok
+            </md-button>
+          </div>
+        </modal>
+
       </md-card-content>
     </md-card>
   </div>
@@ -124,7 +138,8 @@ export default {
     return {
       modals: {
         acceptInvitation: 'accept-invitation-modal',
-        createLeague: 'create-league'
+        createLeague: 'create-league',
+        acceptInvitationError: 'accept-invitation-error'
       },
       user: null,
       userLeagues: null,
@@ -156,7 +171,7 @@ export default {
       SpinnerService.setSpinner(true)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.ACCEPT_LEAGUE_INVITATION.path}`
       axios.post(path, { leagueId: this.currentLeagueToJoin.leagueId }, { headers: this.headers })
-        .then(resp => {
+        .then(async (resp) => {
           if (resp.data === ApiErrorMessages.LEAGUE.JOIN_FAIL ||
               resp.data === ApiErrorMessages.LEAGUE.LEAGUES_NOT_FOUND ||
               resp.data === ApiErrorMessages.USER.NOT_FOUND ||
@@ -165,17 +180,25 @@ export default {
           } else {
             this.hideModal(this.modals.acceptInvitation)
             this.showAcceptInvitationError = false
-            this.handleUserResponse(resp.data)
+            try {
+              await this.handleUserResponse(resp.data)
+            } catch (err) {}
           }
           SpinnerService.setSpinner(false)
         })
+        .catch(() => {
+          this.showModal(this.modals.acceptInvitationError)
+        })
     },
-    handleUserResponse (user) {
+    async handleUserResponse (user) {
       this.user = this.createUserToSave(user)
       localStorage.setItem(
         localStorageKeys.NFL_TIPPER_USER,
         JSON.stringify(this.user)
       )
+      try {
+        await this.getUserLeagues()
+      } catch (err) {}
     },
     onSelectLeague (leagueId) {
       this.$router.push({ name: Routes.LEAGUE.name, params: { leagueId: leagueId } })
@@ -212,6 +235,7 @@ export default {
       SpinnerService.setSpinner(false)
     },
     async getUserLeagues () {
+      SpinnerService.setSpinner(true)
       const leagueIds = []
       this.user.leagues.forEach(league => {
         leagueIds.push(league.leagueId)
@@ -224,6 +248,7 @@ export default {
         )
         this.userLeagues = leaguesResponse.data
       } catch (err) {}
+      SpinnerService.setSpinner(false)
     }
   },
   mounted () {
