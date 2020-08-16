@@ -90,8 +90,17 @@
             @click="onSaveBets">
             Save bets
           </md-button>
-        </div>
 
+          <modal name="bet-save-error" width="400" height="auto">
+            <div class="modal-container">
+              <div class="margin-bottom-30">
+                There was an error while trying to save your bets. Please try again!
+              </div>
+              <md-button class="md-primary md-raised material-button" @click="hideModal">Ok</md-button>
+            </div>
+          </modal>
+
+        </div>
       </div>
     </md-card>
   </div>
@@ -163,13 +172,19 @@ export default {
       // return !this.selectedWeek.isOpen || isAfterDeadline
       return !this.selectedWeek.isOpen || !game.isOpen
     },
-    onSaveBets () {
+    async onSaveBets () {
       SpinnerService.setSpinner(true)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.SAVE_BETS.path}`
-      axios.post(path, { leagueId: this.leagueId, week: this.selectedWeek }, { headers: this.headers })
-        .then(resp => {
-          SpinnerService.setSpinner(false)
-        })
+      try {
+        await axios.post(
+          path,
+          { leagueId: this.leagueId, week: this.selectedWeek },
+          { headers: this.headers }
+        )
+      } catch (err) {
+        this.showModal()
+      }
+      SpinnerService.setSpinner(false)
     },
     getStartTime (timeStamp) {
       const date = new Date(timeStamp)
@@ -229,6 +244,12 @@ export default {
         const avatar = this.players.find(player => player.id === this.selectedPlayer).avatar
         return this.notNullOrUndefinded(avatar) ? avatar : require('../assets/images/nfl-logo.png')
       }
+    },
+    showModal () {
+      this.$modal.show('bet-save-error')
+    },
+    hideModal () {
+      this.$modal.hide('bet-save-error')
     }
   },
   watch: {

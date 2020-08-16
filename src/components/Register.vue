@@ -106,7 +106,7 @@
 
     <modal name="modal" width="400" height="auto" :clickToClose="false">
       <div class="modal-container">
-        <div class="invite-modal-header margin-bottom-30">
+        <div class="margin-bottom-30">
           You registered succcessfully! An email was sent to your address.
           Please click on the link to confirm your email, and activate your account
         </div>
