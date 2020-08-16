@@ -165,6 +165,9 @@ export default {
           }
           SpinnerService.setSpinner(false)
         })
+        .catch(() => {
+          this.showCreateLeagueError = true
+        })
     },
     onAcceptInvitation () {
       this.showAcceptInvitationError = false
