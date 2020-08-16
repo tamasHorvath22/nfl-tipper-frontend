@@ -3,9 +3,13 @@
     <form v-if="user" class="md-layout-item md-size-40 md-small-size-90 card-bg container-margin">
       <md-card class="card-bg">
         <md-card-header>
-          <div class="md-title">
-            <img :src="user.avatarUrl ? user.avatarUrl : require('../assets/images/nfl-logo.png')" class="avatar">
-            {{ user.username }}
+          <div class="name-and-avatar">
+            <div class="md-title avatar-container">
+              <img
+                :src="user.avatarUrl ? user.avatarUrl : require('../assets/images/nfl-logo.png')"
+                class="avatar">
+            </div>
+            <div class="username">{{ user.username }}</div>
           </div>
           <hr>
         </md-card-header>
@@ -199,12 +203,14 @@ export default {
         })
         return
       }
+      SpinnerService.setSpinner(true)
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_USER_DATA.path
       axios.post(changePath, this.user, { headers: this.headers })
         .then(user => {
           this.user = this.createUserToSave(user.data)
           localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
           this.isUserDataDisabled = true
+          SpinnerService.setSpinner(false)
         })
     },
     changePassword () {
@@ -243,17 +249,23 @@ export default {
     manualTrigger () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.MANUAL_TRIGGER.path
       axios.post(changePath, { data: 'no data' }, { headers: this.headers })
-        .then(res => {})
+        .then(res => {
+          alert(res)
+        })
     },
     createNewSeason () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CREATE_NEW_SEASON.path
       axios.post(changePath, { data: 'no data' }, { headers: this.headers })
-        .then(res => {})
+        .then(res => {
+          alert(res)
+        })
     },
     saveBackup () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.SAVE_BACKUP.path
       axios.post(changePath, { data: 'no data' }, { headers: this.headers })
-        .then(res => {})
+        .then(res => {
+          alert(res)
+        })
     }
   },
   mounted () {
@@ -290,9 +302,26 @@ export default {
 .not-editable-input.md-field::after {
   height: 0px !important;
 }
+.name-and-avatar {
+  display: flex;
+}
+.avatar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  height: 100px;
+}
 .avatar {
-  max-width: 30px;
-  max-height: 30px;
+  max-width: 100px;
+  max-height: 100px;
+}
+.username {
+  width: 100%;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .card-margin {
   margin-left: 5%;

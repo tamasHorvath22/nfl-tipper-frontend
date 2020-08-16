@@ -3,62 +3,75 @@
     <div v-if="league" class="md-layout">
       <div class="md-layout-item md-size-100">
         <md-card class="md-layout-item md-size-40 md-small-size-90 header-container">
-          <div v-if="!isOwner" class="not-owner">
-            <div class="avatar-container">
-              <img class="avatar" :src="getLeagueAvatar(league.leagueAvatarUrl)">
-            </div>
-            <div class="header">{{ league.name }}</div>
-          </div>
-          <md-list v-if="isOwner" class="outer-expand">
-            <md-list-item md-expand class="accordion-elem">
+          <div class="name-and-logo">
+            <div v-if="!isOwner" class="not-owner">
               <div class="avatar-container">
                 <img class="avatar" :src="getLeagueAvatar(league.leagueAvatarUrl)">
               </div>
               <div class="header">{{ league.name }}</div>
-              <md-list slot="md-expand">
-                <div>
-                  <md-button
-                    class="md-primary md-raised material-button invite-player"
-                    @click="showModal">
-                    Invite player
-                  </md-button>
-
+            </div>
+            <md-list v-if="isOwner" class="outer-expand">
+              <md-list-item md-expand class="accordion-elem">
+                <div class="avatar-container">
+                  <img class="avatar" :src="getLeagueAvatar(league.leagueAvatarUrl)">
+                </div>
+                <div class="header">{{ league.name }}</div>
+                <md-list slot="md-expand">
                   <div>
-                    <md-field>
-                      <label for="first-name">League avatar URL</label>
-                      <md-input
-                        name="avatarUrl"
-                        type="text"
-                        ref="avatarUrl"
-                        class="input-field avatar-input"
-                        :class="{ 'url-editable': !isUrlFieldDisabled }"
-                        v-model="league.leagueAvatarUrl"
-                        :disabled="isUrlFieldDisabled"/>
-                    </md-field>
                     <md-button
                       class="md-primary md-raised material-button invite-player"
-                      @click="editSaveUrl">
-                      {{ isUrlFieldDisabled ? 'Edit URL' : 'Save URL' }}
+                      @click="showModal">
+                      Invite player
                     </md-button>
-                  </div>
 
-                </div>
-              </md-list>
-            </md-list-item>
-          </md-list>
+                    <div>
+                      <md-field>
+                        <label for="first-name">League avatar URL</label>
+                        <md-input
+                          name="avatarUrl"
+                          type="text"
+                          ref="avatarUrl"
+                          class="input-field avatar-input"
+                          :class="{ 'url-editable': !isUrlFieldDisabled }"
+                          v-model="league.leagueAvatarUrl"
+                          :disabled="isUrlFieldDisabled"/>
+                      </md-field>
+                      <md-button
+                        class="md-primary md-raised material-button invite-player"
+                        @click="editSaveUrl">
+                        {{ isUrlFieldDisabled ? 'Edit URL' : 'Save URL' }}
+                      </md-button>
+                    </div>
+
+                  </div>
+                </md-list>
+              </md-list-item>
+            </md-list>
+          </div>
+
+          <md-field class="season-selector">
+            <md-select v-model="selectedSeasonYear">
+              <md-option
+                v-for="season of league.seasons" :key="season.year"
+                :value="season.year">
+                Super Bowl {{ romanize(season.numberOfSuperBowl) }}, {{ season.year }}
+              </md-option>
+            </md-select>
+          </md-field>
+
         </md-card>
       </div>
       <div class="md-layout md-layout-item md-size-100">
 
         <div v-if="season" class="md-layout-item md-size-40 md-small-size-90 card-margin">
           <Standings
-            :standings="season.standings"
+            :standings="standings"
             :players="league.players"/>
         </div>
 
         <div class="md-layout-item md-size-45 md-small-size-90 card-margin margin-right-5">
           <Game
-            :seasons="league.seasons"
+            :season="selectedSeason"
             :players="league.players"
             :leagueId="league._id"
             class="game"/>
@@ -131,7 +144,9 @@ export default {
       errorWhileInvitation: false,
       isOwner: null,
       season: null,
-      isUrlFieldDisabled: true
+      isUrlFieldDisabled: true,
+      selectedSeasonYear: null,
+      selectedSeason: null
     }
   },
   methods: {
@@ -142,11 +157,8 @@ export default {
       axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
         .then(league => {
           this.league = league.data
+          this.setSelectedSeason()
           this.isOwner = this.league.creator === this.user.userId
-          this.standings = this.league.seasons.find(season => season.isCurrent).standings
-          this.standings.sort((a, b) => {
-            return a.score > b.score ? -1 : 1
-          })
           SpinnerService.setSpinner(false)
         })
     },
@@ -156,7 +168,11 @@ export default {
         if (valid) {
           SpinnerService.setSpinner(true)
           const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.LEAGUE_INVITATION.path}`
-          axios.post(path, { leagueId: this.leagueId, invitedEmail: this.invitedEmail }, { headers: this.headers })
+          axios.post(
+            path,
+            { leagueId: this.leagueId, invitedEmail: this.invitedEmail },
+            { headers: this.headers }
+          )
             .then(resp => {
               if (resp.data === ApiErrorMessages.USER.NO_EMAIL_FOUND) {
                 this.noUserFound = true
@@ -220,6 +236,23 @@ export default {
           SpinnerService.setSpinner(false)
         })
       this.isUrlFieldDisabled = !this.isUrlFieldDisabled
+    },
+    setSelectedSeason () {
+      this.selectedSeason = this.league.seasons.find(season => season.isCurrent)
+      this.selectedSeasonYear = this.selectedSeason.year
+      this.setAndSortStandings()
+    },
+    setAndSortStandings () {
+      this.standings = this.selectedSeason.standings
+      this.standings.sort((a, b) => {
+        return a.score > b.score ? -1 : 1
+      })
+    }
+  },
+  watch: {
+    selectedSeasonYear: function (val) {
+      this.selectedSeason = this.league.seasons.find(season => season.year === val)
+      this.setAndSortStandings()
     }
   },
   mounted () {
@@ -241,6 +274,8 @@ export default {
 .header-container {
   padding: 10px;
   margin: 30px auto;
+}
+.name-and-logo {
   display: flex;
   align-items: center;
 }
@@ -297,5 +332,9 @@ export default {
 }
 ::v-deep .accordion-elem .md-list-item-expand .md-list-item-content {
   padding: 0;
+}
+::v-deep .season-selector .md-select .md-input{
+  font-size: 24px;
+  text-align: center;
 }
 </style>
