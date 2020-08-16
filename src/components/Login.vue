@@ -30,6 +30,7 @@
       <div class="error-message">{{ errors.first('password') }}</div>
       <div v-if="showWrongCred" class="error-message">Wrong username or password!</div>
       <div v-if="showEmailNotConfirmed" class="error-message">Your email is not confirmed yet!</div>
+      <div v-if="showUnexpectedError" class="error-message">Unexpected error occured</div>
       <div>
         <md-button
           class="md-raised md-primary submit-button material-button"
@@ -68,7 +69,11 @@
           </md-field>
           <md-button class="md-primary md-raised material-button" @click="onForgotPassword">OK</md-button>
           <div v-if="noUserFound" class="error-message">No user found by this email</div>
-          <div v-if="showFailedResetPassMessage" class="error-message">There was an error, please try again!</div>
+          <div
+            v-if="showFailedResetPassMessage"
+            class="error-message">
+            There was an error, please try again!
+          </div>
         </div>
       </modal>
 
@@ -97,71 +102,87 @@ export default {
       showEmailNotConfirmed: false,
       noUserFound: false,
       showFailedResetPassMessage: false,
+      showUnexpectedError: false,
       forgotEmail: null,
       headers: null
     }
   },
   methods: {
     async onLogin () {
-      this.showWrongCred = false
-      this.showEmailNotConfirmed = false
-      this.$validator.validateAll().then(valid => {
+      this.hideErrorMessages()
+      this.$validator.validateAll().then(async (valid) => {
         if (valid) {
-          const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
           SpinnerService.setSpinner(true)
-          axios.post(loginPath, { username: this.username, password: this.getNcryptedPassword(this.password) })
-            .then(async (loginResp) => {
-              if (loginResp.data.token) {
-                this.token = loginResp.data.token
-                this.headers = {
-                  'Content-Type': 'application/json',
-                  'authorization': 'Bearer ' + this.token
-                }
-                await this.saveUserToLocalStorage(loginResp.data.token)
-                localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, loginResp.data.token)
-                const routeToGo = localStorage.getItem(localStorageKeys.ROUTE_TO_GO)
-                localStorage.removeItem(localStorageKeys.ROUTE_TO_GO)
-                this.$router.push(this.notNullOrUndefinded(routeToGo) ? routeToGo : Routes.LEAGUES.path)
-              } else if (loginResp.data === ApiErrorMessages.USER.EMAIL_NOT_CONFIRMED) {
-                this.showEmailNotConfirmed = true
-              } else if (loginResp.data === ApiErrorMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
-                this.showWrongCred = true
-              }
+          const loginPath = process.env.VUE_APP_BASE_URL + ApiRoutes.LOGIN.path
+          let loginResp
+          try {
+            loginResp = await axios.post(
+              loginPath,
+              { username: this.username, password: this.getNcryptedPassword(this.password) }
+            )
+          } catch (err) {
+            this.showUnexpectedError = true
+            SpinnerService.setSpinner(false)
+            return
+          }
+          if (loginResp.data.token) {
+            try {
+              await this.handleSuccessfulLogin(loginResp.data.token)
+            } catch (err) {
+              this.showUnexpectedError = true
               SpinnerService.setSpinner(false)
-            })
+              return
+            }
+          } else if (loginResp.data === ApiErrorMessages.USER.EMAIL_NOT_CONFIRMED) {
+            this.showEmailNotConfirmed = true
+          } else if (loginResp.data === ApiErrorMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
+            this.showWrongCred = true
+          }
+          SpinnerService.setSpinner(false)
         }
       })
     },
-    async saveUserToLocalStorage (token) {
-      const userResponse = await axios.post(
-        process.env.VUE_APP_BASE_URL + ApiRoutes.GET_USER.path,
-        {},
-        { headers: this.headers }
-      )
-      localStorage.setItem(
-        localStorageKeys.NFL_TIPPER_USER,
-        JSON.stringify(this.createUserToSave(userResponse.data))
-      )
+    hideErrorMessages () {
+      this.showWrongCred = false
+      this.showEmailNotConfirmed = false
+      this.showUnexpectedError = false
+    },
+    async handleSuccessfulLogin (token) {
+      this.token = token
+      this.headers = {
+        'Content-Type': 'application/json',
+        'authorization': 'Bearer ' + this.token
+      }
+      try {
+        await this.getUserAndSaveToLocalstorage()
+      } catch (err) {
+        throw new Error('get user error')
+      }
+      localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, this.token)
+      const routeToGo = localStorage.getItem(localStorageKeys.ROUTE_TO_GO)
+      localStorage.removeItem(localStorageKeys.ROUTE_TO_GO)
+      this.$router.push(this.notNullOrUndefinded(routeToGo) ? routeToGo : Routes.LEAGUES.path)
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)
     },
-    onForgotPassword () {
+    async onForgotPassword () {
       SpinnerService.setSpinner(true)
-      this.showResetPassMessage = false
-      this.noUserFound = false
+      this.hideErrorMessages()
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.RESET_PASSWORD.path}`
-      axios.post(path, { email: this.forgotEmail })
-        .then(resp => {
-          if (resp.data === ApiErrorMessages.USER.NOT_FOUND) {
-            this.noUserFound = true
-          } else if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_EMAIL_FAIL) {
-            this.showFailedResetPassMessage = true
-          } else if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_EMAIL_SENT) {
-            this.hideModal()
-          }
-          SpinnerService.setSpinner(false)
-        })
+      try {
+        const resp = await axios.post(path, { email: this.forgotEmail })
+        if (resp.data === ApiErrorMessages.USER.NOT_FOUND) {
+          this.noUserFound = true
+        } else if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_EMAIL_FAIL) {
+          this.showFailedResetPassMessage = true
+        } else if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_EMAIL_SENT) {
+          this.hideModal()
+        }
+      } catch (err) {
+        this.showUnexpectedError = true
+      }
+      SpinnerService.setSpinner(false)
     },
     showModal () {
       this.$modal.show('modal')

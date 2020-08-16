@@ -1,4 +1,7 @@
 import CryptoJS from 'crypto-js'
+import { ApiRoutes } from '../utils/ApiRoutes'
+import * as axios from 'axios'
+import localStorageKeys from '../constants/localStorageKeys'
 
 export default {
   data () {
@@ -52,6 +55,21 @@ export default {
         password,
         process.env.VUE_APP_PASSWORD_SECRET_KEY
       ).toString()
+    },
+    async getUserAndSaveToLocalstorage () {
+      try {
+        const userResponse = await axios.post(
+          `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_USER.path}`,
+          null,
+          { headers: this.headers }
+        )
+        localStorage.setItem(
+          localStorageKeys.NFL_TIPPER_USER,
+          JSON.stringify(this.createUserToSave(userResponse.data))
+        )
+      } catch (err) {
+        throw new Error('get user error')
+      }
     }
   }
 }
