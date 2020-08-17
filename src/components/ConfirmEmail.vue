@@ -4,7 +4,6 @@
       <div v-if="isConfirmed" class="message-container">
         <div class="success-message margin-bottom-20">Your email was confirmed!</div>
         <md-button
-          v-if="isConfirmed"
           class="md-primary md-raised submit-button material-button"
           @click="onGoToLoginPage()">
           Go to Login page!
@@ -45,6 +44,7 @@ export default {
   methods: {
     confirmEmail (hash) {
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CONFIRM_EMAIL.path}/${hash}`
+      alert(path)
       axios.get(path)
         .then(resp => {
           if (resp.data === ApiErrorMessages.USER.EMAIL_CONFIRMED) {
