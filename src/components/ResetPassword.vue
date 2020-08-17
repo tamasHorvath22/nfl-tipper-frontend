@@ -87,6 +87,9 @@ export default {
                   this.showError = true
                 }
               })
+              .catch(() => {
+                SpinnerService.setSpinner(false)
+              })
           } else {
             this.showNotEqualPasses = true
             SpinnerService.setSpinner(false)

@@ -212,6 +212,9 @@ export default {
           this.isUserDataDisabled = true
           SpinnerService.setSpinner(false)
         })
+        .catch(() => {
+          SpinnerService.setSpinner(false)
+        })
     },
     changePassword () {
       this.$validator.validateAll().then(valid => {
@@ -237,6 +240,9 @@ export default {
               }
               SpinnerService.setSpinner(false)
             })
+            .catch(() => {
+              SpinnerService.setSpinner(false)
+            })
         }
       })
     },
@@ -252,6 +258,7 @@ export default {
         .then(res => {
           alert(res)
         })
+        .catch(() => {})
     },
     createNewSeason () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CREATE_NEW_SEASON.path
@@ -259,6 +266,7 @@ export default {
         .then(res => {
           alert(res)
         })
+        .catch(() => {})
     },
     saveBackup () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.SAVE_BACKUP.path
@@ -266,6 +274,7 @@ export default {
         .then(res => {
           alert(res)
         })
+        .catch(() => {})
     }
   },
   mounted () {

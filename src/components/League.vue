@@ -17,7 +17,7 @@
                 </div>
                 <div class="header">{{ league.name }}</div>
                 <md-list slot="md-expand">
-                  <div>
+                  <div class="league-options">
                     <md-button
                       class="md-primary md-raised material-button invite-player"
                       @click="showModal">
@@ -343,5 +343,11 @@ export default {
 ::v-deep .season-selector .md-select .md-input{
   font-size: 24px;
   text-align: center;
+}
+.league-options {
+  background-color: rgba(217, 218, 165, 0.8) !important;
+  padding: 7px;
+  width: 95%;
+  margin: auto;
 }
 </style>

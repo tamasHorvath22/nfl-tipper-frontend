@@ -164,6 +164,9 @@ export default {
                 this.handleRegisterResponse(registerResp.data)
                 SpinnerService.setSpinner(false)
               })
+              .catch(() => {
+                SpinnerService.setSpinner(false)
+              })
           } else {
             this.showNotEqualPasses = true
           }

@@ -28,7 +28,7 @@
                   </div>
                 </div>
                 <div v-if="!user.invitations.length">
-                  You have no pending invitations.
+                  You have no invitations.
                 </div>
               </md-card>
 
@@ -163,11 +163,11 @@ export default {
             this.hideModal(this.modals.createLeague)
             this.handleUserResponse(resp.data)
           }
-          SpinnerService.setSpinner(false)
         })
         .catch(() => {
           this.showCreateLeagueError = true
         })
+      SpinnerService.setSpinner(false)
     },
     onAcceptInvitation () {
       this.showAcceptInvitationError = false

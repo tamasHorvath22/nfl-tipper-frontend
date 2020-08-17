@@ -55,6 +55,7 @@ export default {
           }
           SpinnerService.setSpinner(false)
         })
+        .catch(() => {})
     },
     onGoToLoginPage () {
       this.$router.push(Routes.LOGIN.path)
