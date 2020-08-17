@@ -36,10 +36,21 @@
                           v-model="league.leagueAvatarUrl"
                           :disabled="isUrlFieldDisabled"/>
                       </md-field>
+                      <md-field>
+                        <label for="first-name">League name</label>
+                        <md-input
+                          name="avatarUrl"
+                          type="text"
+                          ref="avatarUrl"
+                          class="input-field avatar-input"
+                          :class="{ 'url-editable': !isUrlFieldDisabled }"
+                          v-model="league.name"
+                          :disabled="isUrlFieldDisabled"/>
+                      </md-field>
                       <md-button
                         class="md-primary md-raised material-button invite-player"
                         @click="editSaveUrl">
-                        {{ isUrlFieldDisabled ? 'Edit URL' : 'Save URL' }}
+                        {{ isUrlFieldDisabled ? 'Edit' : 'Save' }}
                       </md-button>
                     </div>
 
@@ -225,7 +236,7 @@ export default {
       const path = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_LEAGUE_AVATAR.path
       axios.post(
         path,
-        { leagueId: this.leagueId, avatarUrl: this.league.leagueAvatarUrl },
+        { leagueId: this.leagueId, avatarUrl: this.league.leagueAvatarUrl, leagueName: this.league.name },
         { headers: this.headers }
       )
         .then(resp => {

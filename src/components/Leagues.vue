@@ -321,12 +321,16 @@ export default {
 }
 .accept-invitation {
   background-color: rgb(46, 212, 46) !important;
-  color: rgb(24, 23, 23) !important;
+  border-color: rgb(46, 212, 46) !important;
+  color: rgb(255, 255, 255);
   padding: 6px;
   width: 88px;
-  border-color: #2ed42e !important;
   border-radius: 2px;
-  // box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+.accept-invitation:hover {
+  background-color: rgb(30, 172, 30) !important;
+  border-color: rgb(30, 172, 30) !important;
 }
 .avatar-container {
   display: flex;
