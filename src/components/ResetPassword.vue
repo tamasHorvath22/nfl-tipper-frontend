@@ -131,8 +131,18 @@ export default {
   padding: 30px;
 }
 .md-field.md-theme-default.md-focused label {
-  color: rgb(113, 120, 128) !important;
+  color: white !important;
   font-size: 14px;
   font-weight: bold;
+}
+.input-field {
+  padding-left: 5px;
+}
+.login-input {
+  width: 100%;
+  background-color: white;
+}
+.label {
+  padding-left: 5px;
 }
 </style>

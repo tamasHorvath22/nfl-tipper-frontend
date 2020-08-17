@@ -230,6 +230,11 @@ export default {
           {},
           { headers: this.headers }
         )
+        if (userResponse.data === ApiErrorMessages.USER.NOT_FOUND) {
+          localStorage.removeItem(localStorageKeys.NFL_TIPPER_TOKEN)
+          localStorage.removeItem(localStorageKeys.NFL_TIPPER_TOKEN)
+          return
+        }
         this.handleUserResponse(userResponse.data)
       } catch (err) {
         return

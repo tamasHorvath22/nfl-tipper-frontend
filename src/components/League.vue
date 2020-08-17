@@ -63,7 +63,7 @@
       </div>
       <div class="md-layout md-layout-item md-size-100">
 
-        <div v-if="season" class="md-layout-item md-size-40 md-small-size-90 card-margin">
+        <div v-if="selectedSeason" class="md-layout-item md-size-40 md-small-size-90 card-margin">
           <Standings
             :standings="standings"
             :players="league.players"/>
@@ -143,7 +143,6 @@ export default {
       userAlreadyInvited: false,
       errorWhileInvitation: false,
       isOwner: null,
-      season: null,
       isUrlFieldDisabled: true,
       selectedSeasonYear: null,
       selectedSeason: null
@@ -159,6 +158,9 @@ export default {
           this.league = league.data
           this.setSelectedSeason()
           this.isOwner = this.league.creator === this.user.userId
+          SpinnerService.setSpinner(false)
+        })
+        .catch(() => {
           SpinnerService.setSpinner(false)
         })
     },
@@ -189,6 +191,7 @@ export default {
               }
               SpinnerService.setSpinner(false)
             })
+            .catch(() => {})
         } else {
           this.showInvalidEmailError = true
         }
@@ -213,13 +216,6 @@ export default {
     hideModal () {
       this.$modal.hide('modal')
     },
-    getSeason () {
-      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_SEASON.path}`
-      axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
-        .then(resp => {
-          this.season = resp.data
-        })
-    },
     editSaveUrl () {
       if (this.isUrlFieldDisabled) {
         this.isUrlFieldDisabled = false
@@ -235,6 +231,7 @@ export default {
         .then(resp => {
           SpinnerService.setSpinner(false)
         })
+        .catch(() => {})
       this.isUrlFieldDisabled = !this.isUrlFieldDisabled
     },
     setSelectedSeason () {
@@ -263,7 +260,6 @@ export default {
       'authorization': 'Bearer ' + this.token
     }
     this.getLeague()
-    this.getSeason()
   }
 }
 
