@@ -44,7 +44,6 @@ export default {
   methods: {
     confirmEmail (hash) {
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CONFIRM_EMAIL.path}/${hash}`
-      alert(path)
       axios.get(path)
         .then(resp => {
           if (resp.data === ApiErrorMessages.USER.EMAIL_CONFIRMED) {
