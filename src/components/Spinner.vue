@@ -24,7 +24,7 @@ export default {
 }
 .spinner {
   position: fixed;
-  left: calc(50vw - 150px);
+  left: calc(50vw - 133px);
   top: calc(50vh - 95px);
   width: 300x;
   height: 167px;
