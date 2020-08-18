@@ -165,6 +165,7 @@ export default {
           { leagueId: this.leagueId, week: this.selectedWeek },
           { headers: this.headers }
         )
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
       } catch (err) {
         this.showModal()
       }

@@ -25,6 +25,17 @@
                     </md-button>
 
                     <div>
+                       <md-field>
+                        <label for="first-name">League name</label>
+                        <md-input
+                          name="leagueName"
+                          type="text"
+                          ref="avatarUrl"
+                          class="input-field avatar-input"
+                          :class="{ 'url-editable': !isUrlFieldDisabled }"
+                          v-model="league.name"
+                          :disabled="isUrlFieldDisabled"/>
+                      </md-field>
                       <md-field md-clearable>
                         <label for="first-name">League avatar URL</label>
                         <md-input
@@ -34,17 +45,6 @@
                           class="input-field avatar-input"
                           :class="{ 'url-editable': !isUrlFieldDisabled }"
                           v-model="league.leagueAvatarUrl"
-                          :disabled="isUrlFieldDisabled"/>
-                      </md-field>
-                      <md-field>
-                        <label for="first-name">League name</label>
-                        <md-input
-                          name="leagueName"
-                          type="text"
-                          ref="avatarUrl"
-                          class="input-field avatar-input"
-                          :class="{ 'url-editable': !isUrlFieldDisabled }"
-                          v-model="league.name"
                           :disabled="isUrlFieldDisabled"/>
                       </md-field>
                       <md-button
