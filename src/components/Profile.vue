@@ -50,7 +50,7 @@
               <md-field class="not-editable-input">
                 <label for="first-name">Email</label>
                 <md-input
-                  name="username"
+                  name="email"
                   type="text"
                   class="input-field input"
                   v-model="user.email"
@@ -60,10 +60,10 @@
           </div>
           <div class="md-layout">
             <div class="md-layout-item md-small-size-100">
-              <md-field>
+              <md-field md-clearable>
                 <label for="first-name">Avatar URL</label>
                 <md-input
-                  name="username"
+                  name="avatar"
                   type="text"
                   ref="urlInput"
                   class="input-field avatar-input"
@@ -120,9 +120,9 @@
                   </md-field>
                   <div class="error-message">{{ errors.first('confirm_new_password') }}</div>
                   <div
-                      v-if="areNewPasswordsNotEqual"
-                      class="error-message">
-                      The entered passords are not equal!
+                    v-if="areNewPasswordsNotEqual"
+                    class="error-message">
+                    The entered passords are not equal!
                   </div>
                   <md-button
                     class="md-raised material-button"
@@ -139,13 +139,18 @@
               <md-button
                 type="button"
                 class="md-primary md-raised button material-button material-button"
-                :class="{}"
                 @click="onEdit">
                   {{ isUserDataDisabled ? 'Edit URL' : 'Save URL' }}
               </md-button>
               <md-button
                 type="button"
-                class="md-primary md-raised button material-button"
+                class="md-primary md-raised button material-button material-button"
+                @click="onCanelEditing">
+                  Cancel
+              </md-button>
+              <md-button
+                type="button"
+                class="md-primary md-raised material-button change-password"
                 @click="showModal('change-password')">Change password
               </md-button>
             </div>
@@ -179,7 +184,7 @@ export default {
       confirm_new_password: null,
       newPassword: null,
       wrongOldPassword: null,
-      selectedTeamAvatar: null
+      currentAvatarUrl: null
     }
   },
   computed: {
@@ -198,6 +203,7 @@ export default {
     onEdit () {
       if (this.isUserDataDisabled) {
         this.isUserDataDisabled = !this.isUserDataDisabled
+        this.currentAvatarUrl = this.user.avatarUrl
         this.$nextTick(function () {
           this.$refs['urlInput'].$el.focus()
         })
@@ -215,6 +221,10 @@ export default {
         .catch(() => {
           SpinnerService.setSpinner(false)
         })
+    },
+    onCanelEditing () {
+      this.isUserDataDisabled = true
+      this.user.avatarUrl = this.currentAvatarUrl
     },
     changePassword () {
       this.$validator.validateAll().then(valid => {
@@ -307,6 +317,10 @@ export default {
 .button {
   background-color: rgb(65, 134, 83) !important;
   float: left;
+}
+.change-password {
+  background-color: rgb(165, 141, 35) !important;
+  float: right;
 }
 .not-editable-input.md-field::after {
   height: 0px !important;

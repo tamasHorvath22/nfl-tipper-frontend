@@ -19,13 +19,13 @@
                 <md-list slot="md-expand">
                   <div class="league-options">
                     <md-button
-                      class="md-primary md-raised material-button invite-player"
+                      class="md-primary md-raised material-button"
                       @click="showModal">
                       Invite player
                     </md-button>
 
                     <div>
-                      <md-field>
+                      <md-field md-clearable>
                         <label for="first-name">League avatar URL</label>
                         <md-input
                           name="avatarUrl"
@@ -39,7 +39,7 @@
                       <md-field>
                         <label for="first-name">League name</label>
                         <md-input
-                          name="avatarUrl"
+                          name="leagueName"
                           type="text"
                           ref="avatarUrl"
                           class="input-field avatar-input"
@@ -48,9 +48,14 @@
                           :disabled="isUrlFieldDisabled"/>
                       </md-field>
                       <md-button
-                        class="md-primary md-raised material-button invite-player"
+                        class="md-primary md-raised material-button edit-button"
                         @click="editSaveUrl">
                         {{ isUrlFieldDisabled ? 'Edit' : 'Save' }}
+                      </md-button>
+                      <md-button
+                        class="md-primary md-raised material-button"
+                        @click="onCancelEditing">
+                        Cancel
                       </md-button>
                     </div>
 
@@ -156,7 +161,9 @@ export default {
       isOwner: null,
       isUrlFieldDisabled: true,
       selectedSeasonYear: null,
-      selectedSeason: null
+      selectedSeason: null,
+      currentLeagueName: null,
+      currentAvatarUrl: null
     }
   },
   methods: {
@@ -229,6 +236,8 @@ export default {
     },
     editSaveUrl () {
       if (this.isUrlFieldDisabled) {
+        this.currentLeagueName = this.league.name
+        this.currentAvatarUrl = this.league.leagueAvatarUrl
         this.isUrlFieldDisabled = false
         return
       }
@@ -244,6 +253,11 @@ export default {
         })
         .catch(() => {})
       this.isUrlFieldDisabled = !this.isUrlFieldDisabled
+    },
+    onCancelEditing () {
+      this.isUrlFieldDisabled = true
+      this.league.name = this.currentLeagueName
+      this.league.leagueAvatarUrl = this.currentAvatarUrl
     },
     setSelectedSeason () {
       this.selectedSeason = this.league.seasons.find(season => season.isCurrent)
@@ -309,8 +323,8 @@ export default {
 .game {
   margin-bottom: 30px;
 }
-.invite-player {
-  margin: 0;
+.edit-button {
+  margin-right: 40px;
 }
 .outer-expand {
   width: 100%;
