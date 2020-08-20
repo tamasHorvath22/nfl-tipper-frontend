@@ -82,7 +82,8 @@
         <div v-if="selectedSeason" class="md-layout-item md-size-40 md-small-size-90 card-margin">
           <Standings
             :standings="standings"
-            :players="league.players"/>
+            :players="league.players"
+            :isSeasonOpen="selectedSeason.isOpen"/>
         </div>
 
         <div class="md-layout-item md-size-45 md-small-size-90 card-margin margin-right-5">

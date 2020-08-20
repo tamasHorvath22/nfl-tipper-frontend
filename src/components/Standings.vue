@@ -1,7 +1,8 @@
 <template>
   <div class="md-layout">
     <md-card class="standings-container">
-      <div class="standings-header">Standings</div>
+      <div v-if="isSeasonOpen" class="standings-header">Standings</div>
+      <div v-if="!isSeasonOpen" class="standings-header">Final</div>
       <div v-if="colors.length">
         <md-card
           v-for="(player, index) in standings" :key="player.name"
@@ -39,7 +40,8 @@ export default {
   mixins: [utilsMixin],
   props: {
     standings: Array,
-    players: Array
+    players: Array,
+    isSeasonOpen: Boolean
   },
   data () {
     return {
