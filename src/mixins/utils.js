@@ -7,7 +7,8 @@ export default {
   data () {
     return {
       monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+      weekdays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      barColors: ['#494368', '#FC60A8', '#F0976A', '#7A28CB', '#6F9B1C']
     }
   },
   methods: {

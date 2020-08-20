@@ -63,13 +63,12 @@ export default {
     },
     createColors () {
       for (let i = 0; i < this.standings.length; i++) {
-        const maxValue = 255
-        const r = Math.floor(Math.random() * maxValue)
-        const g = Math.floor(Math.random() * maxValue)
-        const b = Math.floor(Math.random() * maxValue)
-        this.colors.push(
-          `rgba(${r}, ${g}, ${b}, 0.6)`
-        )
+        const barColorsMaxIndex = this.barColors.length - 1
+        let tempIndex = i
+        if (tempIndex > barColorsMaxIndex) {
+          tempIndex = tempIndex % barColorsMaxIndex - 1
+        }
+        this.colors.push(this.barColors[tempIndex])
       }
     },
     getPlayerAvatar (playerId) {

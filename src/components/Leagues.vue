@@ -163,11 +163,12 @@ export default {
             this.hideModal(this.modals.createLeague)
             this.handleUserResponse(resp.data)
           }
+          SpinnerService.setSpinner(false)
         })
         .catch(() => {
           this.showCreateLeagueError = true
+          SpinnerService.setSpinner(false)
         })
-      SpinnerService.setSpinner(false)
     },
     onAcceptInvitation () {
       this.showAcceptInvitationError = false
