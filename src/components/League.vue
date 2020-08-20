@@ -237,8 +237,7 @@ export default {
     },
     editSaveUrl () {
       if (this.isUrlFieldDisabled) {
-        this.currentLeagueName = this.league.name
-        this.currentAvatarUrl = this.league.leagueAvatarUrl
+        this.setLeagueTempData()
         this.isUrlFieldDisabled = false
         return
       }
@@ -256,9 +255,11 @@ export default {
       this.isUrlFieldDisabled = !this.isUrlFieldDisabled
     },
     onCancelEditing () {
-      this.isUrlFieldDisabled = true
-      this.league.name = this.currentLeagueName
-      this.league.leagueAvatarUrl = this.currentAvatarUrl
+      if (!this.isUrlFieldDisabled) {
+        this.isUrlFieldDisabled = true
+        this.league.name = this.currentLeagueName
+        this.league.leagueAvatarUrl = this.currentAvatarUrl
+      }
     },
     setSelectedSeason () {
       this.selectedSeason = this.league.seasons.find(season => season.isCurrent)
@@ -270,6 +271,10 @@ export default {
       this.standings.sort((a, b) => {
         return a.score > b.score ? -1 : 1
       })
+    },
+    setLeagueTempData () {
+      this.currentLeagueName = this.league.name
+      this.currentAvatarUrl = this.league.leagueAvatarUrl
     }
   },
   watch: {
