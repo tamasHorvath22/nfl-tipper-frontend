@@ -103,8 +103,7 @@ export default {
       noUserFound: false,
       showFailedResetPassMessage: false,
       showUnexpectedError: false,
-      forgotEmail: null,
-      headers: null
+      forgotEmail: null
     }
   },
   methods: {
@@ -149,10 +148,6 @@ export default {
     },
     async handleSuccessfulLogin (token) {
       this.token = token
-      this.headers = {
-        'Content-Type': 'application/json',
-        'authorization': 'Bearer ' + this.token
-      }
       try {
         await this.getUserAndSaveToLocalstorage()
       } catch (err) {

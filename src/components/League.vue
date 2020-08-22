@@ -147,7 +147,7 @@ export default {
   },
   data () {
     return {
-      headers: null,
+      token: null,
       leagueId: null,
       league: null,
       standings: null,
@@ -172,7 +172,7 @@ export default {
       SpinnerService.setSpinner(true)
       this.leagueId = this.$route.params.leagueId
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUE.path}`
-      axios.post(path, { leagueId: this.leagueId }, { headers: this.headers })
+      axios.post(path, { leagueId: this.leagueId }, { headers: this.getHeader(this.token) })
         .then(league => {
           this.league = league.data
           this.setSelectedSeason()
@@ -192,7 +192,7 @@ export default {
           axios.post(
             path,
             { leagueId: this.leagueId, invitedEmail: this.invitedEmail },
-            { headers: this.headers }
+            { headers: this.getHeader(this.token) }
           )
             .then(resp => {
               if (resp.data === ApiErrorMessages.USER.NO_EMAIL_FOUND) {
@@ -246,7 +246,7 @@ export default {
       axios.post(
         path,
         { leagueId: this.leagueId, avatarUrl: this.league.leagueAvatarUrl, leagueName: this.league.name },
-        { headers: this.headers }
+        { headers: this.getHeader(this.token) }
       )
         .then(resp => {
           SpinnerService.setSpinner(false)
@@ -286,10 +286,6 @@ export default {
   mounted () {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
-    this.headers = {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer ' + this.token
-    }
     this.getLeague()
   }
 }
@@ -363,6 +359,9 @@ export default {
 ::v-deep .season-selector .md-select .md-input{
   font-size: 24px;
   text-align: center;
+}
+::v-deep .md-list-item-expand {
+  border: 0;
 }
 .league-options {
   background-color: rgba(217, 218, 165, 0.8) !important;

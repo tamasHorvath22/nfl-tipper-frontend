@@ -163,7 +163,7 @@ export default {
         await axios.post(
           path,
           { leagueId: this.leagueId, week: this.selectedWeek },
-          { headers: this.headers }
+          { headers: this.getHeader(this.token) }
         )
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
       } catch (err) {
@@ -252,10 +252,6 @@ export default {
   },
   mounted () {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
-    this.headers = {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer ' + this.token
-    }
     this.setDefaultPlayer()
     this.setLastWeekAsSelectedWeek()
   }

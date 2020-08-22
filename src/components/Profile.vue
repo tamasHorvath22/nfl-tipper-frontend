@@ -179,7 +179,6 @@ export default {
       user: null,
       token: null,
       isUserDataDisabled: true,
-      headers: null,
       oldPassword: null,
       confirm_new_password: null,
       newPassword: null,
@@ -211,7 +210,7 @@ export default {
       }
       SpinnerService.setSpinner(true)
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_USER_DATA.path
-      axios.post(changePath, this.user, { headers: this.headers })
+      axios.post(changePath, this.user, { headers: this.getHeader(this.token) })
         .then(user => {
           this.user = this.createUserToSave(user.data)
           localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
@@ -237,7 +236,7 @@ export default {
               oldPassword: this.getNcryptedPassword(this.oldPassword),
               newPassword: this.getNcryptedPassword(this.newPassword)
             },
-            { headers: this.headers }
+            { headers: this.getHeader(this.token) }
           )
             .then(res => {
               if (res.data === ApiErrorMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
@@ -263,37 +262,32 @@ export default {
       this.$modal.hide(modal)
     },
     manualTrigger () {
+      SpinnerService.setSpinner(true)
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.MANUAL_TRIGGER.path
-      axios.post(changePath, { data: 'no data' }, { headers: this.headers })
+      axios.post(changePath, {}, { headers: this.getHeader(this.token) })
         .then(res => {
-          alert(res)
+          SpinnerService.setSpinner(false)
         })
-        .catch(() => {})
+        .catch(() => {
+          SpinnerService.setSpinner(false)
+        })
     },
     createNewSeason () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CREATE_NEW_SEASON.path
-      axios.post(changePath, { data: 'no data' }, { headers: this.headers })
-        .then(res => {
-          alert(res)
-        })
+      axios.post(changePath, {}, { headers: this.getHeader(this.token) })
+        .then(res => {})
         .catch(() => {})
     },
     saveBackup () {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.SAVE_BACKUP.path
-      axios.post(changePath, { data: 'no data' }, { headers: this.headers })
-        .then(res => {
-          alert(res)
-        })
+      axios.post(changePath, {}, { headers: this.getHeader(this.token) })
+        .then(res => {})
         .catch(() => {})
     }
   },
   mounted () {
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
-    this.headers = {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer ' + this.token
-    }
   }
 }
 </script>

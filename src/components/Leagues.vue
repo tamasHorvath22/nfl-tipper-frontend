@@ -144,7 +144,6 @@ export default {
       user: null,
       userLeagues: null,
       token: null,
-      headers: null,
       newLeagueName: null,
       currentLeagueToJoin: null,
       showCreateLeagueError: false,
@@ -155,7 +154,9 @@ export default {
     onCreateLeague () {
       SpinnerService.setSpinner(true)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CREATE_LEAGUE.path}`
-      axios.post(path, { name: this.newLeagueName, leagueAvatarUrl: null }, { headers: this.headers })
+      axios.post(path,
+        { name: this.newLeagueName, leagueAvatarUrl: null },
+        { headers: this.getHeader(this.token) })
         .then(resp => {
           if (resp.data === ApiErrorMessages.LEAGUE.CREATE_FAIL) {
             this.showCreateLeagueError = true
@@ -174,7 +175,7 @@ export default {
       this.showAcceptInvitationError = false
       SpinnerService.setSpinner(true)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.ACCEPT_LEAGUE_INVITATION.path}`
-      axios.post(path, { leagueId: this.currentLeagueToJoin.leagueId }, { headers: this.headers })
+      axios.post(path, { leagueId: this.currentLeagueToJoin.leagueId }, { headers: this.getHeader(this.token) })
         .then(async (resp) => {
           if (resp.data === ApiErrorMessages.LEAGUE.JOIN_FAIL ||
               resp.data === ApiErrorMessages.LEAGUE.LEAGUES_NOT_FOUND ||
@@ -229,7 +230,7 @@ export default {
         const userResponse = await axios.post(
           `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_USER.path}`,
           {},
-          { headers: this.headers }
+          { headers: this.getHeader(this.token) }
         )
         if (userResponse.data === ApiErrorMessages.USER.NOT_FOUND) {
           localStorage.removeItem(localStorageKeys.NFL_TIPPER_TOKEN)
@@ -253,7 +254,7 @@ export default {
         const leaguesResponse = await axios.post(
           `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUES.path}`,
           { leagueIds: leagueIds },
-          { headers: this.headers }
+          { headers: this.getHeader(this.token) }
         )
         this.userLeagues = leaguesResponse.data
       } catch (err) {}
@@ -262,10 +263,6 @@ export default {
   },
   mounted () {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
-    this.headers = {
-      'Content-Type': 'application/json',
-      'authorization': 'Bearer ' + this.token
-    }
     this.getUser()
   }
 }

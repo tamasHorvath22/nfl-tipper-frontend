@@ -71,6 +71,12 @@ export default {
       } catch (err) {
         throw new Error('get user error')
       }
+    },
+    getHeader (token) {
+      return {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${token}`
+      }
     }
   }
 }
