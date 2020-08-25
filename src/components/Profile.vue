@@ -267,6 +267,7 @@ export default {
       axios.post(changePath, {}, { headers: this.getHeader(this.token) })
         .then(res => {
           SpinnerService.setSpinner(false)
+          alert(res.data)
         })
         .catch(() => {
           SpinnerService.setSpinner(false)
