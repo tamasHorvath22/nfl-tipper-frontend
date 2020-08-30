@@ -297,16 +297,28 @@ export default {
         })
     },
     createNewSeason () {
+      SpinnerService.setSpinner(true)
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CREATE_NEW_SEASON.path
       axios.post(changePath, {}, { headers: this.getHeader(this.token) })
-        .then(res => {})
-        .catch(() => {})
+        .then(res => {
+          SpinnerService.setSpinner(false)
+          alert(res.data)
+        })
+        .catch(() => {
+          SpinnerService.setSpinner(false)
+        })
     },
     saveBackup () {
+      SpinnerService.setSpinner(true)
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.SAVE_BACKUP.path
       axios.post(changePath, {}, { headers: this.getHeader(this.token) })
-        .then(res => {})
-        .catch(() => {})
+        .then(res => {
+          SpinnerService.setSpinner(false)
+          alert(res.data)
+        })
+        .catch(() => {
+          SpinnerService.setSpinner(false)
+        })
     }
   },
   mounted () {
