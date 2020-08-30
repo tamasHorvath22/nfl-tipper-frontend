@@ -17,6 +17,11 @@
         v-if="showUsernameTaken">
           This username is taken
       </div>
+      <div
+        class="error-message"
+        v-if="showUsernameStartsWith$">
+          Username cannot start with character $
+      </div>
       <div class="error-message">{{ errors.first('username') }}</div>
       <md-field>
         <label class="label">Email</label>
@@ -142,6 +147,7 @@ export default {
       showEmailTaken: false,
       showRegistrationFail: false,
       showEmailNotValid: false,
+      showUsernameStartsWith$: false,
       siteKey: process.env.VUE_APP_CAPTCHA_SITE_KEY,
       isNotRobot: false,
       showCapchaMessage: false
@@ -190,6 +196,8 @@ export default {
         this.showEmailNotValid = true
       } else if (response === ApiErrorMessages.USER.UNSUCCESSFUL_REGISTRATION) {
         this.showRegistrationFail = true
+      } else if (response === ApiErrorMessages.USER.USERNAME_STARTS_WITH_$) {
+        this.showUsernameStartsWith$ = true
       }
     },
     createUserToRegister () {

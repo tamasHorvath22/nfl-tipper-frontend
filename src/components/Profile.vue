@@ -74,6 +74,11 @@
 
             </div>
           </div>
+          <div
+            v-if="isEditUnexpectedError"
+            class="error-message">
+            Unexpected error!
+          </div>
           <div class="md-layout">
             <div class="md-layout-item md-small-size-100">
               <modal name="change-password" width="300" height="auto">
@@ -99,30 +104,35 @@
                     <label class="label">New password</label>
                     <div class="login-input">
                       <md-input
-                        name="newPassword"
+                        name="new-password"
                         type="password"
                         class="input-field"
                         v-validate="'required|min:8'"
                         v-model="newPassword"/>
                     </div>
                   </md-field>
-                  <div class="error-message">{{ errors.first('newPassword') }}</div>
+                  <div class="error-message">{{ errors.first('new-password') }}</div>
                   <md-field>
                     <label class="label">New password again</label>
                     <div class="login-input">
                       <md-input
-                        name="confirm_new_password"
+                        name="confirm-new-password"
                         class="input-field"
                         v-validate="'required|min:8'"
                         type="password"
-                        v-model="confirm_new_password"/>
+                        v-model="confirmNewPassword"/>
                     </div>
                   </md-field>
-                  <div class="error-message">{{ errors.first('confirm_new_password') }}</div>
+                  <div class="error-message">{{ errors.first('confirm-new-password') }}</div>
                   <div
                     v-if="areNewPasswordsNotEqual"
                     class="error-message">
                     The entered passords are not equal!
+                  </div>
+                  <div
+                    v-if="isUnexpectedError"
+                    class="error-message">
+                    Unexpected error!
                   </div>
                   <md-button
                     class="md-raised material-button"
@@ -180,19 +190,21 @@ export default {
       token: null,
       isUserDataDisabled: true,
       oldPassword: null,
-      confirm_new_password: null,
+      confirmNewPassword: null,
       newPassword: null,
       wrongOldPassword: null,
-      currentAvatarUrl: null
+      currentAvatarUrl: null,
+      isUnexpectedError: false,
+      isEditUnexpectedError: false
     }
   },
   computed: {
     areNewPasswordsNotEqual () {
-      if (this.newPassword && this.confirm_new_password) {
-        if (this.newPassword.length < 8 || this.confirm_new_password.length < 8) {
+      if (this.newPassword && this.confirmNewPassword) {
+        if (this.newPassword.length < 8 || this.confirmNewPassword.length < 8) {
           return null
         } else {
-          return this.newPassword !== this.confirm_new_password
+          return this.newPassword !== this.confirmNewPassword
         }
       }
       return null
@@ -200,6 +212,7 @@ export default {
   },
   methods: {
     onEdit () {
+      this.isEditUnexpectedError = false
       if (this.isUserDataDisabled) {
         this.isUserDataDisabled = !this.isUserDataDisabled
         this.currentAvatarUrl = this.user.avatarUrl
@@ -212,6 +225,10 @@ export default {
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_USER_DATA.path
       axios.post(changePath, this.user, { headers: this.getHeader(this.token) })
         .then(user => {
+          if (user.data === ApiErrorMessages.DATABASE.ERROR) {
+            this.isEditUnexpectedError = true
+            return
+          }
           this.user = this.createUserToSave(user.data)
           localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
           this.isUserDataDisabled = true
@@ -228,6 +245,7 @@ export default {
     changePassword () {
       this.$validator.validateAll().then(valid => {
         if (valid) {
+          this.hideErrorMessages()
           SpinnerService.setSpinner(true)
           const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CHANGE_PASSWORD.path
           axios.post(
@@ -241,8 +259,9 @@ export default {
             .then(res => {
               if (res.data === ApiErrorMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
                 this.wrongOldPassword = true
+              } else if (res.data === ApiErrorMessages.DATABASE.ERROR) {
+                this.isUnexpectedError = true
               } else {
-                this.wrongOldPassword = false
                 this.token = res.data.token
                 localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, this.token)
                 this.hideModal('change-password')
@@ -254,6 +273,10 @@ export default {
             })
         }
       })
+    },
+    hideErrorMessages () {
+      this.wrongOldPassword = false
+      this.isUnexpectedError = false
     },
     showModal (modal) {
       this.$modal.show(modal)

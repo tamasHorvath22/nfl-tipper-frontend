@@ -83,7 +83,8 @@ export default {
                 } else if (
                   resp.data === ApiErrorMessages.USER.RESET_PASSWORD_FAIL ||
                   resp.data === ApiErrorMessages.COMMON.ERROR ||
-                  resp.data === ApiErrorMessages.FORGET_PASSWORD.NO_REQUEST_FOUND) {
+                  resp.data === ApiErrorMessages.FORGET_PASSWORD.NO_REQUEST_FOUND ||
+                  resp.data === ApiErrorMessages.DATABASE.ERROR) {
                   this.showError = true
                 }
               })

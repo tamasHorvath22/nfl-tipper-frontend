@@ -13,6 +13,10 @@
         <div class="error-message margin-bottom-20">Your email was not confirmed!</div>
         <div class="error-message">Please try again!</div>
       </div>
+      <div v-if="isUnexpectedError" class="message-container">
+        <div class="error-message margin-bottom-20">Unexpected Error!</div>
+        <div class="error-message">Please try again!</div>
+      </div>
       <div v-if="noHashFound" class="message-container">
         <div class="margin-bottom-20">No registration found!</div>
         <md-button
@@ -38,7 +42,8 @@ export default {
     return {
       isConfirmed: false,
       isNotConfirmed: false,
-      noHashFound: false
+      noHashFound: false,
+      isUnexpectedError: false
     }
   },
   methods: {
@@ -52,6 +57,8 @@ export default {
             this.isNotConfirmed = true
           } else if (resp.data === ApiErrorMessages.USER.NO_EMAIL_HASH_FOUND) {
             this.noHashFound = true
+          } else if (resp.data === ApiErrorMessages.DATABASE.ERROR) {
+            this.isUnexpectedError = true
           }
           SpinnerService.setSpinner(false)
         })

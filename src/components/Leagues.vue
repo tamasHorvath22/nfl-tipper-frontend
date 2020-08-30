@@ -103,6 +103,21 @@
           </div>
         </modal>
 
+        <modal :name="modals.unexpectedError" width="400" height="auto">
+          <div class="modal-container">
+            <div
+              v-if="showAcceptInvitationError"
+              class="error-message">
+              There was an unexpected error. Please try again!
+            </div>
+            <button
+              class="md-raised button-margin-0-20 material-button accept-invitation"
+              @click="reloadPage()">
+              Ok
+            </button>
+          </div>
+        </modal>
+
         <modal :name="modals.acceptInvitationError" width="400" height="auto">
           <div class="modal-container">
             <div class="margin-bottom-30">
@@ -139,7 +154,8 @@ export default {
       modals: {
         acceptInvitation: 'accept-invitation-modal',
         createLeague: 'create-league',
-        acceptInvitationError: 'accept-invitation-error'
+        acceptInvitationError: 'accept-invitation-error',
+        unexpectedError: 'unexpected-error'
       },
       user: null,
       userLeagues: null,
@@ -233,8 +249,6 @@ export default {
           { headers: this.getHeader(this.token) }
         )
         if (userResponse.data === ApiErrorMessages.USER.NOT_FOUND) {
-          localStorage.removeItem(localStorageKeys.NFL_TIPPER_TOKEN)
-          localStorage.removeItem(localStorageKeys.NFL_TIPPER_TOKEN)
           return
         }
         this.handleUserResponse(userResponse.data)
@@ -259,6 +273,10 @@ export default {
         this.userLeagues = leaguesResponse.data
       } catch (err) {}
       SpinnerService.setSpinner(false)
+    },
+    reloadPage () {
+      this.hideModal(this.modals.unexpectedError)
+      this.$router.push(Routes.LEAGUES.path)
     }
   },
   mounted () {

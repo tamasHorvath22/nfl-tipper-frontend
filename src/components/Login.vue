@@ -136,6 +136,8 @@ export default {
             this.showEmailNotConfirmed = true
           } else if (loginResp.data === ApiErrorMessages.USER.WRONG_USERNAME_OR_PASSWORD) {
             this.showWrongCred = true
+          } else if (loginResp.data === ApiErrorMessages.USER.ERROR) {
+            this.showUnexpectedError = true
           }
           SpinnerService.setSpinner(false)
         }
@@ -173,6 +175,8 @@ export default {
           this.showFailedResetPassMessage = true
         } else if (resp.data === ApiErrorMessages.USER.RESET_PASSWORD_EMAIL_SENT) {
           this.hideModal()
+        } else if (resp.data === ApiErrorMessages.DATABASE.ERROR) {
+          this.showUnexpectedError = true
         }
       } catch (err) {
         this.showUnexpectedError = true
