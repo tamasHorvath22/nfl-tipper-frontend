@@ -262,7 +262,7 @@ export default {
       }
     },
     setSelectedSeason () {
-      this.selectedSeason = this.league.seasons.find(season => season.isCurrent)
+      this.selectedSeason = this.league.seasons.find(season => season.isOpen)
       this.selectedSeasonYear = this.selectedSeason.year
       this.setAndSortStandings()
     },
