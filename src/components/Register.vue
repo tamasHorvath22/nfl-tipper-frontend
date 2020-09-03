@@ -8,7 +8,7 @@
             name="username"
             id="username"
             class="input-field"
-            v-validate="'required|min:4'"
+            v-validate="'required|min:6'"
             v-model="username"/>
         </div>
       </md-field>
