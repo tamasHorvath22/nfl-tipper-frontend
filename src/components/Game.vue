@@ -74,6 +74,11 @@
             </div>
             <div>{{ getStartTime(game.startTime) }}</div>
           </md-card>
+          <md-checkbox
+            v-model="isForAllLeagues"
+            class="md-primary">
+            Save bets for all of my leagues
+          </md-checkbox>
           <md-button
             v-if="selectedWeek && selectedWeek.isOpen"
             class="md-primary md-raised material-button"
@@ -120,7 +125,8 @@ export default {
       selectedPlayer: null,
       user: null,
       teamBet: teamBet,
-      isPlayerSelectDisabled: false
+      isPlayerSelectDisabled: false,
+      isForAllLeagues: false
     }
   },
   methods: {
@@ -162,7 +168,7 @@ export default {
       try {
         await axios.post(
           path,
-          { leagueId: this.leagueId, week: this.selectedWeek },
+          { leagueId: this.leagueId, week: this.selectedWeek, isForAllLeagues: this.isForAllLeagues },
           { headers: this.getHeader(this.token) }
         )
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
