@@ -91,6 +91,7 @@
             :season="selectedSeason"
             :players="league.players"
             :leagueId="league._id"
+            :hasMoreLeagues="hasMoreLeagues"
             class="game"/>
         </div>
       </div>
@@ -147,6 +148,8 @@ export default {
   },
   data () {
     return {
+      user: null,
+      hasMoreLeagues: false,
       token: null,
       leagueId: null,
       league: null,
@@ -286,6 +289,7 @@ export default {
   mounted () {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
+    this.hasMoreLeagues = this.user.leagues.length > 1
     this.getLeague()
   }
 }

@@ -75,6 +75,7 @@
             <div>{{ getStartTime(game.startTime) }}</div>
           </md-card>
           <md-checkbox
+            v-if="hasMoreLeagues"
             v-model="isForAllLeagues"
             class="md-primary">
             Save bets for all of my leagues
@@ -116,7 +117,8 @@ export default {
   props: {
     season: Object,
     players: Array,
-    leagueId: String
+    leagueId: String,
+    hasMoreLeagues: Boolean
   },
   data () {
     return {
