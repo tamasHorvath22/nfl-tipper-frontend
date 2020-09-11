@@ -78,5 +78,13 @@ export const ApiRoutes = {
   SAVE_BACKUP: {
     path: '/api/league/create-backup',
     name: 'SAVE_BACKUP'
+  },
+  NEW_EVALUATE: {
+    path: '/api/league/new-evaluate',
+    name: 'NEW_EVALUATE'
+  },
+  EMERGENCY_NEW_WEEK: {
+    path: '/api/league/emergency-new-week',
+    name: 'EMERGENCY_NEW_WEEK'
   }
 }

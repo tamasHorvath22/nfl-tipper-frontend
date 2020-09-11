@@ -16,21 +16,38 @@
 
         <md-card-content>
           <div v-if="user.isAdmin" class="admin-buttons">
-            <md-button
-              class="md-primary md-raised material-button"
-              @click="manualTrigger">
-              Evaluate week
-            </md-button>
-            <md-button
-              class="md-primary md-raised material-button"
-              @click="createNewSeason">
-              Create new season
-            </md-button>
-            <md-button
-              class="md-primary md-raised material-button"
-              @click="saveBackup">
-              Save backup
-            </md-button>
+            <div>
+              <md-button
+                class="md-primary md-raised material-button"
+                @click="manualTrigger">
+                Evaluate week
+              </md-button>
+
+              <md-button
+                class="md-primary md-raised material-button"
+                @click="createNewSeason">
+                Create new season
+              </md-button>
+
+              <md-button
+                class="md-primary md-raised material-button"
+                @click="saveBackup">
+                Save backup
+              </md-button>
+            </div>
+            <div>
+              <md-button
+                class="md-primary md-raised material-button new-eval-button"
+                @click="newEvaluation">
+                New evaluation
+              </md-button>
+
+              <md-button
+                class="md-primary md-raised material-button new-eval-button"
+                @click="emergencyCreateNewWeek">
+                Emergency create new week
+              </md-button>
+            </div>
           </div>
           <div class="md-layout">
             <div class="md-layout-item md-small-size-100">
@@ -296,6 +313,30 @@ export default {
           SpinnerService.setSpinner(false)
         })
     },
+    newEvaluation () {
+      SpinnerService.setSpinner(true)
+      const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.NEW_EVALUATE.path
+      axios.post(changePath, {}, { headers: this.getHeader(this.token) })
+        .then(res => {
+          SpinnerService.setSpinner(false)
+          alert(res.data)
+        })
+        .catch(() => {
+          SpinnerService.setSpinner(false)
+        })
+    },
+    emergencyCreateNewWeek () {
+      SpinnerService.setSpinner(true)
+      const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.NEW_EVALUATE.path
+      axios.post(changePath, {}, { headers: this.getHeader(this.token) })
+        .then(res => {
+          SpinnerService.setSpinner(false)
+          alert(res.data)
+        })
+        .catch(() => {
+          SpinnerService.setSpinner(false)
+        })
+    },
     createNewSeason () {
       SpinnerService.setSpinner(true)
       const changePath = process.env.VUE_APP_BASE_URL + ApiRoutes.CREATE_NEW_SEASON.path
@@ -396,5 +437,8 @@ export default {
 }
 .admin-buttons {
   margin-bottom: 20px;
+}
+.new-eval-button {
+  background-color: purple !important;
 }
 </style>

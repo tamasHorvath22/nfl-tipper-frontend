@@ -186,7 +186,7 @@ export default {
       return `${day} ${time}`
     },
     getTeamButtonColor (game, team, bet) {
-      if (this.selectedWeek.isOpen) {
+      if (game.isOpen) {
         return this.teamSelectedClass(game, bet)
       } else {
         if (game.winner) {
