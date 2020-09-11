@@ -216,6 +216,9 @@ export default {
     },
     teamSelectedClass (game, bet) {
       if (this.isThisTeamSelected(game, bet)) {
+        if (this.isGameDisabled(game)) {
+          return 'active-team-disabled'
+        }
         return 'active-team-selected'
       }
     },
@@ -322,6 +325,9 @@ export default {
 }
 .active-team-selected {
   background-color: rgb(94, 202, 245) !important;
+}
+.active-team-disabled {
+  background-color: rgb(144, 176, 189) !important;
 }
 .team-success {
   background-color: rgb(75, 190, 75) !important;
