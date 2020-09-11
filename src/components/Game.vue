@@ -159,10 +159,10 @@ export default {
     },
     isGameDisabled (game) {
       // TODO uncomment this for production
-      // const now = new Date().getTime()
-      // const isAfterDeadline = now > new Date(game.startTime).getTime()
-      // return !this.selectedWeek.isOpen || isAfterDeadline
-      return !this.selectedWeek.isOpen || !game.isOpen
+      const now = new Date().getTime()
+      const isAfterDeadline = now > new Date(game.startTime).getTime()
+      return !this.selectedWeek.isOpen || isAfterDeadline
+      // return !this.selectedWeek.isOpen || !game.isOpen
     },
     async onSaveBets () {
       SpinnerService.setSpinner(true)
