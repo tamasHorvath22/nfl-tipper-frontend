@@ -86,5 +86,9 @@ export const ApiRoutes = {
   EMERGENCY_NEW_WEEK: {
     path: '/api/league/emergency-new-week',
     name: 'EMERGENCY_NEW_WEEK'
+  },
+  GET_TEAMS_STANDINGS: {
+    path: '/api/league/get-teams-standings',
+    name: 'GET_TEAMS_STANDINGS'
   }
 }

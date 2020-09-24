@@ -46,6 +46,7 @@
                       :disabled="isGameDisabled(game)"
                       @click="onBet(game, teamBet.AWAY)">
                       {{ getTeamLabel(game.awayTeamAlias) }}
+                      <div class="standing">{{ getTeamStandingLabel(game.awayTeamAlias) }}</div>
                     </md-button>
                   </div>
                   <div v-if="notNullOrUndefinded(game.awayScore)" class="score">{{ game.awayScore }}</div>
@@ -64,6 +65,7 @@
                       :disabled="isGameDisabled(game)"
                       @click="onBet(game, teamBet.HOME)">
                       {{ getTeamLabel(game.homeTeamAlias) }}
+                      <div class="standing">{{ getTeamStandingLabel(game.homeTeamAlias) }}</div>
                     </md-button>
                     <div class="team-logo-container">
                       <img :src="require(`../assets/team-logos/${game.homeTeamAlias}.gif`)" class="logo">
@@ -128,7 +130,8 @@ export default {
       user: null,
       teamBet: teamBet,
       isPlayerSelectDisabled: false,
-      isForAllLeagues: false
+      isForAllLeagues: false,
+      teamStandings: null
     }
   },
   methods: {
@@ -178,6 +181,21 @@ export default {
         this.showModal()
       }
       SpinnerService.setSpinner(false)
+    },
+    async getTeamStandings () {
+      SpinnerService.setSpinner(true)
+      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_TEAMS_STANDINGS.path}`
+      try {
+        const response = await axios.post(path, null, { headers: this.getHeader(this.token) })
+        this.teamStandings = response.data.teams
+      } catch (err) {}
+      SpinnerService.setSpinner(false)
+    },
+    getTeamStandingLabel (teamAlias) {
+      if (this.teamStandings) {
+        const teamData = this.teamStandings[teamAlias]
+        return `${teamData.win} - ${teamData.loss} - ${teamData.tie}`
+      }
     },
     getStartTime (timeStamp) {
       const date = new Date(timeStamp)
@@ -265,6 +283,7 @@ export default {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
     this.setDefaultPlayer()
     this.setLastWeekAsSelectedWeek()
+    this.getTeamStandings()
   }
 }
 </script>
@@ -372,6 +391,10 @@ export default {
   max-width: 60px;
   max-height: 40px;
   margin: auto;
+}
+.standing {
+  font-size: 10px;
+  margin-top: 5px;
 }
 @media(max-width: 1024px){
   .logo-and-button {
