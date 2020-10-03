@@ -17,17 +17,17 @@
         <md-card-content>
           <div v-if="user.isAdmin" class="admin-buttons">
             <div>
-              <md-button
+              <!-- <md-button
                 class="md-primary md-raised material-button"
                 @click="manualTrigger">
                 Evaluate week
-              </md-button>
+              </md-button> -->
 
-              <md-button
+              <!-- <md-button
                 class="md-primary md-raised material-button"
                 @click="createNewSeason">
                 Create new season
-              </md-button>
+              </md-button> -->
 
               <md-button
                 class="md-primary md-raised material-button"
