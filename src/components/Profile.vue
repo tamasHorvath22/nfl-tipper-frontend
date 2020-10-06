@@ -42,11 +42,11 @@
                 New evaluation
               </md-button>
 
-              <md-button
+              <!-- <md-button
                 class="md-primary md-raised material-button new-eval-button"
                 @click="emergencyCreateNewWeek">
                 Emergency create new week
-              </md-button>
+              </md-button> -->
             </div>
           </div>
           <div class="md-layout">
