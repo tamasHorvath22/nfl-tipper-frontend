@@ -25,7 +25,7 @@
                     </md-button>
 
                     <div>
-                       <md-field>
+                      <md-field>
                         <label for="first-name">League name</label>
                         <md-input
                           name="leagueName"
