@@ -83,7 +83,12 @@
           <Standings
             :standings="standings"
             :players="league.players"
-            :isSeasonOpen="selectedSeason.isOpen"/>
+            :isSeasonOpen="selectedSeason.isOpen"
+            class="standings-component"/>
+          <FinalWinner
+            :leagueId="leagueId"
+            :winnerTeam="selectedSeason.finalWinner[user.userId]"
+            :isOpen="isFinalWinnerOpen()"/>
         </div>
 
         <div class="md-layout-item md-size-45 md-small-size-90 card-margin margin-right-5">
@@ -136,16 +141,14 @@ import validationMixin from '../mixins/validationMixin'
 import ApiErrorMessages from '../constants/api-response-messages'
 import Standings from '../components/Standings'
 import Game from '../components/Game'
+import FinalWinner from '../components/FinalWinner'
 import utilsMixin from '../mixins/utils'
 import leagueMixin from '../mixins/leagueMixin'
 
 export default {
   name: 'League',
   mixins: [validationMixin, utilsMixin, leagueMixin],
-  components: {
-    Standings,
-    Game
-  },
+  components: { Standings, Game, FinalWinner },
   data () {
     return {
       user: null,
@@ -185,6 +188,18 @@ export default {
         .catch(() => {
           SpinnerService.setSpinner(false)
         })
+    },
+    isFinalWinnerOpen () {
+      if (this.selectedSeason.weeks.length > 1) {
+        return false
+      } else {
+        const timestamps = []
+        this.selectedSeason.weeks[0].games.forEach(game => {
+          timestamps.push(new Date(game.startTime).getTime())
+        })
+        const openGameStart = Math.min(...timestamps)
+        return new Date().getTime() < openGameStart
+      }
     },
     onInvite () {
       this.hideAllErrorMessages()
@@ -372,5 +387,8 @@ export default {
   padding: 7px;
   width: 95%;
   margin: auto;
+}
+.standings-component {
+  margin-bottom: 20px;
 }
 </style>

@@ -375,9 +375,13 @@ export default {
 }
 .team-success {
   background-color: rgb(75, 190, 75) !important;
+  color: white !important;
+  font-weight: bold;
 }
 .team-fail {
   background-color: rgb(219, 55, 77) !important;
+  color: white !important;
+  font-weight: bold;
 }
 .tie {
   background-color: rgb(230, 187, 193) !important;

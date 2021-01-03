@@ -90,5 +90,9 @@ export const ApiRoutes = {
   GET_TEAMS_STANDINGS: {
     path: '/api/league/get-teams-standings',
     name: 'GET_TEAMS_STANDINGS'
+  },
+  SAVE_FINAL_WINNER: {
+    path: '/api/league/save-final-winner',
+    name: 'SAVE_FINAL_WINNER'
   }
 }
