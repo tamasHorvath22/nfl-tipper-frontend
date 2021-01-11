@@ -4,7 +4,7 @@
       <div class="header">Select your superbowl winner team</div>
       <div class="result-and-dropdown">
         <div v-if="finalWinner">
-          <img :src="require(`../assets/team-logos/${finalWinner}.gif`)" class="logo">
+          <img :src="require(`../assets/team-logos/png/${finalWinner}.png`)" class="logo">
         </div>
 
         <md-field v-if="options.length" class="teams-dropdown">
@@ -99,7 +99,7 @@ export default {
         this.options.push({
           title: team.label,
           value: team.value,
-          img: require(`../assets/team-logos/${team.value}.gif`)
+          img: require(`../assets/team-logos/png/${team.value}.png`)
         })
       })
     }

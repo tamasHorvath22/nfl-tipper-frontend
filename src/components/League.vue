@@ -84,6 +84,8 @@
             :standings="standings"
             :players="league.players"
             :isSeasonOpen="selectedSeason.isOpen"
+            :finalWinner="selectedSeason.finalWinner"
+            :showFinalWinners="selectedSeason.weeks.length > 1"
             class="standings-component"/>
           <FinalWinner
             :leagueId="leagueId"

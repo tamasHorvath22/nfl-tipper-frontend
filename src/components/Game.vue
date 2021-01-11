@@ -37,9 +37,11 @@
               <div class="team-container left-team">
                 <div class="team-logo-container">
                   <div class="logo-name-standings logo-name-standings-mobile-left">
-                    <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
+                    <img
+                      :src="require(`../assets/team-logos/png/${game.awayTeamAlias}.png`)"
+                      class="team-logo">
                     <div class="logo-and-name-container">
-                      <div>{{ getTeamLabel(game.awayTeamAlias) }}</div>
+                      <div class="team-name">{{ getTeamLabel(game.awayTeamAlias) }}</div>
                       <div>{{ getTeamStandingLabel(game.awayTeamAlias) }}</div>
                     </div>
                   </div>
@@ -68,10 +70,12 @@
                   <div v-if="notNullOrUndefinded(game.homeScore)" class="score">{{ game.homeScore }}</div>
                   <div class="logo-name-standings logo-name-standings-mobile-right">
                     <div class="logo-and-name-container">
-                      <div>{{ getTeamLabel(game.homeTeamAlias) }}</div>
+                      <div class="team-name">{{ getTeamLabel(game.homeTeamAlias) }}</div>
                       <div>{{ getTeamStandingLabel(game.homeTeamAlias) }}</div>
                     </div>
-                    <img :src="require(`../assets/team-logos/${game.homeTeamAlias}.gif`)" class="logo">
+                    <img
+                      :src="require(`../assets/team-logos/png/${game.homeTeamAlias}.png`)"
+                      class="team-logo">
                   </div>
                 </div>
 
@@ -412,10 +416,10 @@ export default {
   justify-content: space-around;
   margin-bottom: 10px;
 }
-.logo {
-  max-width: 60px;
-  max-height: 40px;
+.team-logo {
   margin: 0px 5px;
+  width: 60px;
+  height: 60px;
 }
 .standing {
   font-size: 10px;
@@ -428,7 +432,8 @@ export default {
   background-color: #e9baab;
 }
 .logo-and-name-container {
-  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
 }
 .bet-buttons-container {
   border-radius: 5px;
@@ -436,6 +441,10 @@ export default {
 }
 .logo-name-standings {
   display: flex;
+}
+.team-name {
+  font-size: 18px;
+  font-weight: bold;
 }
 @media(max-width: 1024px){}
 @media(max-width: 600px){
