@@ -8,6 +8,7 @@ import VeeValidate from 'vee-validate'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import './styles/style.scss'
 import VModal from 'vue-js-modal'
+import './registerServiceWorker'
 
 Vue.use(VeeValidate)
 Vue.use(VueMaterial)

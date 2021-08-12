@@ -25,6 +25,11 @@
               }">
             </div>
           </div>
+          <img
+            v-if="showFinalWinners"
+            :src="require(`../assets/team-logos/png/${getWinnerTeam(finalWinner[player.id])}.png`)"
+            title="Selected final winner"
+            class="logo">
         </md-card>
       </div>
     </md-card>
@@ -41,7 +46,9 @@ export default {
   props: {
     standings: Array,
     players: Array,
-    isSeasonOpen: Boolean
+    isSeasonOpen: Boolean,
+    finalWinner: Object,
+    showFinalWinners: Boolean
   },
   data () {
     return {
@@ -76,6 +83,12 @@ export default {
     getPlayerAvatar (playerId) {
       const player = this.players.find(p => p.id === playerId)
       return this.notNullOrUndefinded(player.avatar) ? player.avatar : require('../assets/images/nfl-logo.png')
+    },
+    getWinnerTeam (team) {
+      if (team) {
+        return team
+      }
+      return 'NFL'
     }
   },
   mounted () {

@@ -35,43 +35,64 @@
           <md-card v-for="game in selectedWeek.games" :key="game._id" class="game-container">
             <div class="inner-game-container">
               <div class="team-container left-team">
-                <div class="image-and-button-left">
-                  <div class="logo-and-button">
-                    <div class="team-logo-container">
-                      <img :src="require(`../assets/team-logos/${game.awayTeamAlias}.gif`)" class="logo">
+                <div class="team-logo-container">
+                  <div class="logo-name-standings logo-name-standings-mobile-left">
+                    <img
+                      :src="require(`../assets/team-logos/png/${game.awayTeamAlias}.png`)"
+                      class="team-logo">
+                    <div class="logo-and-name-container">
+                      <div class="team-name">{{ getTeamLabel(game.awayTeamAlias) }}</div>
+                      <div>{{ getTeamStandingLabel(game.awayTeamAlias) }}</div>
                     </div>
-                    <md-button
-                      class="md-raised material-button strong-font-color"
-                      :class="getTeamButtonColor(game, game.awayTeamAlias, teamBet.AWAY)"
-                      :disabled="isGameDisabled(game)"
-                      @click="onBet(game, teamBet.AWAY)">
-                      {{ getTeamLabel(game.awayTeamAlias) }}
-                      <div class="standing">{{ getTeamStandingLabel(game.awayTeamAlias) }}</div>
-                    </md-button>
                   </div>
                   <div v-if="notNullOrUndefinded(game.awayScore)" class="score">{{ game.awayScore }}</div>
+                </div>
+                <div
+                  class="bet-buttons-container"
+                  :class="getBetButtonContainerColor(game, game.awayTeamAlias)">
+                  <md-button
+                    v-for="button of betButtons.AWAY"
+                    :key="button.value"
+                    :disabled="isGameDisabled(game)"
+                    class="md-raised material-button strong-font-color"
+                    :class="getTeamButtonColor(game, game.awayTeamAlias, button.value)"
+                    @click="onBet(game, button.value)">
+                    {{ button.label }}
+                  </md-button>
+
                 </div>
               </div>
 
               <i class="fa fa-at at-icon" aria-hidden="true"></i>
 
               <div class="team-container right-team">
-                <div class="image-and-button-right">
+                <div class="team-logo-container">
                   <div v-if="notNullOrUndefinded(game.homeScore)" class="score">{{ game.homeScore }}</div>
-                  <div class="logo-and-button">
-                    <md-button
-                      class="md-raised material-button strong-font-color"
-                      :class="getTeamButtonColor(game, game.homeTeamAlias, teamBet.HOME)"
-                      :disabled="isGameDisabled(game)"
-                      @click="onBet(game, teamBet.HOME)">
-                      {{ getTeamLabel(game.homeTeamAlias) }}
-                      <div class="standing">{{ getTeamStandingLabel(game.homeTeamAlias) }}</div>
-                    </md-button>
-                    <div class="team-logo-container">
-                      <img :src="require(`../assets/team-logos/${game.homeTeamAlias}.gif`)" class="logo">
+                  <div class="logo-name-standings logo-name-standings-mobile-right">
+                    <div class="logo-and-name-container">
+                      <div class="team-name">{{ getTeamLabel(game.homeTeamAlias) }}</div>
+                      <div>{{ getTeamStandingLabel(game.homeTeamAlias) }}</div>
                     </div>
+                    <img
+                      :src="require(`../assets/team-logos/png/${game.homeTeamAlias}.png`)"
+                      class="team-logo">
                   </div>
                 </div>
+
+                <div
+                  class="bet-buttons-container"
+                  :class="getBetButtonContainerColor(game, game.homeTeamAlias)">
+                  <md-button
+                    v-for="button of betButtons.HOME"
+                    :key="button.value"
+                    :disabled="isGameDisabled(game)"
+                    class="md-raised material-button strong-font-color"
+                    :class="getTeamButtonColor(game, game.homeTeamAlias, button.value)"
+                    @click="onBet(game, button.value)">
+                    {{ button.label }}
+                  </md-button>
+                </div>
+
               </div>
             </div>
             <div>{{ getStartTime(game.startTime) }}</div>
@@ -112,6 +133,7 @@ import SpinnerService from '../services/SpinnerService'
 import { ApiRoutes } from '../utils/ApiRoutes'
 import * as axios from 'axios'
 import utilsMixin from '../mixins/utils'
+import BetButtons from '../constants/bet.buttons'
 
 export default {
   name: 'Game',
@@ -131,7 +153,8 @@ export default {
       teamBet: teamBet,
       isPlayerSelectDisabled: false,
       isForAllLeagues: false,
-      teamStandings: null
+      teamStandings: null,
+      betButtons: BetButtons
     }
   },
   methods: {
@@ -203,30 +226,37 @@ export default {
       const time = `${this.twoDigits(date.getHours())}:${this.twoDigits(date.getMinutes())}`
       return `${day} ${time}`
     },
+    getBetButtonContainerColor (game, teamAlias) {
+      if (!game.isOpen) {
+        const userBet = game.bets.find(bet => bet.id === this.selectedPlayer)
+        if (game.winner === teamBet.TIE) {
+          if (userBet.bet === BetButtons.HOME[0].value || userBet.bet === BetButtons.AWAY[0].value) {
+            return 'nailed-winner'
+          } else {
+            return 'missed-winner'
+          }
+        }
+        const userBetTeam = userBet.bet.substring(0, 4) === 'HOME' ? game.homeTeamAlias : game.awayTeamAlias
+        if (userBetTeam !== teamAlias) {
+          return null
+        }
+        if (userBet.bet.substring(0, 4) === game.winnerValue.substring(0, 4)) {
+          return 'nailed-winner'
+        } else {
+          return 'missed-winner'
+        }
+      }
+    },
     getTeamButtonColor (game, team, bet) {
       if (game.isOpen) {
         return this.teamSelectedClass(game, bet)
       } else {
         if (game.winner) {
-          const isWinnerTeam = team === game.winnerTeamAlias
-          if (game.winner === this.teamBet.TIE) {
-            return 'tie'
-          }
-          if (!game.bets.find(bet => bet.id === this.selectedPlayer)) {
-            if (!isWinnerTeam) {
-              return 'team-fail'
-            }
+          const userBet = game.bets.find(bet => bet.id === this.selectedPlayer)
+          if (bet !== userBet.bet) {
             return
           }
-          if (game.bets.find(bet => bet.id === this.selectedPlayer).bet === game.winner) {
-            if (isWinnerTeam) {
-              return 'team-success'
-            }
-          } else {
-            if (!isWinnerTeam) {
-              return 'team-fail'
-            }
-          }
+          return game.winnerValue === userBet.bet ? 'team-success' : 'team-fail'
         } else {
           return this.teamSelectedClass(game, bet)
         }
@@ -308,9 +338,8 @@ export default {
   background-color: $bg-grey;
 }
 .at-icon {
-  display: flex;
-  align-items: center;
   font-size: 20px;
+  padding-top: 10px;
 }
 .game-container {
   margin-bottom: 20px;
@@ -321,8 +350,7 @@ export default {
   justify-content: center;
 }
 .team-container {
-  width: 190px;
-  display: flex;
+  display: block;
 }
 .left-team {
   justify-content: flex-end;
@@ -341,6 +369,7 @@ export default {
 }
 .strong-font-color {
   color: black !important;
+  margin: 4px 12px !important;
 }
 .active-team-selected {
   background-color: rgb(94, 202, 245) !important;
@@ -350,9 +379,13 @@ export default {
 }
 .team-success {
   background-color: rgb(75, 190, 75) !important;
+  color: white !important;
+  font-weight: bold;
 }
 .team-fail {
   background-color: rgb(219, 55, 77) !important;
+  color: white !important;
+  font-weight: bold;
 }
 .tie {
   background-color: rgb(230, 187, 193) !important;
@@ -375,32 +408,45 @@ export default {
   padding: 10px;
 }
 .image-and-button-left {
-  display: flex;
-}
-.image-and-button-right {
-  display: flex;
-}
-.logo-and-button {
-  display: flex;
+  display: block;
 }
 .team-logo-container {
   width: 100%;
-  margin: auto;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
 }
-.logo {
-  max-width: 60px;
-  max-height: 40px;
-  margin: auto;
+.team-logo {
+  margin: 0px 5px;
+  width: 60px;
+  height: 60px;
 }
 .standing {
   font-size: 10px;
   margin-top: 5px;
 }
-@media(max-width: 1024px){
-  .logo-and-button {
-    display: block;
-  }
+.nailed-winner {
+  background-color: #c8dca9;
 }
+.missed-winner {
+  background-color: #e9baab;
+}
+.logo-and-name-container {
+  display: flex;
+  align-items: center;
+}
+.bet-buttons-container {
+  border-radius: 5px;
+  padding: 5px;
+}
+.logo-name-standings {
+  display: flex;
+}
+.team-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+@media(max-width: 1024px){}
 @media(max-width: 600px){
   .avatar-container {
     width: 80px;
@@ -409,6 +455,18 @@ export default {
   .avatar {
     max-width: 80px;
     max-height: 80px;
+  }
+  .logo-name-standings-mobile-right {
+    flex-flow: column-reverse;
+  }
+  .logo-name-standings-mobile-left {
+    display: block;
+  }
+  .at-icon {
+    padding-top: 35px;
+  }
+  .game-container {
+    margin-bottom: 10px;
   }
 }
 </style>
