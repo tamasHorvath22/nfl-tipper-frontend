@@ -42,7 +42,7 @@
                       class="team-logo">
                     <div class="logo-and-name-container">
                       <div class="team-name">{{ getTeamLabel(game.awayTeamAlias) }}</div>
-                      <div>{{ getTeamStandingLabel(game.awayTeamAlias) }}</div>
+                      <div class="standing-values">({{ getTeamStandingLabel(game.awayTeamAlias) }})</div>
                     </div>
                   </div>
                   <div v-if="notNullOrUndefinded(game.awayScore)" class="score">{{ game.awayScore }}</div>
@@ -71,7 +71,7 @@
                   <div class="logo-name-standings logo-name-standings-mobile-right">
                     <div class="logo-and-name-container">
                       <div class="team-name">{{ getTeamLabel(game.homeTeamAlias) }}</div>
-                      <div>{{ getTeamStandingLabel(game.homeTeamAlias) }}</div>
+                      <div class="standing-values">({{ getTeamStandingLabel(game.homeTeamAlias) }})</div>
                     </div>
                     <img
                       :src="require(`../assets/team-logos/png/${game.homeTeamAlias}.png`)"
@@ -240,7 +240,9 @@ export default {
         if (userBetTeam !== teamAlias) {
           return null
         }
-        if (userBet.bet.substring(0, 4) === game.winnerValue.substring(0, 4)) {
+        const winnerValue = game.winnerValue || game.winner
+
+        if (userBet.bet.substring(0, 4) === winnerValue.substring(0, 4)) {
           return 'nailed-winner'
         } else {
           return 'missed-winner'
@@ -432,8 +434,7 @@ export default {
   background-color: #e9baab;
 }
 .logo-and-name-container {
-  display: flex;
-  align-items: center;
+  padding-top: 12px;
 }
 .bet-buttons-container {
   border-radius: 5px;
@@ -445,6 +446,9 @@ export default {
 .team-name {
   font-size: 18px;
   font-weight: bold;
+}
+.standing-values {
+  font-size: 12px;
 }
 @media(max-width: 1024px){}
 @media(max-width: 600px){

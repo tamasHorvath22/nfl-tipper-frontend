@@ -26,7 +26,7 @@
             </div>
           </div>
           <img
-            v-if="showFinalWinners"
+            v-if="finalWinner && showFinalWinners"
             :src="require(`../assets/team-logos/png/${getWinnerTeam(finalWinner[player.id])}.png`)"
             title="Selected final winner"
             class="logo">

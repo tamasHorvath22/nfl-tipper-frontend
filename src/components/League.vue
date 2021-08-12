@@ -88,6 +88,7 @@
             :showFinalWinners="selectedSeason.weeks.length > 1"
             class="standings-component"/>
           <FinalWinner
+            v-if="selectedSeason.finalWinner"
             :leagueId="leagueId"
             :winnerTeam="selectedSeason.finalWinner[user.userId]"
             :isOpen="isFinalWinnerOpen()"/>
