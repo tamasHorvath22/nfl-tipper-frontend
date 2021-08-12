@@ -83,7 +83,6 @@ export default {
           this.showModal()
         }
       } catch (err) {
-        console.error(err)
         this.showModal()
       }
       SpinnerService.setSpinner(false)
