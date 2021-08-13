@@ -23,11 +23,11 @@
                 Evaluate week
               </md-button> -->
 
-              <!-- <md-button
+              <md-button
                 class="md-primary md-raised material-button"
                 @click="createNewSeason">
                 Create new season
-              </md-button> -->
+              </md-button>
 
               <md-button
                 class="md-primary md-raised material-button"
@@ -88,7 +88,6 @@
                   v-model="user.avatarUrl"
                   :disabled="isUserDataDisabled"/>
               </md-field>
-
             </div>
           </div>
           <div
