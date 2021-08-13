@@ -42,10 +42,18 @@
                       class="team-logo">
                     <div class="logo-and-name-container">
                       <div class="team-name">{{ getTeamLabel(game.awayTeamAlias) }}</div>
-                      <div class="standing-values">({{ getTeamStandingLabel(game.awayTeamAlias) }})</div>
+                      <div
+                        v-if="teamStandings"
+                        class="standing-values">
+                        ({{ getTeamStandingLabel(game.awayTeamAlias) }})
+                      </div>
                     </div>
                   </div>
-                  <div v-if="notNullOrUndefinded(game.awayScore)" class="score">{{ game.awayScore }}</div>
+                  <div
+                    :class="{ 'invisible': !notNullOrUndefinded(game.awayScore) }"
+                    class="score">
+                    {{ game.awayScore }}
+                  </div>
                 </div>
                 <div
                   class="bet-buttons-container"
@@ -67,11 +75,19 @@
 
               <div class="team-container right-team">
                 <div class="team-logo-container">
-                  <div v-if="notNullOrUndefinded(game.homeScore)" class="score">{{ game.homeScore }}</div>
+                  <div
+                    :class="{ 'invisible': !notNullOrUndefinded(game.awayScore) }"
+                    class="score">
+                    {{ game.homeScore }}
+                  </div>
                   <div class="logo-name-standings logo-name-standings-mobile-right">
                     <div class="logo-and-name-container">
                       <div class="team-name">{{ getTeamLabel(game.homeTeamAlias) }}</div>
-                      <div class="standing-values">({{ getTeamStandingLabel(game.homeTeamAlias) }})</div>
+                      <div
+                        v-if="teamStandings"
+                        class="standing-values">
+                        ({{ getTeamStandingLabel(game.homeTeamAlias) }})
+                      </div>
                     </div>
                     <img
                       :src="require(`../assets/team-logos/png/${game.homeTeamAlias}.png`)"
@@ -341,7 +357,7 @@ export default {
 }
 .at-icon {
   font-size: 20px;
-  padding-top: 10px;
+  padding-top: 20px;
 }
 .game-container {
   margin-bottom: 20px;
@@ -419,7 +435,7 @@ export default {
   margin-bottom: 10px;
 }
 .team-logo {
-  margin: 0px 5px;
+  margin: auto;
   width: 60px;
   height: 60px;
 }
@@ -434,7 +450,8 @@ export default {
   background-color: #e9baab;
 }
 .logo-and-name-container {
-  padding-top: 12px;
+  padding-top: 20px;
+  width: 120px;
 }
 .bet-buttons-container {
   border-radius: 5px;
@@ -449,6 +466,9 @@ export default {
 }
 .standing-values {
   font-size: 12px;
+}
+.invisible {
+  visibility: hidden;
 }
 @media(max-width: 1024px){}
 @media(max-width: 600px){
@@ -467,7 +487,7 @@ export default {
     display: block;
   }
   .at-icon {
-    padding-top: 35px;
+    padding-top: 50px;
   }
   .game-container {
     margin-bottom: 10px;

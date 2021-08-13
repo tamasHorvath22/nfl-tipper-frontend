@@ -248,6 +248,10 @@ export default {
           { headers: this.getHeader(this.token) }
         )
         if (userResponse.data === ApiErrorMessages.USER.NOT_FOUND) {
+          localStorage.removeItem(localStorageKeys.NFL_TIPPER_TOKEN)
+          localStorage.removeItem(localStorageKeys.NFL_TIPPER_USER)
+          SpinnerService.setSpinner(false)
+          this.$router.push(Routes.LOGIN.path)
           return
         }
         this.handleUserResponse(userResponse.data)

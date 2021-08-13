@@ -134,11 +134,6 @@ export default {
   align-items: center;
   padding: 5px;
 }
-.team-name {
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
-}
 .teams-dropdown {
   margin: 0px 10px;
 }
