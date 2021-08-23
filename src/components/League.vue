@@ -91,6 +91,9 @@
             v-if="selectedSeason.finalWinner"
             :leagueId="leagueId"
             :winnerTeam="selectedSeason.finalWinner[user.userId]"
+            :showFinalWinners="showAllFinalWinners"
+            :finalWinnerBets="selectedSeason.finalWinner"
+            :players="league.players"
             :isOpen="isFinalWinnerOpen()"/>
         </div>
 
@@ -173,7 +176,8 @@ export default {
       selectedSeasonYear: null,
       selectedSeason: null,
       currentLeagueName: null,
-      currentAvatarUrl: null
+      currentAvatarUrl: null,
+      showAllFinalWinners: null
     }
   },
   methods: {
@@ -186,6 +190,9 @@ export default {
           this.league = league.data
           this.setSelectedSeason()
           this.isOwner = this.league.creator === this.user.userId
+          this.showAllFinalWinners = this.selectedSeason.weeks.length > 1
+            ? true
+            : new Date().getTime() > new Date(this.selectedSeason.weeks[0].games.sort((a, b) => a.startTime > b.startTime ? 1 : -1)[0].startTime).getTime()
           SpinnerService.setSpinner(false)
         })
         .catch(() => {

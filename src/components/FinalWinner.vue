@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <md-card>
+    <md-card v-if="!showFinalWinners">
       <div class="header">Select your superbowl winner team</div>
       <div class="result-and-dropdown">
         <div v-if="finalWinner">
@@ -27,6 +27,20 @@
         Save
       </md-button>
 
+    </md-card>
+
+    <md-card v-if="showFinalWinners" class="final-winners-card">
+      <div class="final-winner-header">Final winners</div>
+      <div
+        v-for="userId of Object.keys(finalWinnerBets)"
+        :key="userId"
+        class="final-winner-container">
+        <div>{{ getUsername(userId) }}</div>
+        <div v-if="finalWinnerBets[userId]" class="team-info">
+          <div>{{ getTeamName(finalWinnerBets[userId]) }}</div>
+          <img :src="finalWinnerBets[userId]" class="logo">
+        </div>
+      </div>
     </md-card>
 
     <modal name="bet-save-error-modal" width="400" height="auto">
@@ -56,7 +70,10 @@ export default {
   props: {
     leagueId: String,
     winnerTeam: String,
-    isOpen: Boolean
+    isOpen: Boolean,
+    showFinalWinners: Boolean,
+    finalWinnerBets: Object,
+    players: Array
   },
   data () {
     return {
@@ -97,10 +114,16 @@ export default {
       Teams.forEach(team => {
         this.options.push({
           title: team.label,
-          value: team.value,
-          img: require(`../assets/team-logos/png/${team.value}.png`)
+          value: team.value
         })
       })
+    },
+    getUsername (id) {
+      return this.players.find(player => player.id === id).name
+    },
+    getTeamName (teamId) {
+      const team = this.options.find(option => option.value === teamId)
+      return team ? team.title : ''
     }
   },
   mounted () {
@@ -136,5 +159,23 @@ export default {
 }
 .teams-dropdown {
   margin: 0px 10px;
+}
+.final-winners-card {
+  padding: 12px;
+}
+.final-winner-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+}
+.final-winner-header {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+.team-info {
+  display: flex;
+  align-items: center;
 }
 </style>

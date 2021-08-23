@@ -107,7 +107,7 @@ export default {
   background-color: $bg-grey;
 }
 .standing-card {
-  padding: 7px;
+  padding: 8px;
   margin-bottom: 5px;
   background-color: rgb(233, 233, 233);
   display: flex;
