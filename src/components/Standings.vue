@@ -13,8 +13,10 @@
           </div>
           <div class="name-points">
             <div class="player-data-container">
-              <div class="font-22">{{ index + 1 }}. </div>
-              <div class="player-name">{{ player.name }} - </div>
+              <div class="standing-and-name">
+                <div class="font-22">{{ index + 1 }}. </div>
+                <div class="player-name">{{ player.name }}</div>
+              </div>
               <div class="font-22">{{ player.score }}</div>
             </div>
             <div
@@ -147,10 +149,15 @@ export default {
 .avatar {
   max-width: 100%;
   max-height: 100%;
+  border-radius: 8px;
 }
 .player-data-container {
   display: flex;
   margin-bottom: 3px;
+  justify-content: space-between;
+}
+.standing-and-name {
+  display: flex;
 }
 .player-name {
   margin: 0px 5px;
