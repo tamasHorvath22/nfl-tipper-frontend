@@ -1,139 +1,136 @@
 <template>
-  <div class="font-color">
-    <div v-if="league" class="md-layout">
-      <div class="md-layout-item md-size-100">
-        <md-card class="md-layout-item md-size-40 md-small-size-90 header-container">
-          <div class="name-and-logo">
-            <div v-if="!isOwner" class="not-owner">
+  <div v-if="league" class="md-layout font-color">
+    <div class="md-layout-item md-size-100">
+      <md-card class="md-layout-item md-size-40 md-small-size-90 header-container">
+        <div class="name-and-logo">
+          <div v-if="!isOwner" class="not-owner">
+            <div class="avatar-container">
+              <img class="avatar" :src="getLeagueAvatar(league.leagueAvatarUrl)">
+            </div>
+            <div class="header">{{ league.name }}</div>
+          </div>
+          <md-list v-if="isOwner" class="outer-expand">
+            <md-list-item md-expand class="accordion-elem">
               <div class="avatar-container">
                 <img class="avatar" :src="getLeagueAvatar(league.leagueAvatarUrl)">
               </div>
               <div class="header">{{ league.name }}</div>
-            </div>
-            <md-list v-if="isOwner" class="outer-expand">
-              <md-list-item md-expand class="accordion-elem">
-                <div class="avatar-container">
-                  <img class="avatar" :src="getLeagueAvatar(league.leagueAvatarUrl)">
-                </div>
-                <div class="header">{{ league.name }}</div>
-                <md-list slot="md-expand">
-                  <div class="league-options">
+              <md-list slot="md-expand">
+                <div class="league-options">
+                  <md-button
+                    class="md-primary md-raised material-button"
+                    @click="showModal">
+                    Invite player
+                  </md-button>
+
+                  <div>
+                    <md-field>
+                      <label for="first-name">League name</label>
+                      <md-input
+                        name="leagueName"
+                        type="text"
+                        ref="avatarUrl"
+                        class="input-field avatar-input"
+                        :class="{ 'url-editable': !isUrlFieldDisabled }"
+                        v-model="league.name"
+                        :disabled="isUrlFieldDisabled"/>
+                    </md-field>
+                    <md-field md-clearable>
+                      <label for="first-name">League avatar URL</label>
+                      <md-input
+                        name="avatarUrl"
+                        type="text"
+                        ref="avatarUrl"
+                        class="input-field avatar-input"
+                        :class="{ 'url-editable': !isUrlFieldDisabled }"
+                        v-model="league.leagueAvatarUrl"
+                        :disabled="isUrlFieldDisabled"/>
+                    </md-field>
+                    <md-button
+                      class="md-primary md-raised material-button edit-button"
+                      @click="editSaveUrl">
+                      {{ isUrlFieldDisabled ? 'Edit' : 'Save' }}
+                    </md-button>
                     <md-button
                       class="md-primary md-raised material-button"
-                      @click="showModal">
-                      Invite player
+                      @click="onCancelEditing">
+                      Cancel
                     </md-button>
-
-                    <div>
-                      <md-field>
-                        <label for="first-name">League name</label>
-                        <md-input
-                          name="leagueName"
-                          type="text"
-                          ref="avatarUrl"
-                          class="input-field avatar-input"
-                          :class="{ 'url-editable': !isUrlFieldDisabled }"
-                          v-model="league.name"
-                          :disabled="isUrlFieldDisabled"/>
-                      </md-field>
-                      <md-field md-clearable>
-                        <label for="first-name">League avatar URL</label>
-                        <md-input
-                          name="avatarUrl"
-                          type="text"
-                          ref="avatarUrl"
-                          class="input-field avatar-input"
-                          :class="{ 'url-editable': !isUrlFieldDisabled }"
-                          v-model="league.leagueAvatarUrl"
-                          :disabled="isUrlFieldDisabled"/>
-                      </md-field>
-                      <md-button
-                        class="md-primary md-raised material-button edit-button"
-                        @click="editSaveUrl">
-                        {{ isUrlFieldDisabled ? 'Edit' : 'Save' }}
-                      </md-button>
-                      <md-button
-                        class="md-primary md-raised material-button"
-                        @click="onCancelEditing">
-                        Cancel
-                      </md-button>
-                    </div>
-
                   </div>
-                </md-list>
-              </md-list-item>
-            </md-list>
-          </div>
 
-          <md-field class="season-selector">
-            <md-select v-model="selectedSeasonYear">
-              <md-option
-                v-for="season of league.seasons" :key="season.year"
-                :value="season.year">
-                Super Bowl {{ romanize(season.numberOfSuperBowl) }}, {{ season.year }}
-              </md-option>
-            </md-select>
+                </div>
+              </md-list>
+            </md-list-item>
+          </md-list>
+        </div>
+
+        <md-field class="season-selector">
+          <md-select v-model="selectedSeasonYear">
+            <md-option
+              v-for="season of league.seasons" :key="season.year"
+              :value="season.year">
+              Super Bowl {{ romanize(season.numberOfSuperBowl) }}, {{ season.year }}
+            </md-option>
+          </md-select>
+        </md-field>
+
+      </md-card>
+    </div>
+    <div class="md-layout md-layout-item md-size-100">
+
+      <div v-if="selectedSeason" class="md-layout-item md-size-40 md-small-size-90 card-margin">
+        <Standings
+          :standings="standings"
+          :players="league.players"
+          :isSeasonOpen="selectedSeason.isOpen"
+          :finalWinner="selectedSeason.finalWinner"
+          :showFinalWinners="selectedSeason.weeks.length > 1"
+          class="standings-component"/>
+        <FinalWinner
+          v-if="selectedSeason.finalWinner"
+          :leagueId="leagueId"
+          :winnerTeam="selectedSeason.finalWinner[user.userId]"
+          :showFinalWinners="showAllFinalWinners"
+          :finalWinnerBets="selectedSeason.finalWinner"
+          :players="league.players"/>
+      </div>
+
+      <div class="md-layout-item md-size-45 md-small-size-90 card-margin margin-right-5">
+        <Game
+          :season="selectedSeason"
+          :players="league.players"
+          :leagueId="league._id"
+          :hasMoreLeagues="hasMoreLeagues"
+          class="game"/>
+      </div>
+    </div>
+
+    <div v-if="league" class="md-layout-item md-size-20">
+      <modal name="modal" width="400" height="auto">
+        <div class="modal-container">
+          <div class="header">Type your friend's email</div>
+          <md-field class="email-field">
+            <md-input
+              name="email"
+              placeholder="here..."
+              ref="userEmailInput"
+              v-validate="{ required: true, validEmail: true }"
+              v-model="invitedEmail"/>
           </md-field>
-
-        </md-card>
-      </div>
-      <div class="md-layout md-layout-item md-size-100">
-
-        <div v-if="selectedSeason" class="md-layout-item md-size-40 md-small-size-90 card-margin">
-          <Standings
-            :standings="standings"
-            :players="league.players"
-            :isSeasonOpen="selectedSeason.isOpen"
-            :finalWinner="selectedSeason.finalWinner"
-            :showFinalWinners="selectedSeason.weeks.length > 1"
-            class="standings-component"/>
-          <FinalWinner
-            v-if="selectedSeason.finalWinner"
-            :leagueId="leagueId"
-            :winnerTeam="selectedSeason.finalWinner[user.userId]"
-            :showFinalWinners="showAllFinalWinners"
-            :finalWinnerBets="selectedSeason.finalWinner"
-            :players="league.players"
-            :isOpen="isFinalWinnerOpen()"/>
-        </div>
-
-        <div class="md-layout-item md-size-45 md-small-size-90 card-margin margin-right-5">
-          <Game
-            :season="selectedSeason"
-            :players="league.players"
-            :leagueId="league._id"
-            :hasMoreLeagues="hasMoreLeagues"
-            class="game"/>
-        </div>
-      </div>
-
-      <div v-if="league" class="md-layout-item md-size-20">
-        <modal name="modal" width="400" height="auto">
-          <div class="modal-container">
-            <div class="header">Type your friend's email</div>
-            <md-field class="email-field">
-              <md-input
-                name="email"
-                placeholder="here..."
-                ref="userEmailInput"
-                v-validate="{ required: true, validEmail: true }"
-                v-model="invitedEmail"/>
-            </md-field>
-            <md-button class="md-primary md-raised material-button" @click="onInvite">Invite</md-button>
-            <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
-            <div v-if="noUserFound" class="error-message">No user found by this email</div>
-            <div v-if="noLeagueFound" class="error-message">No league found, please try again!</div>
-            <div v-if="userAlreadyInLeague" class="error-message">This user is already in the league.</div>
-            <div v-if="userAlreadyInvited" class="error-message">This user is already invited.</div>
-            <div
-              v-if="errorWhileInvitation"
-              class="error-message">
-              There was an error during invitation. Please try again!
-            </div>
+          <md-button class="md-primary md-raised material-button" @click="onInvite">Invite</md-button>
+          <div v-if="showInvalidEmailError" class="error-message">This email is not valid</div>
+          <div v-if="noUserFound" class="error-message">No user found by this email</div>
+          <div v-if="noLeagueFound" class="error-message">No league found, please try again!</div>
+          <div v-if="userAlreadyInLeague" class="error-message">This user is already in the league.</div>
+          <div v-if="userAlreadyInvited" class="error-message">This user is already invited.</div>
+          <div
+            v-if="errorWhileInvitation"
+            class="error-message">
+            There was an error during invitation. Please try again!
           </div>
-        </modal>
         </div>
-      </div>
+      </modal>
+    </div>
 
   </div>
 </template>
@@ -181,34 +178,21 @@ export default {
     }
   },
   methods: {
-    getLeague () {
+    async getLeague () {
       SpinnerService.setSpinner(true)
       this.leagueId = this.$route.params.leagueId
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUE.path}`
-      axios.post(path, { leagueId: this.leagueId }, { headers: this.getHeader(this.token) })
-        .then(league => {
-          this.league = league.data
-          this.setSelectedSeason()
-          this.isOwner = this.league.creator === this.user.userId
-          this.showAllFinalWinners = this.selectedSeason.weeks.length > 1
-            ? true
-            : new Date().getTime() > new Date(this.selectedSeason.weeks[0].games.sort((a, b) => a.startTime > b.startTime ? 1 : -1)[0].startTime).getTime()
-          SpinnerService.setSpinner(false)
-        })
-        .catch(() => {
-          SpinnerService.setSpinner(false)
-        })
-    },
-    isFinalWinnerOpen () {
-      if (this.selectedSeason.weeks.length > 1) {
-        return false
-      } else {
-        const timestamps = []
-        this.selectedSeason.weeks[0].games.forEach(game => {
-          timestamps.push(new Date(game.startTime).getTime())
-        })
-        const openGameStart = Math.min(...timestamps)
-        return new Date().getTime() < openGameStart
+      try {
+        const respone = await axios.post(path, { leagueId: this.leagueId }, { headers: this.getHeader(this.token) })
+        this.league = respone.data
+        this.setSelectedSeason()
+        this.isOwner = this.league.creator === this.user.userId
+        this.showAllFinalWinners = this.selectedSeason.weeks.length > 1
+          ? true
+          : new Date().getTime() > new Date(this.selectedSeason.weeks[0].games.sort((a, b) => a.startTime > b.startTime ? 1 : -1)[0].startTime).getTime()
+        SpinnerService.setSpinner(false)
+      } catch {
+        SpinnerService.setSpinner(false)
       }
     },
     onInvite () {

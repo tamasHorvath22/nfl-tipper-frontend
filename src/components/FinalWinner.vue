@@ -11,7 +11,7 @@
           <md-select
             v-model="finalWinner"
             placeholder="Select a team"
-            :disabled="!isOpen">
+            :disabled="showFinalWinners">
             <md-option
               v-for="option of options" :key="option.value"
               :value="option.value">
@@ -70,7 +70,6 @@ export default {
   props: {
     leagueId: String,
     winnerTeam: String,
-    isOpen: Boolean,
     showFinalWinners: Boolean,
     finalWinnerBets: Object,
     players: Array
@@ -99,10 +98,11 @@ export default {
         if (result === ResponseMessages.LEAGUE.UPDATE_FAIL) {
           this.showModal()
         }
+        SpinnerService.setSpinner(false)
       } catch (err) {
         this.showModal()
+        SpinnerService.setSpinner(false)
       }
-      SpinnerService.setSpinner(false)
     },
     showModal () {
       this.$modal.show('bet-save-error-modal')

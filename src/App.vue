@@ -49,7 +49,7 @@ export default {
     onToggleCollapse () {
       this.isMenuOpen = !this.isMenuOpen
     },
-    setSpinner (isVisible) {
+    toggleSpinner (isVisible) {
       this.showSpinner = isVisible
     }
   },
@@ -72,7 +72,7 @@ export default {
     }
   },
   created () {
-    SpinnerService.subscribe(this.setSpinner)
+    SpinnerService.subscribe(this.toggleSpinner)
   }
 }
 </script>
@@ -85,19 +85,22 @@ export default {
 .bar-tipper {
   cursor: pointer;
 }
-@media(max-width: 1024px){
+.nfl-bg-image {
+  background-image: url('./assets/images/ball.jpg') !important;
+}
+
+@media(max-width: 1024px) {
   .nfl-bg-image {
-    background-image: url('./assets/images/nfl-vertical.jpg') !important;
+    background: center;
+  }
+}
+
+@media(min-width: 1025px) {
+  .nfl-bg-image {
     background-size: 100%;
   }
 }
 
-@media(min-width: 1025px){
-.nfl-bg-image {
-  background-image: url('./assets/images/ball.jpg') !important;
-  background-size: 100%;
-}
-}
 .nfl-bg-image {
   position: fixed;
   left: 0;

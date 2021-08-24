@@ -1,144 +1,142 @@
 <template>
-  <div>
-    <md-card class="outer-card">
-      <div class="md-layout">
-        <div class="week-player-options">
+  <md-card class="outer-card">
+    <div class="md-layout">
+      <div class="week-player-options">
 
-          <div class="avatar-container">
-            <img :src="getCurrentPlayerAvatar()" class="avatar">
-          </div>
-
-          <div class="selector-container">
-            <md-field v-if="season">
-              <md-select v-model="selectedWeekNumber">
-                <md-option
-                  v-for="week of season.weeks" :key="week.number"
-                  :value="week.number">
-                  {{ getWeekLabel(week.number) }}
-                </md-option>
-              </md-select>
-            </md-field>
-
-            <md-field>
-              <md-select v-model="selectedPlayer" :disabled="isPlayerSelectDisabled">
-                <md-option
-                  v-for="player of players" :key="player.id"
-                  :value="player.id">
-                  {{ player.name }}
-                </md-option>
-              </md-select>
-            </md-field>
-          </div>
+        <div class="avatar-container">
+          <img :src="getCurrentPlayerAvatar()" class="avatar">
         </div>
 
-        <div v-if="selectedWeek" class="md-layout-item md-size-100">
-          <md-card v-for="game in selectedWeek.games" :key="game._id" class="game-container">
-            <div class="inner-game-container">
-              <div class="team-container left-team">
-                <div class="team-logo-container">
-                  <div class="logo-name-standings logo-name-standings-mobile-left">
-                    <img
-                      :src="require(`../assets/team-logos/png/${game.awayTeamAlias}.png`)"
-                      class="team-logo">
-                    <div class="logo-and-name-container">
-                      <div class="team-name">{{ getTeamLabel(game.awayTeamAlias) }}</div>
-                      <div
-                        v-if="teamStandings"
-                        class="standing-values">
-                        ({{ getTeamStandingLabel(game.awayTeamAlias) }})
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    :class="{ 'invisible': !notNullOrUndefinded(game.awayScore) }"
-                    class="score">
-                    {{ game.awayScore }}
-                  </div>
-                </div>
-                <div
-                  class="bet-buttons-container"
-                  :class="getBetButtonContainerColor(game, game.awayTeamAlias)">
-                  <md-button
-                    v-for="button of betButtons.AWAY"
-                    :key="button.value"
-                    :disabled="isGameDisabled(game)"
-                    class="md-raised material-button strong-font-color"
-                    :class="getTeamButtonColor(game, game.awayTeamAlias, button.value)"
-                    @click="onBet(game, button.value)">
-                    {{ button.label }}
-                  </md-button>
+        <div class="selector-container">
+          <md-field v-if="season">
+            <md-select v-model="selectedWeekNumber">
+              <md-option
+                v-for="week of season.weeks" :key="week.number"
+                :value="week.number">
+                {{ getWeekLabel(week.number) }}
+              </md-option>
+            </md-select>
+          </md-field>
 
-                </div>
-              </div>
-
-              <i class="fa fa-at at-icon" aria-hidden="true"></i>
-
-              <div class="team-container right-team">
-                <div class="team-logo-container">
-                  <div
-                    :class="{ 'invisible': !notNullOrUndefinded(game.awayScore) }"
-                    class="score">
-                    {{ game.homeScore }}
-                  </div>
-                  <div class="logo-name-standings logo-name-standings-mobile-right">
-                    <div class="logo-and-name-container">
-                      <div class="team-name">{{ getTeamLabel(game.homeTeamAlias) }}</div>
-                      <div
-                        v-if="teamStandings"
-                        class="standing-values">
-                        ({{ getTeamStandingLabel(game.homeTeamAlias) }})
-                      </div>
-                    </div>
-                    <img
-                      :src="require(`../assets/team-logos/png/${game.homeTeamAlias}.png`)"
-                      class="team-logo">
-                  </div>
-                </div>
-
-                <div
-                  class="bet-buttons-container"
-                  :class="getBetButtonContainerColor(game, game.homeTeamAlias)">
-                  <md-button
-                    v-for="button of betButtons.HOME"
-                    :key="button.value"
-                    :disabled="isGameDisabled(game)"
-                    class="md-raised material-button strong-font-color"
-                    :class="getTeamButtonColor(game, game.homeTeamAlias, button.value)"
-                    @click="onBet(game, button.value)">
-                    {{ button.label }}
-                  </md-button>
-                </div>
-
-              </div>
-            </div>
-            <div>{{ getStartTime(game.startTime) }}</div>
-          </md-card>
-          <md-checkbox
-            v-if="hasMoreLeagues"
-            v-model="isForAllLeagues"
-            class="md-primary">
-            Save bets for all of my leagues
-          </md-checkbox>
-          <md-button
-            v-if="selectedWeek && selectedWeek.isOpen"
-            class="md-primary md-raised material-button"
-            @click="onSaveBets">
-            Save bets
-          </md-button>
-
-          <modal name="bet-save-error" width="400" height="auto">
-            <div class="modal-container">
-              <div class="margin-bottom-30">
-                There was an error while trying to save your bets. Please try again!
-              </div>
-              <md-button class="md-primary md-raised material-button" @click="hideModal">Ok</md-button>
-            </div>
-          </modal>
-
+          <md-field>
+            <md-select v-model="selectedPlayer" :disabled="isPlayerSelectDisabled">
+              <md-option
+                v-for="player of players" :key="player.id"
+                :value="player.id">
+                {{ player.name }}
+              </md-option>
+            </md-select>
+          </md-field>
         </div>
       </div>
-    </md-card>
-  </div>
+
+      <div v-if="selectedWeek" class="md-layout-item md-size-100">
+        <md-card v-for="game in selectedWeek.games" :key="game._id" class="game-container">
+          <div class="inner-game-container">
+            <div class="team-container left-team">
+              <div class="team-logo-container">
+                <div class="logo-name-standings logo-name-standings-mobile-left">
+                  <img
+                    :src="require(`../assets/team-logos/png/${game.awayTeamAlias}.png`)"
+                    class="team-logo">
+                  <div class="logo-and-name-container">
+                    <div class="team-name">{{ getTeamLabel(game.awayTeamAlias) }}</div>
+                    <div
+                      v-if="teamStandings"
+                      class="standing-values">
+                      ({{ getTeamStandingLabel(game.awayTeamAlias) }})
+                    </div>
+                  </div>
+                </div>
+                <div
+                  :class="{ 'invisible': !notNullOrUndefinded(game.awayScore) }"
+                  class="score">
+                  {{ game.awayScore }}
+                </div>
+              </div>
+              <div
+                class="bet-buttons-container"
+                :class="getBetButtonContainerColor(game, game.awayTeamAlias)">
+                <md-button
+                  v-for="button of betButtons.AWAY"
+                  :key="button.value"
+                  :disabled="isGameDisabled(game)"
+                  class="md-raised material-button strong-font-color"
+                  :class="getTeamButtonColor(game, game.awayTeamAlias, button.value)"
+                  @click="onBet(game, button.value)">
+                  {{ button.label }}
+                </md-button>
+
+              </div>
+            </div>
+
+            <i class="fa fa-at at-icon" aria-hidden="true"></i>
+
+            <div class="team-container right-team">
+              <div class="team-logo-container">
+                <div
+                  :class="{ 'invisible': !notNullOrUndefinded(game.awayScore) }"
+                  class="score">
+                  {{ game.homeScore }}
+                </div>
+                <div class="logo-name-standings logo-name-standings-mobile-right">
+                  <div class="logo-and-name-container">
+                    <div class="team-name">{{ getTeamLabel(game.homeTeamAlias) }}</div>
+                    <div
+                      v-if="teamStandings"
+                      class="standing-values">
+                      ({{ getTeamStandingLabel(game.homeTeamAlias) }})
+                    </div>
+                  </div>
+                  <img
+                    :src="require(`../assets/team-logos/png/${game.homeTeamAlias}.png`)"
+                    class="team-logo">
+                </div>
+              </div>
+
+              <div
+                class="bet-buttons-container"
+                :class="getBetButtonContainerColor(game, game.homeTeamAlias)">
+                <md-button
+                  v-for="button of betButtons.HOME"
+                  :key="button.value"
+                  :disabled="isGameDisabled(game)"
+                  class="md-raised material-button strong-font-color"
+                  :class="getTeamButtonColor(game, game.homeTeamAlias, button.value)"
+                  @click="onBet(game, button.value)">
+                  {{ button.label }}
+                </md-button>
+              </div>
+
+            </div>
+          </div>
+          <div>{{ getStartTime(game.startTime) }}</div>
+        </md-card>
+        <md-checkbox
+          v-if="hasMoreLeagues"
+          v-model="isForAllLeagues"
+          class="md-primary">
+          Save bets for all of my leagues
+        </md-checkbox>
+        <md-button
+          v-if="selectedWeek && selectedWeek.isOpen"
+          class="md-primary md-raised material-button"
+          @click="onSaveBets">
+          Save bets
+        </md-button>
+
+        <modal name="bet-save-error" width="400" height="auto">
+          <div class="modal-container">
+            <div class="margin-bottom-30">
+              There was an error while trying to save your bets. Please try again!
+            </div>
+            <md-button class="md-primary md-raised material-button" @click="hideModal">Ok</md-button>
+          </div>
+        </modal>
+
+      </div>
+    </div>
+  </md-card>
 </template>
 
 <script>
@@ -215,11 +213,12 @@ export default {
           { leagueId: this.leagueId, week: this.selectedWeek, isForAllLeagues: this.isForAllLeagues },
           { headers: this.getHeader(this.token) }
         )
+        SpinnerService.setSpinner(false)
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
       } catch (err) {
         this.showModal()
+        SpinnerService.setSpinner(false)
       }
-      SpinnerService.setSpinner(false)
     },
     async getTeamStandings () {
       SpinnerService.setSpinner(true)
@@ -227,8 +226,10 @@ export default {
       try {
         const response = await axios.post(path, null, { headers: this.getHeader(this.token) })
         this.teamStandings = response.data.teams
-      } catch (err) {}
-      SpinnerService.setSpinner(false)
+        SpinnerService.setSpinner(false)
+      } catch {
+        SpinnerService.setSpinner(false)
+      }
     },
     getTeamStandingLabel (teamAlias) {
       if (this.teamStandings) {

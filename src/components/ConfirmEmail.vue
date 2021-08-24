@@ -47,22 +47,22 @@ export default {
     }
   },
   methods: {
-    confirmEmail (hash) {
-      const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.CONFIRM_EMAIL.path}/${hash}`
-      axios.get(path)
-        .then(resp => {
-          if (resp.data === ApiErrorMessages.USER.EMAIL_CONFIRMED) {
-            this.isConfirmed = true
-          } else if (resp.data === ApiErrorMessages.USER.EMAIL_CONFIRM_FAIL) {
-            this.isNotConfirmed = true
-          } else if (resp.data === ApiErrorMessages.USER.NO_EMAIL_HASH_FOUND) {
-            this.noHashFound = true
-          } else if (resp.data === ApiErrorMessages.DATABASE.ERROR) {
-            this.isUnexpectedError = true
-          }
-          SpinnerService.setSpinner(false)
-        })
-        .catch(() => {})
+    async confirmEmail (hash) {
+      try {
+        const response = await axios.get(`${process.env.VUE_APP_BASE_URL}${ApiRoutes.CONFIRM_EMAIL.path}/${hash}`)
+        SpinnerService.setSpinner(false)
+        if (response.data === ApiErrorMessages.USER.EMAIL_CONFIRMED) {
+          this.isConfirmed = true
+        } else if (response.data === ApiErrorMessages.USER.EMAIL_CONFIRM_FAIL) {
+          this.isNotConfirmed = true
+        } else if (response.data === ApiErrorMessages.USER.NO_EMAIL_HASH_FOUND) {
+          this.noHashFound = true
+        } else if (response.data === ApiErrorMessages.DATABASE.ERROR) {
+          this.isUnexpectedError = true
+        }
+      } catch {
+        SpinnerService.setSpinner(false)
+      }
     },
     onGoToLoginPage () {
       this.$router.push(Routes.LOGIN.path)
