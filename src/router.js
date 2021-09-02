@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import { Routes } from './utils/Routes'
 import localStorageKeys from './constants/localStorageKeys'
+import jwtDecode from 'jwt-decode'
 
 Vue.use(Router)
 
@@ -19,6 +20,18 @@ export const router = new Router({
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
           next(Routes.LEAGUES.path)
+        } else {
+          next(Routes.LOGIN.path)
+        }
+      }
+    },
+    {
+      path: Routes.RULES.path,
+      name: Routes.RULES.name,
+      component: () => import('./components/Rules.vue'),
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
+          next()
         } else {
           next(Routes.LOGIN.path)
         }
@@ -92,15 +105,12 @@ export const router = new Router({
           next(Routes.LOGIN.path)
           return
         }
-        const user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
-        let isUserInLeague = false
-        for (let i = 0; i < user.leagues.length; i++) {
-          if (user.leagues[i].leagueId === to.params.leagueId) {
-            isUserInLeague = true
-            break
-          }
+        const token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
+        if (!token) {
+          next(Routes.ROOT.path)
         }
-        if (isUserInLeague) {
+        const user = jwtDecode(token)
+        if (user.leagues.includes(to.params.leagueId)) {
           next()
         } else {
           next(Routes.ROOT.path)

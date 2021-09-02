@@ -38,7 +38,7 @@
             class="md-layout-item md-size-70 md-small-size-100 leagues-card">
             <md-card
               v-for="league in userLeagues"
-              :key="league.leagueId"
+              :key="league.id"
               class="league-card">
               <div @click="onSelectLeague(league.id)" class="league-container">
                 <div class="avatar-container">
@@ -144,6 +144,7 @@ import { Routes } from '../utils/Routes'
 import ApiErrorMessages from '../constants/api-response-messages'
 import utilsMixin from '../mixins/utils'
 import leagueMixin from '../mixins/leagueMixin'
+import jwtDecode from 'jwt-decode'
 
 export default {
   name: 'Leagues',
@@ -177,7 +178,7 @@ export default {
             this.showCreateLeagueError = true
           } else {
             this.hideModal(this.modals.createLeague)
-            this.handleUserResponse(resp.data)
+            this.handleTokenResponse(resp.data)
           }
           SpinnerService.setSpinner(false)
         })
@@ -201,7 +202,7 @@ export default {
             this.hideModal(this.modals.acceptInvitation)
             this.showAcceptInvitationError = false
             try {
-              await this.handleUserResponse(resp.data)
+              await this.handleTokenResponse(resp.data.token)
             } catch (err) {}
           }
           SpinnerService.setSpinner(false)
@@ -210,12 +211,9 @@ export default {
           this.showModal(this.modals.acceptInvitationError)
         })
     },
-    async handleUserResponse (user) {
-      this.user = this.createUserToSave(user)
-      localStorage.setItem(
-        localStorageKeys.NFL_TIPPER_USER,
-        JSON.stringify(this.user)
-      )
+    async handleTokenResponse (token) {
+      this.user = jwtDecode(token)
+      localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, token)
       try {
         await this.getUserLeagues()
       } catch (err) {}
@@ -239,38 +237,12 @@ export default {
     hideModal (modal) {
       this.$modal.hide(modal)
     },
-    async getUser () {
-      SpinnerService.setSpinner(true)
-      try {
-        const userResponse = await axios.post(
-          `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_USER.path}`,
-          {},
-          { headers: this.getHeader(this.token) }
-        )
-        if (userResponse.data === ApiErrorMessages.USER.NOT_FOUND) {
-          localStorage.removeItem(localStorageKeys.NFL_TIPPER_TOKEN)
-          localStorage.removeItem(localStorageKeys.NFL_TIPPER_USER)
-          SpinnerService.setSpinner(false)
-          this.$router.push(Routes.LOGIN.path)
-          return
-        }
-        this.handleUserResponse(userResponse.data)
-      } catch (err) {
-        return
-      }
-      await this.getUserLeagues()
-      SpinnerService.setSpinner(false)
-    },
     async getUserLeagues () {
       SpinnerService.setSpinner(true)
-      const leagueIds = []
-      this.user.leagues.forEach(league => {
-        leagueIds.push(league.leagueId)
-      })
       try {
         const leaguesResponse = await axios.post(
           `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_LEAGUES.path}`,
-          { leagueIds: leagueIds },
+          { leagueIds: this.user.leagues },
           { headers: this.getHeader(this.token) }
         )
         this.userLeagues = leaguesResponse.data
@@ -282,9 +254,13 @@ export default {
       this.$router.push(Routes.LEAGUES.path)
     }
   },
-  mounted () {
+  async mounted () {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
-    this.getUser()
+    if (!this.token) {
+      this.$router.push(Routes.LOGIN.path)
+    }
+    this.user = jwtDecode(this.token)
+    await this.getUserLeagues()
   }
 }
 </script>

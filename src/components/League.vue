@@ -99,7 +99,7 @@
         <Game
           :season="selectedSeason"
           :players="league.players"
-          :leagueId="league._id"
+          :leagueId="league.id"
           :hasMoreLeagues="hasMoreLeagues"
           class="game"/>
       </div>
@@ -147,6 +147,7 @@ import Game from '../components/Game'
 import FinalWinner from '../components/FinalWinner'
 import utilsMixin from '../mixins/utils'
 import leagueMixin from '../mixins/leagueMixin'
+import jwtDecode from 'jwt-decode'
 
 export default {
   name: 'League',
@@ -186,7 +187,7 @@ export default {
         const respone = await axios.post(path, { leagueId: this.leagueId }, { headers: this.getHeader(this.token) })
         this.league = respone.data
         this.setSelectedSeason()
-        this.isOwner = this.league.creator === this.user.userId
+        this.isOwner = this.league.creator === this.user.id
         this.showAllFinalWinners = this.selectedSeason.weeks.length > 1
           ? true
           : new Date().getTime() > new Date(this.selectedSeason.weeks[0].games.sort((a, b) => a.startTime > b.startTime ? 1 : -1)[0].startTime).getTime()
@@ -297,7 +298,7 @@ export default {
   },
   mounted () {
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
-    this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
+    this.user = jwtDecode(this.token)
     this.hasMoreLeagues = this.user.leagues.length > 1
     this.getLeague()
   }

@@ -126,7 +126,7 @@ export default {
           }
           if (loginResp.data.token) {
             try {
-              await this.handleSuccessfulLogin(loginResp.data.token)
+              this.handleSuccessfulLogin(loginResp.data.token)
             } catch (err) {
               this.showUnexpectedError = true
               SpinnerService.setSpinner(false)
@@ -148,13 +148,8 @@ export default {
       this.showEmailNotConfirmed = false
       this.showUnexpectedError = false
     },
-    async handleSuccessfulLogin (token) {
+    handleSuccessfulLogin (token) {
       this.token = token
-      try {
-        await this.getUserAndSaveToLocalstorage()
-      } catch (err) {
-        throw new Error('get user error')
-      }
       localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, this.token)
       const routeToGo = localStorage.getItem(localStorageKeys.ROUTE_TO_GO)
       localStorage.removeItem(localStorageKeys.ROUTE_TO_GO)

@@ -11,7 +11,7 @@
           <md-field v-if="season">
             <md-select v-model="selectedWeekNumber">
               <md-option
-                v-for="week of season.weeks" :key="week.number"
+                v-for="week of season.weeks" :key="week.id"
                 :value="week.number">
                 {{ getWeekLabel(week.number) }}
               </md-option>
@@ -31,7 +31,7 @@
       </div>
 
       <div v-if="selectedWeek" class="md-layout-item md-size-100">
-        <md-card v-for="game in selectedWeek.games" :key="game._id" class="game-container">
+        <md-card v-for="game in selectedWeek.games" :key="game.id" class="game-container">
           <div class="inner-game-container">
             <div class="team-container left-team">
               <div class="team-logo-container">
@@ -148,6 +148,7 @@ import { ApiRoutes } from '../utils/ApiRoutes'
 import * as axios from 'axios'
 import utilsMixin from '../mixins/utils'
 import BetButtons from '../constants/bet.buttons'
+import jwtDecode from 'jwt-decode'
 
 export default {
   name: 'Game',
@@ -186,11 +187,12 @@ export default {
       })
     },
     setDefaultPlayer () {
-      this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
-      this.selectedPlayer = this.user.userId
+      const token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
+      this.user = jwtDecode(token)
+      this.selectedPlayer = this.user.id
     },
     onBet (game, bet) {
-      const userBet = game.bets.find(bet => bet.id === this.user.userId)
+      const userBet = game.bets.find(bet => bet.id === this.user.id)
       userBet.bet = bet
     },
     isThisTeamSelected (game, bet) {
@@ -320,7 +322,7 @@ export default {
       this.selectedWeek = this.season.weeks.find(week => week.number === val)
       this.sortGames()
       if (this.selectedWeek.isOpen) {
-        this.selectedPlayer = this.user.userId
+        this.selectedPlayer = this.user.id
       }
       this.isPlayerSelectDisabled = this.selectedWeek.isOpen
     },
