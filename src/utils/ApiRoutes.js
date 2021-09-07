@@ -72,7 +72,7 @@ export const ApiRoutes = {
     name: 'CREATE_NEW_SEASON'
   },
   CHANGE_LEAGUE_AVATAR: {
-    path: '/api/league/modify-avatar',
+    path: '/api/league/modify',
     name: 'CHANGE_LEAGUE_AVATAR'
   },
   SAVE_BACKUP: {
