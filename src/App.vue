@@ -8,6 +8,7 @@
         <b-navbar-nav class="bold">
           <b-nav-item @click="onProfile">Profile</b-nav-item>
           <b-nav-item @click="onLeagues">Leagues</b-nav-item>
+          <b-nav-item @click="onRules">Rules</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
@@ -45,6 +46,9 @@ export default {
     },
     onLeagues () {
       this.$router.push(Routes.LEAGUES.path)
+    },
+    onRules () {
+      this.$router.push(Routes.RULES.path)
     },
     onToggleCollapse () {
       this.isMenuOpen = !this.isMenuOpen
