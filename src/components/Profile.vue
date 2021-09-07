@@ -196,6 +196,7 @@ import teamNamesMixin from '../mixins/teamNamesMixin'
 import utilsMixin from '../mixins/utils'
 import ApiErrorMessages from '../constants/api-response-messages'
 import SpinnerService from '../services/SpinnerService'
+import jwtDecode from 'jwt-decode'
 
 export default {
   name: 'Profile',
@@ -245,8 +246,7 @@ export default {
             this.isEditUnexpectedError = true
             return
           }
-          this.user = this.createUserToSave(user.data)
-          localStorage.setItem(localStorageKeys.NFL_TIPPER_USER, JSON.stringify(this.user))
+          this.handleTokenAndUser(user.data.token)
           this.isUserDataDisabled = true
           SpinnerService.setSpinner(false)
         })
@@ -278,8 +278,7 @@ export default {
               } else if (res.data === ApiErrorMessages.DATABASE.ERROR) {
                 this.isUnexpectedError = true
               } else {
-                this.token = res.data.token
-                localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, this.token)
+                this.handleTokenAndUser(res.data.token)
                 this.hideModal('change-password')
               }
               SpinnerService.setSpinner(false)
@@ -289,6 +288,11 @@ export default {
             })
         }
       })
+    },
+    handleTokenAndUser (token) {
+      this.token = token
+      localStorage.setItem(localStorageKeys.NFL_TIPPER_TOKEN, this.token)
+      this.user = jwtDecode(this.token)
     },
     hideErrorMessages () {
       this.wrongOldPassword = false
@@ -362,8 +366,8 @@ export default {
     }
   },
   mounted () {
-    this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
     this.token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
+    this.user = jwtDecode(this.token)
   }
 }
 </script>

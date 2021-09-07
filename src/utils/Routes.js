@@ -42,17 +42,9 @@ export const Routes = {
   LEAGUES: {
     path: '/leagues',
     name: 'LEAGUES'
+  },
+  RULES: {
+    path: '/rules',
+    name: 'RULES'
   }
-
-  // getPackageSelectorUrlForGroupCode (groupCode) {
-  //   return this.PACKAGE_SELECTOR.path.replace(':groupCode', groupCode)
-  // },
-
-  // defaultPackageSelector () {
-  //   return this.PACKAGE_SELECTOR.path.replace(':groupCode', ProductGroupCode.TRUCK)
-  // },
-
-  // home () {
-  //   return this.defaultPackageSelector()
-  // }
 }

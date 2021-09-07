@@ -7,7 +7,7 @@
         <md-card
           v-for="(player, index) in standings" :key="player.name"
           class="standing-card"
-          :class="{ 'own-row': player.id === user.userId }">
+          :class="{ 'own-row': player.id === user.id }">
           <div class="avatar-container">
             <img :src="getPlayerAvatar(player.id)" class="avatar">
           </div>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import jwtDecode from 'jwt-decode'
 import localStorageKeys from '../constants/localStorageKeys'
 import utilsMixin from '../mixins/utils'
 
@@ -94,7 +95,8 @@ export default {
     }
   },
   mounted () {
-    this.user = JSON.parse(localStorage.getItem(localStorageKeys.NFL_TIPPER_USER))
+    const token = localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)
+    this.user = jwtDecode(token)
     this.sortStandings()
     this.createColors()
   }

@@ -80,7 +80,7 @@ export const ApiRoutes = {
     name: 'SAVE_BACKUP'
   },
   NEW_EVALUATE: {
-    path: '/api/league/new-evaluate',
+    path: '/api/league/evaluate',
     name: 'NEW_EVALUATE'
   },
   EMERGENCY_NEW_WEEK: {
