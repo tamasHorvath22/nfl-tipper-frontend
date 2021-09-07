@@ -207,12 +207,19 @@ export default {
       // return !this.selectedWeek.isOpen || !game.isOpen
     },
     async onSaveBets () {
+      const bets = this.selectedWeek.games.map(game => ({ gameId: game.gameId, bet: game.bets.find(bet => bet.id === this.user.id).bet }))
+
       SpinnerService.setSpinner(true)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.SAVE_BETS.path}`
       try {
         await axios.post(
           path,
-          { leagueId: this.leagueId, week: this.selectedWeek, isForAllLeagues: this.isForAllLeagues },
+          {
+            leagueId: this.leagueId,
+            weekId: this.selectedWeek.weekId,
+            bets: bets,
+            isForAllLeagues: this.isForAllLeagues
+          },
           { headers: this.getHeader(this.token) }
         )
         SpinnerService.setSpinner(false)
@@ -226,7 +233,7 @@ export default {
       SpinnerService.setSpinner(true)
       const path = `${process.env.VUE_APP_BASE_URL}${ApiRoutes.GET_TEAMS_STANDINGS.path}`
       try {
-        const response = await axios.post(path, null, { headers: this.getHeader(this.token) })
+        const response = await axios.get(path, { headers: this.getHeader(this.token) })
         this.teamStandings = response.data.teams
         SpinnerService.setSpinner(false)
       } catch {

@@ -37,17 +37,6 @@ export default {
     notNullOrUndefinded (item) {
       return item !== null && item !== undefined
     },
-    createUserToSave (userResponse) {
-      return {
-        username: userResponse.username,
-        userId: userResponse.id,
-        email: userResponse.email,
-        leagues: userResponse.leagues,
-        invitations: userResponse.invitations,
-        avatarUrl: userResponse.avatarUrl,
-        isAdmin: userResponse.isAdmin
-      }
-    },
     getNcryptedPassword (password) {
       return CryptoJS.AES.encrypt(
         password,

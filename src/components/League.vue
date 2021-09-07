@@ -89,7 +89,7 @@
         <FinalWinner
           v-if="selectedSeason.finalWinner"
           :leagueId="leagueId"
-          :winnerTeam="selectedSeason.finalWinner[user.userId]"
+          :winnerTeam="selectedSeason.finalWinner[user.id]"
           :showFinalWinners="showAllFinalWinners"
           :finalWinnerBets="selectedSeason.finalWinner"
           :players="league.players"/>
