@@ -52,6 +52,11 @@
             Forgot your password?
         </md-button>
       </div>
+      <md-button
+        class="md-dense go-register-button material-button not-registered"
+        @click="onRules">
+          Rules
+      </md-button>
 
       <modal name="modal" width="400" height="auto">
         <div class="modal-container">
@@ -162,6 +167,9 @@ export default {
     },
     goRegister () {
       this.$router.push(Routes.REGISTER.path)
+    },
+    onRules () {
+      this.$router.push(Routes.RULES.path)
     },
     async onForgotPassword () {
       SpinnerService.setSpinner(true)

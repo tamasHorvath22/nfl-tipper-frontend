@@ -5,7 +5,7 @@
 
       <p>Welcome to NFL Tipper!</p>
       <p>
-        To start playing, create a league. Tell your friends to register, ask them to send you their email addresses,
+        To start playing register first, then create a league. Tell your friends to register, ask them to send you their email addresses,
         and invite each player one by one. Now you are ready to play!
       </p>
       <p>
@@ -32,13 +32,27 @@
         you get 3 more points. This means that you can earn maximum 4 points per game.
       </p>
       <p class="good-luck">Good luck, and have fun!</p>
+      <div class="to-login-container">
+        <md-button
+          class="md-raised md-primary material-button to-login"
+          @click="onLoginPage">
+          To Login page/leagues
+        </md-button>
+      </div>
     </md-card>
   </div>
 </template>
 
 <script>
+import { Routes } from '../utils/Routes'
+
 export default {
-  name: 'Spinner'
+  name: 'Spinner',
+  methods: {
+    onLoginPage () {
+      this.$router.push(Routes.LOGIN.path)
+    }
+  }
 }
 </script>
 
@@ -47,7 +61,6 @@ export default {
 
 .rules-container {
   color: black;
-  margin-top: 20px;
   text-align: left;
 }
 h2 {
@@ -65,5 +78,9 @@ h2 {
 }
 .opions-header {
   min-width: 200px;
+}
+.to-login-container {
+  width: 100%;
+  text-align: right;
 }
 </style>

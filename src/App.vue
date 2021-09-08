@@ -71,6 +71,7 @@ export default {
       this.showMenu = !(
         to.fullPath === Routes.LOGIN.path ||
         to.fullPath === Routes.REGISTER.path ||
+        to.fullPath === Routes.RULES.path ||
         to.fullPath.startsWith(confirmPath) ||
         to.fullPath.startsWith(resetPassPath))
     }

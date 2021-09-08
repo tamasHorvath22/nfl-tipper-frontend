@@ -51,14 +51,7 @@ export const router = new Router({
     {
       path: Routes.RULES.path,
       name: Routes.RULES.name,
-      component: () => import('./components/Rules.vue'),
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem(localStorageKeys.NFL_TIPPER_TOKEN)) {
-          next()
-        } else {
-          next(Routes.LOGIN.path)
-        }
-      }
+      component: () => import('./components/Rules.vue')
     },
     {
       path: Routes.CONFIRM_EMAIL.path,
