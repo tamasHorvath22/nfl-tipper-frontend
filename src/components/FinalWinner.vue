@@ -32,9 +32,10 @@
     <md-card v-if="showFinalWinners" class="final-winners-card">
       <div class="final-winner-header">Final winners</div>
       <div
-        v-for="userId of Object.keys(finalWinnerBets)"
+        v-for="(userId, index) of Object.keys(finalWinnerBets)"
         :key="userId"
-        class="final-winner-container">
+        class="final-winner-container"
+        :class="{ 'line-separator': index !== 0 }">
         <div>{{ getUsername(userId) }}</div>
         <img
           v-if="finalWinnerBets[userId]"
@@ -168,5 +169,9 @@ export default {
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 12px;
+}
+.line-separator {
+  border-bottom: 1px solid black;
+  height: 42px;
 }
 </style>
