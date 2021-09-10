@@ -36,10 +36,7 @@
         :key="userId"
         class="final-winner-container">
         <div>{{ getUsername(userId) }}</div>
-        <div v-if="finalWinnerBets[userId]" class="team-info">
-          <div>{{ getTeamName(finalWinnerBets[userId]) }}</div>
-          <img :src="require(`../assets/team-logos/png/${finalWinnerBets[userId]}.png`)" class="logo">
-        </div>
+        <img :src="require(`../assets/team-logos/png/${finalWinnerBets[userId]}.png`)" class="logo">
       </div>
     </md-card>
 
@@ -120,10 +117,6 @@ export default {
     },
     getUsername (id) {
       return this.players.find(player => player.id === id).name
-    },
-    getTeamName (teamId) {
-      const team = this.options.find(option => option.value === teamId)
-      return team ? team.title : ''
     }
   },
   mounted () {
@@ -173,9 +166,5 @@ export default {
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 12px;
-}
-.team-info {
-  display: flex;
-  align-items: center;
 }
 </style>

@@ -54,18 +54,18 @@
                   {{ game.awayScore }}
                 </div>
               </div>
-              <div
-                class="bet-buttons-container"
-                :class="getBetButtonContainerColor(game, game.awayTeamAlias)">
-                <md-button
-                  v-for="button of betButtons.AWAY"
-                  :key="button.value"
-                  :disabled="isGameDisabled(game)"
-                  class="md-raised material-button strong-font-color"
-                  :class="getTeamButtonColor(game, game.awayTeamAlias, button.value)"
-                  @click="onBet(game, button.value)">
-                  {{ button.label }}
-                </md-button>
+              <div class="bet-buttons-left-container">
+                <div class="bet-buttons-inner-container" :class="getBetButtonContainerColor(game, game.awayTeamAlias)">
+                  <md-button
+                    v-for="button of betButtons.AWAY"
+                    :key="button.value"
+                    :disabled="isGameDisabled(game)"
+                    class="md-raised material-button strong-font-color"
+                    :class="getTeamButtonColor(game, game.awayTeamAlias, button.value)"
+                    @click="onBet(game, button.value)">
+                    {{ button.label }}
+                  </md-button>
+                </div>
 
               </div>
             </div>
@@ -94,23 +94,24 @@
                 </div>
               </div>
 
-              <div
-                class="bet-buttons-container"
-                :class="getBetButtonContainerColor(game, game.homeTeamAlias)">
-                <md-button
-                  v-for="button of betButtons.HOME"
-                  :key="button.value"
-                  :disabled="isGameDisabled(game)"
-                  class="md-raised material-button strong-font-color"
-                  :class="getTeamButtonColor(game, game.homeTeamAlias, button.value)"
-                  @click="onBet(game, button.value)">
-                  {{ button.label }}
-                </md-button>
+              <div class="bet-buttons-right-container">
+                <div class="bet-buttons-inner-container" :class="getBetButtonContainerColor(game, game.homeTeamAlias)">
+                  <md-button
+                    v-for="button of betButtons.HOME"
+                    :key="button.value"
+                    :disabled="isGameDisabled(game)"
+                    class="md-raised material-button strong-font-color"
+                    :class="getTeamButtonColor(game, game.homeTeamAlias, button.value)"
+                    @click="onBet(game, button.value)">
+                    {{ button.label }}
+                  </md-button>
+                </div>
+
               </div>
 
             </div>
           </div>
-          <div>{{ getStartTime(game.startTime) }}</div>
+          <div class="start-time">{{ getStartTime(game.startTime) }}</div>
         </md-card>
         <md-checkbox
           v-if="hasMoreLeagues"
@@ -454,9 +455,13 @@ export default {
   padding-top: 20px;
   width: 120px;
 }
-.bet-buttons-container {
-  border-radius: 5px;
-  padding: 5px;
+.bet-buttons-left-container {
+  display: flex;
+  justify-content: flex-end;
+}
+.bet-buttons-right-container {
+  display: flex;
+  justify-content: start;
 }
 .logo-name-standings {
   display: flex;
@@ -470,6 +475,13 @@ export default {
 }
 .invisible {
   visibility: hidden;
+}
+.bet-buttons-inner-container {
+  border-radius: 12px;
+  padding: 8px 0;
+}
+.start-time {
+  padding-top: 12px;
 }
 @media(max-width: 1024px){}
 @media(max-width: 600px){
@@ -492,6 +504,9 @@ export default {
   }
   .game-container {
     margin-bottom: 10px;
+  }
+  .bet-buttons-inner-container {
+    width: 112px;
   }
 }
 </style>
