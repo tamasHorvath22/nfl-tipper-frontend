@@ -38,7 +38,7 @@
         <div>{{ getUsername(userId) }}</div>
         <div v-if="finalWinnerBets[userId]" class="team-info">
           <div>{{ getTeamName(finalWinnerBets[userId]) }}</div>
-          <img :src="finalWinnerBets[userId]" class="logo">
+          <img :src="require(`../assets/team-logos/png/${finalWinnerBets[userId]}.png`)" class="logo">
         </div>
       </div>
     </md-card>
