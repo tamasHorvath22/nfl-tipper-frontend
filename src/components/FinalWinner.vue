@@ -171,7 +171,7 @@ export default {
   margin-bottom: 12px;
 }
 .line-separator {
-  border-bottom: 1px solid black;
+  border-top: 1px solid black;
   height: 42px;
 }
 </style>
