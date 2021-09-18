@@ -254,6 +254,7 @@ export default {
             return 'missed-winner'
           }
         }
+        // TODO
         const userBetTeam = userBet.bet.substring(0, 4) === 'HOME' ? game.homeTeamAlias : game.awayTeamAlias
         if (userBetTeam !== teamAlias) {
           return null
