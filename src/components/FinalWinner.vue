@@ -29,7 +29,7 @@
 
     </md-card>
 
-    <md-card v-if="showFinalWinners" class="final-winners-card">
+    <!-- <md-card v-if="showFinalWinners" class="final-winners-card">
       <div class="final-winner-header">Final winners</div>
       <div
         v-for="(userId, index) of Object.keys(finalWinnerBets)"
@@ -41,7 +41,7 @@
           v-if="finalWinnerBets[userId]"
           :src="require(`../assets/team-logos/png/${finalWinnerBets[userId]}.png`)" class="logo">
       </div>
-    </md-card>
+    </md-card> -->
 
     <modal name="bet-save-error-modal" width="400" height="auto">
       <div class="modal-container">
