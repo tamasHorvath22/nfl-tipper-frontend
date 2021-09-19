@@ -247,6 +247,9 @@ export default {
     getBetButtonContainerColor (game, teamAlias) {
       if (!game.isOpen) {
         const userBet = game.bets.find(bet => bet.id === this.selectedPlayer)
+        if (!userBet.bet) {
+          return 'missed-winner'
+        }
         if (game.winner === teamBet.TIE) {
           if (userBet.bet === BetButtons.HOME[0].value || userBet.bet === BetButtons.AWAY[0].value) {
             return 'nailed-winner'
@@ -254,7 +257,6 @@ export default {
             return 'missed-winner'
           }
         }
-        // TODO
         const userBetTeam = userBet.bet.substring(0, 4) === 'HOME' ? game.homeTeamAlias : game.awayTeamAlias
         if (userBetTeam !== teamAlias) {
           return null
